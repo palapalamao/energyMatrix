@@ -2,6 +2,7 @@ import { createHashRouter, Navigate } from "react-router-dom";
 import { App } from "@/App";
 import { OverviewView } from "@/pages/Overview/OverviewView";
 import { MeterTreeView } from "@/pages/MeterTree/MeterTreeView";
+import { FlowView } from "@/pages/Flow/FlowView";
 import { ReportsView } from "@/pages/Reports/ReportsView";
 import { ModelView } from "@/pages/Model/ModelView";
 import { DevicesView } from "@/pages/Devices/DevicesView";
@@ -36,6 +37,7 @@ export const router = createHashRouter([
       { path: "realtime", element: <RealtimeView /> },
       { path: "workorder", element: <WorkOrderView /> },
       { path: "meter-tree", element: <MeterTreeView /> },
+      { path: "flow", element: <FlowView /> },
 
       // ── 分析优化 ──────────────────────────────────────────
       { path: "analysis", element: <AnalysisView /> },

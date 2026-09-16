@@ -47,7 +47,12 @@
   "overview.gap": "Gap",
   "overview.gapHint": "Modelled as an emGap virtual meter; blocks period close above the threshold",
 
-  "meterTree.title": "Metering Tree",
+    "flow.eyebrow": "MONITORING · Sankey · L2 Ledger",
+  "flow.title": "Energy Flow",
+  "flow.desc": "Energy flow from inlet to end-use; band width = ledger total, gaps merge into unaccounted",
+  "flow.gapSink": "Unaccounted",
+  "flow.emptyLedger": "No ledger data for the selected span. Build the ledger first (nightly pipeline or Reports screen).",
+"meterTree.title": "Metering Tree",
   "meterTree.eyebrow": "METERING · em::EmMeter",
   "meterTree.desc": "submeterOf forms a same-medium DAG; roles drive aggregation, check meters are excluded",
   "meterTree.validate": "Structure check",

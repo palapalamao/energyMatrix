@@ -21,19 +21,19 @@
 - [ ] ~~zh.props / en.props 补词条~~ **偏差记录**：能流图无新 Axon 函数，pod locale 层无可注册词条；
       菜单显示名随 menu.trio 硬编码（与现有 13 项一致）。SPA 界面词条在阶段 3 落 ts/src/i18n/{zh,en}.json。
 
-## 阶段 3：开发（⛔ 等用户确认阶段 2 后执行）
-- [ ] ts/src/pages/Flow/flowGraph.ts —— 纯函数 buildSankey（树→边、缺口汇入「不明用能」、零值边过滤、防御自环、空输入）
-- [ ] ts/src/pages/Flow/FlowViewModel.ts —— mobx Store（site/span/medium 筛选，loading/error/empty）
-- [ ] ts/src/pages/Flow/FlowView.tsx —— recharts <Sankey>，按介质配色，tooltip（表计名/能耗/单位），空台账引导
-- [ ] ts/src/api/emApi.ts —— emMeterTree / emLedgerAggregate 薄封装（签名已写入详细设计 5.4）
-- [ ] ts/src/routes.tsx —— 加 /flow（与阶段 2 菜单项接通，两处必须同步）
-- [ ] ts/src/i18n/zh.json + en.json —— 「能流图」词条
-- [ ] 版本升级：build.fan Version("0.1.1")；ts/package.json + package-lock.json → 0.1.1
-- [ ] ts/tests/flow-graph.test.ts（node:test）；npm test + tsc --noEmit 全绿
-- [ ] fant energyMatrix —— 9 测试类 111 方法不回退
-- [ ] build.ps1（pwsh + EM_OUT_POD_DIR）出 pod；emInfo() 探针 version:0.1.1
+## 阶段 3：开发（✅ 代码完成并验证，真机目检待用户配合）
+- [x] ts/src/pages/Flow/flowGraph.ts —— 纯函数 buildSankey（树→边、缺口汇入「不明用能」、零值边过滤、防御自环、空输入）
+- [x] ts/src/pages/Flow/FlowViewModel.ts —— mobx Store（site/span/medium 筛选，loading/error/empty）
+- [x] ts/src/pages/Flow/FlowView.tsx —— recharts <Sankey>，按介质配色，tooltip（表计名/能耗/单位），空台账引导
+- [x] ts/src/api/emApi.ts —— emMeterTree / emLedgerAggregate 薄封装（签名已写入详细设计 5.4）
+- [x] ts/src/routes.tsx —— 加 /flow（与阶段 2 菜单项接通，两处必须同步）
+- [x] ts/src/i18n/zh.json + en.json —— 「能流图」词条
+- [x] 版本升级：build.fan Version("0.1.1")；ts/package.json + package-lock.json → 0.1.1
+- [x] ts/tests/flow-graph.test.ts（node:test）；npm test + tsc --noEmit 全绿  （26/26 通过，tsc 0 错误）
+- [x] fant energyMatrix —— 9 测试类 111 方法不回退  （111 methods / 472 verifies 全绿）
+- [x] build.ps1（pwsh + EM_OUT_POD_DIR）出 pod；emInfo() 探针 version:0.1.1  （pod meta.props pod.version=0.1.1）
 - [ ] FIN 真机目检（mytest 医院数据）：流向、缺口节点、筛选切换
-- [ ] 提交 develop + PR（main 不动）
+- [ ] 提交 develop + PR（main 不动）  （本次提交推送后开 PR）
 
 ## 验证基线
 - fant energyMatrix：9 tests / 111 methods / 472 verifies（当前全绿，阶段 3 不得回退）
