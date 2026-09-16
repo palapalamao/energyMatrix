@@ -1,0 +1,131 @@
+// 06 workflows and previous-complete-month close
+// Generated locally from manifest.py. Review, stage, confirm, then execute once.
+do
+  generation:"hospitalDemo-20260909"
+  demoTags:{emSynthetic,emDataProvenance:"hospitalDemo-20260909"}
+  sumVals:vals=>vals.reduce(0,(acc,val)=>acc+val)
+  byKey:key=>do
+    keyMatches:readAll(energyMatrix and emDemoKey==key)
+    if(keyMatches.size>1) throw("duplicate emDemoKey: "+key)
+    if(keyMatches.size==0) return null
+    keyMatches.first
+  end
+  existingKey:key=>do
+    rec:byKey(key)
+    if(rec!=null and rec["emDataProvenance"]!=generation) throw("emDemoKey generation collision: "+key)
+    rec
+  end
+  must:key=>do
+    rec:existingKey(key)
+    if(rec==null) throw("missing exact emDemoKey: "+key)
+    rec->id
+  end
+
+  anomalies:[
+    {k:"hd-anomaly-01",n:"医院能源异常模拟场景01",s:"hd-site-primary",meter:"hd-meter-primary-elec-information-rooms",rule:"hd-rule-night-base",sub:"hd-meter-primary-elec-information-rooms",status:"open",work:"hd-work-order-01"},
+    {k:"hd-anomaly-02",n:"医院能源异常模拟场景02",s:"hd-site-primary",meter:"hd-meter-primary-elec-gateway",rule:"hd-rule-balance",sub:"hd-meter-primary-elec-gateway",status:"dispatched",work:"hd-work-order-02"},
+    {k:"hd-anomaly-03",n:"医院能源异常模拟场景03",s:"hd-site-primary",meter:"hd-meter-primary-elec-cooling-plant",rule:"hd-rule-hvac-drift",sub:"hd-meter-primary-elec-cooling-plant",status:"dispatched",work:"hd-work-order-03"},
+    {k:"hd-anomaly-04",n:"医院能源异常模拟场景04",s:"hd-site-primary",meter:"hd-meter-primary-elec-operating-theatres",rule:"hd-rule-coverage",sub:"hd-meter-primary-elec-operating-theatres",status:"resolved",work:"hd-work-order-04"},
+    {k:"hd-anomaly-05",n:"医院能源异常模拟场景05",s:"hd-site-primary",meter:"hd-meter-primary-elec-imaging",rule:"hd-rule-peak",sub:"hd-meter-primary-elec-imaging",status:"resolved",work:"hd-work-order-05"},
+    {k:"hd-anomaly-06",n:"医院能源异常模拟场景06",s:"hd-site-primary",meter:"hd-meter-primary-steam-sterilization",rule:"hd-rule-coverage",sub:"hd-meter-primary-steam-sterilization",status:"acked",work:null},
+    {k:"hd-anomaly-07",n:"医院能源异常模拟场景07",s:"hd-site-primary",meter:"hd-meter-primary-elec-kitchen",rule:"hd-rule-quota",sub:"hd-quota-primary-elec",status:"falseAlarm",work:null},
+    {k:"hd-anomaly-08",n:"医院能源异常模拟场景08",s:"hd-site-primary",meter:"hd-meter-primary-water-wards",rule:"hd-rule-water-leak",sub:"hd-meter-primary-water-wards",status:"open",work:null},
+    {k:"hd-anomaly-09",n:"医院能源异常模拟场景09",s:"hd-site-primary",meter:"hd-meter-primary-heat-wards",rule:"hd-rule-carbon",sub:"hd-carbon-target-1",status:"acked",work:null},
+    {k:"hd-anomaly-10",n:"医院能源异常模拟场景10",s:"hd-site-primary",meter:"hd-meter-primary-elec-hvac-terminals",rule:"hd-rule-hvac-drift",sub:"hd-meter-primary-elec-hvac-terminals",status:"dispatched",work:"hd-work-order-06"},
+    {k:"hd-anomaly-11",n:"医院能源异常模拟场景11",s:"hd-site-primary",meter:"hd-meter-primary-elec-outpatient",rule:"hd-rule-quota",sub:"hd-quota-outpatient-elec",status:"falseAlarm",work:null},
+    {k:"hd-anomaly-12",n:"医院能源异常模拟场景12",s:"hd-site-primary",meter:"hd-meter-primary-cool-critical",rule:"hd-rule-coverage",sub:"hd-meter-primary-cool-critical",status:"resolved",work:null}
+  ]
+  anomalyResults:anomalies.map(d=>do
+    existing:existingKey(d->k)
+    if(existing!=null) return {attempted:1,written:0,skipped:1,errors:0}
+    rule:readById(must(d->rule))
+    seedStatus:if(d->status=="resolved" and d["work"]==null)"resolved" else "open"
+    rec:{energyMatrix,emAnomaly,emSynthetic,emDataProvenance:"hospitalDemo-20260909",emDemoKey:d->k,siteRef:must(d->s),emMeterRef:must(d->meter),emDiagRef:rule->id,emSubjectRef:must(d->sub),emCategory:rule->emCategory,emSeverity:rule->emSeverity,ts:now(),span:toSpan(today()..today()),emPeriod:"HD-DEMO-"+d->k,emAnomalyStatus:seedStatus,dis:d->n}
+    commit(diff(null,rec,{add}))
+    {attempted:1,written:1,skipped:0,errors:0}
+  end)
+  standaloneResults:anomalies.findAll(d=>d["work"]==null).map(d=>do
+    anomaly:must(d->k)
+    current:readById(anomaly)["emAnomalyStatus"]
+    if(d->status=="acked" and current=="open") emAnomalyAck(anomaly,"合成演示确认")
+    if(d->status=="falseAlarm" and current!="falseAlarm") emAnomalyFalseAlarm(anomaly,"合成演示误报")
+    {attempted:1,written:if(current==d->status)0 else 1,skipped:if(current==d->status)1 else 0,errors:0}
+  end)
+  workOrders:[
+    {k:"hd-work-order-01",n:"能源异常处置模拟工单01",s:"hd-site-primary",a:"hd-anomaly-01",status:"new",assignee:null,result:null,direct:true,path:"directCommit",audit:true,note:"No public factory creates the new state; public dispatch begins at assigned, so this direct synthetic seed is not publicly reachable."},
+    {k:"hd-work-order-02",n:"能源异常处置模拟工单02",s:"hd-site-primary",a:"hd-anomaly-02",status:"assigned",assignee:null,result:null,direct:false,path:"publicTransition",audit:false,note:"Achievable synthetic workflow state derived from the linked anomaly."},
+    {k:"hd-work-order-03",n:"能源异常处置模拟工单03",s:"hd-site-primary",a:"hd-anomaly-03",status:"inProgress",assignee:null,result:null,direct:false,path:"publicTransition",audit:false,note:"Achievable synthetic workflow state derived from the linked anomaly."},
+    {k:"hd-work-order-04",n:"能源异常处置模拟工单04",s:"hd-site-primary",a:"hd-anomaly-04",status:"done",assignee:null,result:null,direct:false,path:"publicTransition",audit:false,note:"Achievable synthetic workflow state derived from the linked anomaly."},
+    {k:"hd-work-order-05",n:"能源异常处置模拟工单05",s:"hd-site-primary",a:"hd-anomaly-05",status:"closed",assignee:null,result:null,direct:false,path:"publicTransition",audit:false,note:"Achievable synthetic workflow state derived from the linked anomaly."},
+    {k:"hd-work-order-06",n:"能源异常处置模拟工单06",s:"hd-site-primary",a:"hd-anomaly-10",status:"assigned",assignee:null,result:null,direct:false,path:"publicTransition",audit:false,note:"Achievable synthetic workflow state derived from the linked anomaly."}
+  ]
+  workResults:workOrders.map(d=>do
+    existing:existingKey(d->k)
+    anomaly:must(d->a)
+    if(existing!=null) return {attempted:1,written:0,skipped:1,errors:0}
+    if(d->direct) do
+      // direct new work-order seed: explicitly synthetic and not publicly reachable; public factory begins at assigned.
+      site:readById(anomaly)->siteRef
+      auditNote:d->path+"; auditRequired="+d->audit.toStr+"; "+d->note
+      commit(diff(null,{energyMatrix,emWorkOrder,emSynthetic,emDataProvenance:"hospitalDemo-20260909",emDemoKey:d->k,siteRef:site,emSubjectRef:readById(anomaly)->emSubjectRef,emAnomalyRefs:[anomaly],emOrderNo:"HD-DEMO-NEW-01",emWorkOrderStatus:"new",dis:d->n,emResult:auditNote},{add}))
+      commit(diff(readById(anomaly),{emWorkOrderRef:must(d->k)}))
+      return {attempted:1,written:1,skipped:0,errors:0}
+    end
+    wo:emDispatchWorkOrder([anomaly],d->assignee,null)
+    auditNote:d->path+"; auditRequired="+d->audit.toStr+"; "+d->note
+    commit(diff(readById(wo),demoTags.merge({emDemoKey:d->k,siteRef:must(d->s),dis:d->n,emResult:auditNote})))
+    commit(diff(readById(anomaly),{emWorkOrderRef:wo}))
+    if(d->status=="inProgress" or d->status=="done" or d->status=="closed") emWorkOrderUpdate(wo,"inProgress",null,null)
+    if(d->status=="done" or d->status=="closed") emWorkOrderUpdate(wo,"done",d["result"],null)
+    if(d->status=="closed") emWorkOrderUpdate(wo,"closed",d["result"],null)
+    {attempted:1,written:1,skipped:0,errors:0}
+  end)
+  baselines:[
+    {k:"hd-baseline-cooling",n:"制冷站月耗电基线",s:"hd-site-primary",sub:"hd-meter-primary-elec-cooling-plant",m:"elec",opt:"optionB",span:toSpan(2025-01-01..2025-12-31),model:"changePoint",gran:"monthly",vars:["cdd","opHours"],actual:[1820,1795,1850,1910,1885,1950,2010,1980,1930,1870,1840,1805],predicted:[1815,1802,1845,1900,1892,1945,2000,1988,1925,1875,1832,1810],params:3,valid:true,r2:0.9892683305515662,cv:0.004239346434091411,nmbe:0.0009420769853536469,doc:"节能量基线模拟计算书｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {k:"hd-baseline-lighting",n:"公共照明月耗电基线",s:"hd-site-primary",sub:"hd-meter-primary-elec-lighting-sockets",m:"elec",opt:"optionB",span:toSpan(2025-01-01..2025-12-31),model:"multiVarRegression",gran:"monthly",vars:["occupancy","opHours"],actual:[1280,1260,1245,1310,1295,1210,1160,1190,1270,1305,1285,1250],predicted:[1275,1265,1240,1305,1300,1205,1165,1185,1265,1310,1280,1255],params:3,valid:true,r2:0.9876543209876543,cv:0.004600400551311759,nmbe:0.0008853474988933156,doc:"节能量基线模拟计算书｜演示模拟口径，非结算、合规申报或对外发布依据"}
+  ]
+  baselineResults:baselines.map(d=>do
+    existing:existingKey(d->k)
+    expectedParams:if(d->model=="changePoint" or d->model=="multiVarRegression")3 else 2
+    if(d->params!=expectedParams) throw("baseline model parameter count mismatch")
+    if(existing==null) commit(diff(null,{energyMatrix,emBaseline,emSynthetic,emDataProvenance:"hospitalDemo-20260909",emDemoKey:d->k,dis:d->n,siteRef:must(d->s),emSubjectRef:must(d->sub),emMedium:d->m,emIpmvpOption:d->opt,emBaselineSpan:d->span,emModelType:d->model,emGranularity:d->gran,emIndepVars:d->vars,emR2:d->r2,emCvRmse:d->cv,emNmbe:d->nmbe,emValid:d->valid,emSourceDoc:d->doc},{add}))
+    checked:emBaselineValidate(must(d->k),d->actual,d->predicted)
+    if(checked.meta["emValid"]!=true) throw("baseline validation blocked")
+    {attempted:1,written:if(existing==null)1 else 0,skipped:if(existing==null)0 else 1,errors:0}
+  end)
+  projects:[
+    {k:"hd-project-cooling-optimization",n:"制冷站群控优化",s:"hd-site-primary",sub:"hd-meter-primary-elec-cooling-plant",expected:320000,planned:320000,base:"hd-baseline-cooling",status:"verified",measured:310000,verified:304000,verifiedBy:"医院能源核证演示人员",verifiedAt:"2026-09-08T10:00:00+08:00",monitoringAt:null,plannedStart:null,doc:"医院节能项目演示台账｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {k:"hd-project-lighting-led",n:"公共照明LED改造",s:"hd-site-primary",sub:"hd-meter-primary-elec-lighting-sockets",expected:285000,planned:285000,base:"hd-baseline-lighting",status:"monitoring",measured:137000,verified:null,verifiedBy:null,verifiedAt:null,monitoringAt:"2026-07-01T00:00:00+08:00",plannedStart:null,doc:"医院节能项目演示台账｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {k:"hd-project-steam-recovery",n:"蒸汽凝结水回收",s:"hd-site-primary",sub:"hd-meter-primary-steam-sterilization",expected:250000,planned:250000,base:null,status:"planned",measured:null,verified:null,verifiedBy:null,verifiedAt:null,monitoringAt:null,plannedStart:"2027-01-01",doc:"医院节能项目演示台账｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {k:"hd-project-ward-hvac",n:"制冷站与住院区空调时序联调",s:"hd-site-primary",sub:"hd-meter-primary-elec-cooling-plant",expected:215000,planned:215000,base:"hd-baseline-cooling",status:"monitoring",measured:121000,verified:null,verifiedBy:null,verifiedAt:null,monitoringAt:"2026-07-01T00:00:00+08:00",plannedStart:null,doc:"医院节能项目演示台账｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {k:"hd-project-pv-canopy",n:"停车区光伏车棚",s:"hd-site-primary",sub:"hd-meter-primary-elec-parking",expected:180000,planned:180000,base:null,status:"planned",measured:null,verified:null,verifiedBy:null,verifiedAt:null,monitoringAt:null,plannedStart:"2027-01-01",doc:"医院节能项目演示台账｜演示模拟口径，非结算、合规申报或对外发布依据"}
+  ]
+  projectResults:projects.map(d=>do
+    existing:existingKey(d->k)
+    if(existing!=null) return {attempted:1,written:0,skipped:1,errors:0}
+    if(d->expected!=d->planned) throw("expected annual and planned savings mismatch")
+    made:emAddSavingsProject(d->n,must(d->sub),d->expected)
+    commit(diff(readById(made),{emSynthetic,emDataProvenance:"hospitalDemo-20260909",emDemoKey:d->k,siteRef:must(d->s),emBaselineRef:if(d["base"]==null)null else must(d->base),emVerifyStatus:d->status,emSavingsMeasured:d["measured"],emSavingsVerified:d["verified"],emVerifiedBy:d["verifiedBy"],emVerifiedAt:d["verifiedAt"],emMonitoringStartedAt:d["monitoringAt"],emPlannedStart:d["plannedStart"],emSourceDoc:d->doc}))
+    {attempted:1,written:1,skipped:0,errors:0}
+  end)
+  site:must("hd-site-primary")
+  priorEnd:date(today().year,today().month,1)-1day
+  priorSpan:toSpan(date(priorEnd.year,priorEnd.month,1)..priorEnd)
+  dryRun:emClosePeriod(site,priorSpan,"daily",null,true)
+  if(dryRun.meta["status"]!="dryRun" and dryRun.meta["status"]!="alreadyClosed") throw("close-period preflight blocked")
+  closed:if(dryRun.meta["status"]=="dryRun") emClosePeriod(site,priorSpan,"daily",null,false) else dryRun
+  closeRec:readAll(emClosePeriod and siteRef==site).find(r=>r["span"]==priorSpan)
+  if(closeRec!=null) commit(diff(closeRec,demoTags.merge({emDemoKey:"hd-close-primary-previous-month"})))
+  allResults:anomalyResults.addAll(standaloneResults).addAll(workResults).addAll(baselineResults).addAll(projectResults)
+  // Final scope audit is a hard gate for this generation.
+  newSites:readAll(energyMatrix and site and emDataProvenance==generation)
+  if(newSites.size==0 or not newSites.colNames.contains("id")) throw("scope audit blocked: missing site id column")
+  newSiteIds:newSites.colToList("id")
+  scopedRecords:readAll(energyMatrix).findAll(r=>newSiteIds.contains(r["id"]) or newSiteIds.contains(r["siteRef"]) or newSiteIds.contains(r["emSubjectRef"]))
+  keyedRecords:readAll(energyMatrix and emSynthetic and emDemoKey).findAll(r=>r["emDemoKey"].toStr.startsWith("hd-"))
+  keyedRecords.each(r=>byKey(r["emDemoKey"]))
+  missingSynthetic:scopedRecords.findAll(r=>r.missing("emSynthetic")).size+keyedRecords.findAll(r=>r.missing("emSynthetic")).size
+  missingProvenance:scopedRecords.findAll(r=>r["emDataProvenance"]!=generation).size+keyedRecords.findAll(r=>r["emDataProvenance"]!=generation).size
+  if(missingSynthetic>0 or missingProvenance>0) throw("scope audit blocked: missing required synthetic provenance markers")
+  {generation:generation,attempted:sumVals(allResults.map(r=>r->attempted))+1,written:sumVals(allResults.map(r=>r->written))+1,skipped:sumVals(allResults.map(r=>r->skipped)),errors:sumVals(allResults.map(r=>r->errors))}
+end

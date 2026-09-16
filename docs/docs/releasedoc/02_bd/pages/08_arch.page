@@ -1,0 +1,109 @@
+pageType: content
+background:
+  type: solid
+  color: "$paper"
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [64, 36, 500, 16]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: 03 · 产品方案介绍 —— 架构进化
+  - elementId: title
+    elementType: text
+    bounds: [64, 58, 832, 42]
+    content:
+      style: "$title"
+      wrap: false
+      text: 架构进化：云端与本地端的一体化部署
+  - elementId: headrule
+    elementType: shape
+    bounds: [64, 110, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: colAt
+    elementType: text
+    bounds: [64, 128, 250, 22]
+    content: {fontSize: 14, bold: true, color: "$tealDark", wrap: false, text: 感知与执行层}
+  - elementId: colAd
+    elementType: text
+    bounds: [64, 154, 250, 100]
+    content:
+      style: "$body"
+      text: |
+        <p>多功能电表 / 水表 / 燃气表 / 冷热量表</p>
+        <p>变配电、光伏、储能、充电桩</p>
+        <p>用能设备组（灯具回路、插座等批量对象）</p>
+  - elementId: arrA
+    elementType: shape
+    bounds: [322, 180, 30, 30]
+    shapeName: rightArrow
+    fill: {type: solid, color: "$teal"}
+  - elementId: colBt
+    elementType: text
+    bounds: [360, 128, 250, 22]
+    content: {fontSize: 14, bold: true, color: "$tealDark", wrap: false, text: 边缘引擎（站点自治）}
+  - elementId: colBd
+    elementType: text
+    bounds: [360, 154, 250, 120]
+    content:
+      style: "$body"
+      text: |
+        <p>F200 / NEXIO 边缘控制器</p>
+        <p>内置 FIN Framework + energyMatrix</p>
+        <p>BACnet / Modbus / KNX / MQTT / M-Bus 接入</p>
+        <p>台账采集、关账、诊断在本地完成</p>
+  - elementId: arrB
+    elementType: shape
+    bounds: [618, 180, 30, 30]
+    shapeName: rightArrow
+    fill: {type: solid, color: "$teal"}
+  - elementId: colCt
+    elementType: text
+    bounds: [656, 128, 240, 22]
+    content: {fontSize: 14, bold: true, color: "$tealDark", wrap: false, text: 集团层（FIN Network）}
+  - elementId: colCd
+    elementType: text
+    bounds: [656, 154, 240, 100]
+    content:
+      style: "$body"
+      text: |
+        <p>多项目总览 Portfolio</p>
+        <p>跨项目 EUI 排名 · 气象修正</p>
+        <p>集团汇总与上报</p>
+  - elementId: midrule
+    elementType: shape
+    bounds: [64, 296, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: protoTitle
+    elementType: text
+    bounds: [64, 314, 400, 20]
+    content: {fontSize: 13, bold: true, color: "$ink", wrap: false, text: 数据通道与开放接口}
+  - elementId: proto
+    elementType: text
+    bounds: [64, 342, 500, 140]
+    content:
+      style: "$body"
+      lineHeight: 1.7
+      text: |
+        <p>· 南向：BACnet UDP/IP · Modbus RTU/TCP · KNX IP · M-Bus · MQTT</p>
+        <p>· 北向：Haystack RESTful API · 80+ Axon 开放函数</p>
+        <p>· AI：标准 OpenAI API（AI Agent 读写 Haystack 数据库）</p>
+        <p>· 展示：B/S 架构浏览器访问 · 嵌入式触摸屏 · 移动端速览</p>
+  - elementId: depTitle
+    elementType: text
+    bounds: [616, 314, 280, 20]
+    content: {fontSize: 13, bold: true, color: "$ink", wrap: false, text: 两种落地形态}
+  - elementId: dep
+    elementType: text
+    bounds: [616, 342, 280, 140]
+    content:
+      style: "$body"
+      lineHeight: 1.7
+      text: |
+        <p><strong>Standalone 单站点</strong></p>
+        <p>中小项目免服务器，边缘控制器即全部</p>
+        <p><strong>FIN Network 多站点</strong></p>
+        <p>集团客户集中管理、跨站点对标</p>

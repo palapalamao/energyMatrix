@@ -1,0 +1,339 @@
+
+===== Slide 1 =====
+西门子AIoT Lighting（AIoT智域光）软硬件一体化解决方案V1.0西门子智能基础设施集团智能建筑事业部2025-11
+siemens.com/smart-office
+Restricted © Siemens 2025
+
+===== Slide 2 =====
+汇报内容
+Page 2
+Restricted | © Siemens 2025 | SI B CN | 2025-11
+ | 方案价值主张
+ | 业务场景分析
+ | 产品方案介绍
+ | 工程项目组态
+ | Q&A
+1
+2
+3
+4
+5
+
+===== Slide 3 =====
+2025全球办公空间使用基准指南 – 2025年8月发布
+Page 3
+Restricted | © Siemens 2025 | SI B CN | 2025-11
+良好以下的占比：48%
+
+===== Slide 4 =====
+基础设施
+智慧空间的智能化设施
+知道和学习用户想要什么，并提供所需要的数据
+Restricted | © Siemens 2025 | SI B CN | 2025-11
+Page 4
+Page 4
+
+===== Slide 5 =====
+实现低碳智能建筑的新路径 – AIoT物联
+Page 5
+Restricted | © Siemens 2025 | SI B CN | 2025-11
+通过无线IoT传感技术全面感知设施设备，控制系统及人的行为，使物与人，人与空间，空间与人的交互感知，实现节能降耗，资产价值最大化利用等目标。
+
+把人的活动纳入节能控制逻辑，做到人，物，空间的完美打通，无需人去控制开关，调温等，利用智能IoT传感器的数据主动优化节能控制。
+关键技术
+设计思路
+大数据
+为各类数据的存储提供新模式，“数据大脑”的建立打破“信息孤岛”，彻底实现信息资源共享、系统互联互通。
+物联网
+全面感知设备设施、控制系统，人员行为的情况，同时按需优化楼宇控制并提高人员体验及满意度
+云计算
+通过对工位，会议室等空间占用数据及人，环境等数据的采集及分析，优化空间，提高资产价值
+楼宇AI+
+在互联网助力平台的基础上，通过人工智能算法及大数据平台及服务，提升能源效率和人员生产力，助力零碳低碳建筑实现
+主动行为节能
+间接管理节能
+直接节能
+
+===== Slide 6 =====
+西门子AIoT Lighting解决方案 - 软硬件一体化解决方案差异化解决方案 - 无线照明+IoT物联+场景控制+边缘引擎
+Restricted | © Siemens 2025 | SI B CN | 2025-11
+无线照明
+通过安装智能灯具和无线传感器，根据空间使用情况自动控制照明，节能降耗
+场景控制
+根据不同使用场合，结合光照、调光等方式调节照明模式，实现场景控制；
+利用IoT设备，支持设备和场景控制的自由配置，适应多种场合；
+IoT物联
+部署温度、湿度、空间占用等各类IoT传感器，配合照明、空调等建筑设备管控，实现环境监测与调节，确保空间内环境舒适
+边缘引擎
+实现空间内多种协议对接和设备管控，包括暖通、照明、表计以及其他用电设备的数据采集和监控
+空间场景
+AI赋能
+Page 6
+
+===== Slide 7 =====
+西门子AIoT Lighting解决方案架构进化 – 软硬件一体化云端和本地端部署方案
+Restricted | © Siemens 2025 | SI B CN | 2025-11
+Page 7
+IoT传感器
+无线协转
+设备
+BACnet IP/UDP
+MQTT
+MQTT
+BACnet
+智能灯具
+KNX IP/TCP
+西门子F200边缘引擎
+（内置FIN Framework）
+IoT设备
+无线协转
+设备
+MQTT
+FIN Network
+IoT传感器
+无线协转
+设备
+BACnet IP/UDP
+MQTT
+BACnet
+智能灯具
+KNX IP/TCP
+J2 FIN Framework
+AIoT Lighting APP
+Haystack Restful API
+AIoT Lighting @Standalone
+西门子F200边缘引擎
+(内置FIN Framework)
+IoT设备
+无线协转
+设备
+IoT设备
+无线协转
+设备
+FIN
+Network
+MQTT
+Zigbee/
+WiFi/Matter
+无线IoT协转设备
+数据采集&区域汇聚
+MQTT*
+Zigbee/
+WiFi/Matter
+MQTT*
+Zigbee/
+WiFi/Matter
+
+===== Slide 8 =====
+西门子AIoT Lighting软硬件一体化解决方案 – 单站点或多站点分布式应用场景
+Restricted | © Siemens 2025 | SI B CN | 2025-11
+Page 8
+FIN Network
+小场景N
+小场景2
+边缘控制器
+嵌入式触摸屏
+网页访问
+
+===== Slide 9 =====
+Page 9
+
+===== Slide 10 =====
+西门子F200边缘引擎介绍
+Page 10
+M3 市场方案
+(ELC 无缝集成)
+PXC 控制器
+146，148等灯控模块
+PLC或者第三方的控制器
+优势
+中小型项目可放在嵌入式边缘控制器中部署，无需额外的服务器减少IT设施投资，如小型学校，数据中心，医院等
+内置FIN Framework 赋能，    界面美观、流畅，功能组合强大,适用场景广
+西门子F200边缘引擎
+（内置FIN Framework）
+多站点
+先进的Haystack标签技术，让数据集成简单，工程效率提高33%以上
+Restricted | © Siemens 2025 | SI B CN | 2025-11
+
+===== Slide 11 =====
+Manager of Haystack Database – AI Agent
+Restricted | © Siemens 2025 | SI B CN | 2025-11
+Page 11
+Building Agent
+Haystack (Optic / Haxall)
+Open WebUI
+西门子AIoT Lighting
+Microsoft GraphRAG
+获得图像背后的信息和知识，而不再仅仅是图像本身
+输入是图像和文字，输出也可以是图像和文字
+不仅适用于楼宇运维，而且可以拓展到所有需要图像辅助的领域，新的世界认知模式
+以低代码模式为某个或某类楼宇定制管理智能体，具备专业知识库检索能力
+通过AIoT Lighting获得实时/历史数据，运维手册信息，设置设备参数等
+可以调用已有的数学模型，获得建议参数或模拟运行结果
+提供第三方AI智能体读写楼宇设备参数或Haystack数据库数据的基建设备和能力
+标准的OpenAI API接口，支持图像和自然语言访问，没有协议和语义转化的问题
+支持本地知识库和图像生成，降低智能体间交流的复杂度（室内导航）
+术业有专攻，第三方AI智能体专注于业务应用，无需担心数据和操作的准确性
+IoT智能体可能是未来AI智能体主导的万物互联的基石
+Online
+Local
+Method
+Browser
+WeChat
+西门子AIoT Lighting
+西门子AIoT Lighting
+
+===== Slide 12 =====
+案例研究
+
+基于400万㎡的项目实践
+
+通常安装后至少立即可节约80%的照明能耗，其中包括：
+
+大约 50% 来自于LED灯具的更换
+
+另外 30% 来自智能照明系统，自动实现光照度补偿、区域无人关灯等
+
+仅安装智能照明系统最高节省49.34%
+边缘控制器
+页面分析展示
+PIR &毫米波
+AI赋能决策
+空间占用数据
+功率
+PIR
+光感
+Restricted | © Siemens 2025 | SI B CN | 2025-11
+Page 12
+无线
+智能网关 M2
+检测阳光
+控制器
+网关
+西门子AIoT Lighting软硬件一体化解决方案 - 无线照明+IoT物联
+
+===== Slide 13 =====
+Page 13
+Restricted | © Siemens 2025 | SI B CN | 2025-11
+网关
+光照度传感器
+人体传感器
+智能调光模块
+智能开关
+案例研究（以商业办公为例）
+照明系统结合光照传感器与调光功能后，
+单灯节电率在20%-40%（阴天较低，晴天较高）
+
+
+光照+调光控制：
+100盏 20W LED 灯（晴天）：
+每日节电量 0.68 度，每年节电量 约 1,700 度
+
+100 盏 30W LED 灯（晴天）：
+每日节电量 1.02 度，每年节电量 2,700度
+
+增加IoT物联：
+结合人体感应方案，在 30% 无人时长的场景下，
+额外节电30%~50%
+西门子AIoT Lighting软硬件一体化解决方案 - 无线照明+IoT物联
+[notes] 工作日：10小时算
+08:00~10:00：晨光较弱，需100%人工照明功率；
+10:00~16:00：日光充足，需50%人工照明功率；
+16:00~18:00：日光减弱，需80%人工照明功率；
+无节能耗电：20W*10h = 200Wh
+有传感调光（实际耗电）（2h*20W)+(6h*10W)+(2h*16W)=40+60+32=132Wh
+每日节能：200-132=68Wh
+每年节能：68Wh*250day = 17kWh
+节能率：34%
+
+===== Slide 14 =====
+场景联动的节能量评估
+
+价值好处：
+根据负荷、人感、定时等多种途径实际情况调节空调控制
+无线方案，施工方便
+实时监控，在保证舒适度的前提下节省能耗
+
+灵动智慧空间控制
+单点到区域灵活控制：
+动态灯光
+自适应空调
+窗帘控制
+多场景切换控制
+
+HVAC按需优化控制
+可实现20+% 节能降耗
+Restricted | © Siemens 2025 | SI B CN | 2025-11
+Page 14
+西门子AIoT Lighting软硬件一体化解决方案 - 无线照明+IoT物联+场景控制
+
+===== Slide 15 =====
+西门子AIoT Lighting软硬件一体化解决方案 – AI赋能 （1/2）
+Page 15
+Restricted | © Siemens 2025 | SI B CN | 2025-11
+FIN Intelligence
+
+===== Slide 16 =====
+西门子AIoT Lighting软硬件一体化解决方案 – AI赋能 （2/2）
+Page 16
+Restricted | © Siemens 2025 | SI B CN | 2025-11
+AI Agent
+
+===== Slide 17 =====
+Restricted | © Siemens 2025 | SI B CN | 2025-11
+建筑面积：300~2000平米
+解决方案：将智能灯控、智能遮阳、智能环境监测等设备连接成完整的智能化系统方案，为门店打造了安防模式、营业模式、迎宾模式、品鉴模式、自动讲解模式、下班模式等多个智能场景，从个性化、智能化、数字化进行全面升级，以更亲切更年轻的形象向消费者靠拢，旨在颠覆式提升门店服务质量。
+部分案例参考：专卖店、连锁餐饮、无人超市、
+以及其他各类自助门店
+Page 17
+
+===== Slide 18 =====
+工程项目组态示例
+Restricted | © Siemens 2025 | SI B CN | 2025-11
+Page 18
+
+===== Slide 19 =====
+Restricted | © Siemens 2025 | SI B CN | 2025-11
+Page 19
+
+===== Slide 20 =====
+Restricted | © Siemens 2025 | SI B CN | 2025-11
+Page 20
+
+===== Slide 21 =====
+Restricted | © Siemens 2025 | SI B CN | 2025-11
+Page 21
+
+===== Slide 22 =====
+西门子是值得您信赖的长期合作伙伴
+卓越项目管理
+及交付能力
+数字化平台
+研发能力
+服务的能力
+“IT+OT” 整体集成能力
+SIEMENS是技术领先，具备社会责任感的科技企业。每年在软件研发持续的投入，包括数字化双胞胎，边缘算法，人工智能，物联网。SIEMEMS是您的数字化合作伙伴。
+SIEMENS为客户提供全生命周期原厂服务，我们在全国有经验丰富的服务团队为您提供满意的售后服务。SIEMENS是值得信赖的长期合作伙伴。
+我们在智能楼宇系统集成有着丰富的经验，包括与第三方品牌的集成能力。
+采用西门子的AIoT Lighting解决方案可与西门子平台无缝对接，实现系统平台间的场景联动。
+西门子在中国多地均有项目管理和交付团队，还有标准的PM@SIEMENS项目管理方法及经验。SIEMENS是项目执行交付品质的保证。
+Restricted | © Siemens 2025 | SI B CN | 2025-11
+Page 22
+Page 22
+[notes] One thing often mistundertsood
+
+4 jigsaw pieces making us standing out
+
+
+Water Cube, China Pavilion of Expo 2010, and Wuhan bio-safety level 4 lab,
+as well as complex projects of demanding customers like Pfizer, Airbus, Alibaba, and Huawei.
+
+===== Slide 23 =====
+勇担责任
+追求卓越
+矢志创新
+更多信息，敬请关注
+西门子智能建筑公众号
+Restricted | © Siemens 2025 | SI B CN | 2025-11
+Page 23
+Page 23

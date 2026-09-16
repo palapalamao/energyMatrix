@@ -1,0 +1,98 @@
+//
+// EmMeterBase.trio —— 计量表基类模板（说明书 §3.3 域 2 · 计量）
+//
+// 六种介质的表在结构上只差「介质标记 + 单位 + 几个专属点位」，共享的部分
+// （equip 本体 + L1 累积读数 + L2 区间增量）放在这里，介质子类通过
+// ModelEntityEmMeterBase 的组合继承叠加自己的部分。
+//
+// 书写约束（踩过的坑）：
+//   * 每个 Arg 必须带默认值（`Arg("x:default")`，`N` = null），否则基类先于
+//     子 args 加载时报 `ParseErr: Missing argument ... no default`
+//   * 默认值不能是「数字开头但非数值」（如 200x100），Arg 解析会报 ParseErr
+//   * 每条记录都必须带 `energyMatrix` 全局标记 —— 同一 Folio 里与
+//     CoolMatrix / heatMatrix 的记录靠它隔离，也是 DeleteAllProjRecs 的依据
+//
+// 点位三层规范（说明书 §3.6）：
+//   L1 累积读数  total + sensor + emL1Point  表底数，直采只读，禁止修改
+//   L2 区间增量  emDelta                     由 L1 差分，含溢出与换表补偿
+//   L3 归一化    emNormalized                业务层生成（EmKpiPoint，不在本模板）
+//
+
+---
+// 表计本体
+emMeterModelId:"_equip:emMeter"
+id:@_equip:emMeter
+energyMatrix
+equip
+meter
+siteRef:Arg("parentId")
+floorRef:Arg("floorRef:N")
+navName:Arg("entityDis:Meter")
+disMacro:"$siteRef $navName"
+tz:Arg("tz:Asia/Shanghai")
+// 计量角色：六值枚举，汇总算法只认角色不认层级深度
+emMeterRole:Arg("emMeterRole:sub")
+// 数据来源等级：任何能耗数值可审计的根（铁律 4）
+emDataSource:Arg("emDataSource:measured")
+// 介质：elec|water|gas|steam|heat|cool|diesel|coal|hydrogen
+emMedium:Arg("emMedium:elec")
+// 父表，构成同介质 DAG（铁律 2）
+submeterOf:Arg("submeterOf:N")
+// 综合倍率 = ctRatio × ptRatio
+emMeterFactor:Arg("emMeterFactor:1")
+// 累积量翻转上限，用于溢出补偿
+emMaxReading:Arg("emMaxReading:N")
+// 表计安装 / 换表日期，用于跨表连续计量
+emInstallDate:Arg("emInstallDate:N")
+// 计量服务对象：space | equip | tenant
+emServesRef:Arg("emServesRef:N")
+emSpaceRef:Arg("emSpaceRef:N")
+emTenantRef:Arg("emTenantRef:N")
+// GB 分项归类，仅电介质有效
+emSubItem:Arg("emSubItem:N")
+// 计量范围文字描述，用于点表交底
+// 注意标签名是 emMeterScope 而不是 meterScope —— 后者已被 phIoT 占用
+// （`^meterScope is ^choice`，值 siteMeter/submeter），详见 README 偏差 #3
+emMeterScope:Arg("emMeterScope:N")
+
+---
+// L1 累积读数（表底数）。直采只读，禁止修改。
+emMeterModelId:"_equip:emMeter_point:l1Total"
+id:@_equip:emMeter_point:l1Total
+energyMatrix
+point
+sensor
+total
+// 显式标记权威 L1 点 —— 一块表可能挂多个累积点（分时电量也是 total），
+// EmMeterReading.totalPoint 优先认这个标记，避免靠 navName 消歧
+emL1Point
+equipRef:@_equip:emMeter
+emMeterRef:@_equip:emMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"L1 累积读数"
+disMacro:"$equipRef $navName"
+kind:"Number"
+his
+hisCollectInterval:15min
+hisInterpolate:"linear"
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// L2 区间增量。由 L1 差分得到，含 emMaxReading 溢出补偿与 emInstallDate 换表补偿。
+emMeterModelId:"_equip:emMeter_point:l2Delta"
+id:@_equip:emMeter_point:l2Delta
+energyMatrix
+point
+sensor
+emDelta
+equipRef:@_equip:emMeter
+emMeterRef:@_equip:emMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"L2 区间增量"
+disMacro:"$equipRef $navName"
+kind:"Number"
+his
+hisInterpolate:"linear"
+tz:Arg("tz:Asia/Shanghai")

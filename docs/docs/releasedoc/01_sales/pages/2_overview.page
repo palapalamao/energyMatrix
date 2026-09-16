@@ -1,0 +1,155 @@
+pageType: content
+background:
+  type: solid
+  color: "$paper"
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [64, 36, 500, 16]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: SOLUTION OVERVIEW · 方案总览
+  - elementId: pagetag
+    elementType: text
+    bounds: [760, 36, 136, 16]
+    content:
+      fontSize: 10
+      color: "$mist"
+      align: [right, top]
+      wrap: false
+      text: energyMatrix V1.0
+  - elementId: title
+    elementType: text
+    bounds: [64, 58, 760, 42]
+    content:
+      style: "$title"
+      wrap: false
+      text: 软硬件一体化 · 五个差异化能力
+  - elementId: headrule
+    elementType: shape
+    bounds: [64, 110, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: n1
+    elementType: text
+    bounds: [64, 126, 44, 30]
+    content: {fontSize: 24, bold: true, color: "$teal", wrap: false, text: "01"}
+  - elementId: i1
+    elementType: icon
+    bounds: [122, 129, 20, 20]
+    iconName: "fas:diagram-project"
+    fill: {type: solid, color: "$tealDark"}
+  - elementId: t1
+    elementType: text
+    bounds: [158, 126, 200, 24]
+    content: {fontSize: 16, bold: true, color: "$ink", wrap: false, text: 分项计量树}
+  - elementId: d1
+    elementType: text
+    bounds: [158, 152, 738, 34]
+    content:
+      style: "$body"
+      text: 依据《分项能耗数据采集技术导则》A/B/C/D 四类 14 个分项建账；同介质有向无环图 + 跨介质校验 + 环检测，总表与分表之和的平衡校核自动完成。
+  - elementId: r1
+    elementType: shape
+    bounds: [64, 194, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$softline"}
+  - elementId: n2
+    elementType: text
+    bounds: [64, 202, 44, 30]
+    content: {fontSize: 24, bold: true, color: "$teal", wrap: false, text: "02"}
+  - elementId: i2
+    elementType: icon
+    bounds: [122, 205, 20, 20]
+    iconName: "fas:book"
+    fill: {type: solid, color: "$tealDark"}
+  - elementId: t2
+    elementType: text
+    bounds: [158, 202, 200, 24]
+    content: {fontSize: 16, bold: true, color: "$ink", wrap: false, text: 能耗台账}
+  - elementId: d2
+    elementType: text
+    bounds: [158, 228, 738, 34]
+    content:
+      style: "$body"
+      text: L1 表底读数 → L2 区间增量 → L3 归一化指标的三层点位约定；关账不可变、修正走红冲；缺口率超 5% 自动阻断月度关账。
+  - elementId: r2
+    elementType: shape
+    bounds: [64, 270, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$softline"}
+  - elementId: n3
+    elementType: text
+    bounds: [64, 278, 44, 30]
+    content: {fontSize: 24, bold: true, color: "$teal", wrap: false, text: "03"}
+  - elementId: i3
+    elementType: icon
+    bounds: [122, 281, 20, 20]
+    iconName: "fas:gauge-high"
+    fill: {type: solid, color: "$tealDark"}
+  - elementId: t3
+    elementType: text
+    bounds: [158, 278, 260, 24]
+    content: {fontSize: 16, bold: true, color: "$ink", wrap: false, text: 指标定额与双碳核算}
+  - elementId: d3
+    elementType: text
+    bounds: [158, 304, 738, 34]
+    content:
+      style: "$body"
+      text: EUI 对标 GB 55015-2021 约束值与 GB/T 51161-2016 引导值；排放因子版本化管理，Scope 1/2/3 归集、绿证核销、折标煤合计一应俱全。
+  - elementId: r3
+    elementType: shape
+    bounds: [64, 346, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$softline"}
+  - elementId: n4
+    elementType: text
+    bounds: [64, 354, 44, 30]
+    content: {fontSize: 24, bold: true, color: "$teal", wrap: false, text: "04"}
+  - elementId: i4
+    elementType: icon
+    bounds: [122, 357, 20, 20]
+    iconName: "fas:stethoscope"
+    fill: {type: solid, color: "$tealDark"}
+  - elementId: t4
+    elementType: text
+    bounds: [158, 354, 200, 24]
+    content: {fontSize: 16, bold: true, color: "$ink", wrap: false, text: 诊断闭环}
+  - elementId: d4
+    elementType: text
+    bounds: [158, 380, 738, 34]
+    content:
+      style: "$body"
+      text: 规则引擎发现异常 → 值班确认 → 派单 → 工单状态机 → 节能项目 → ASHRAE Guideline 14 基线核证；未核证节能量一律 planned，禁以 verified 对外。
+  - elementId: r4
+    elementType: shape
+    bounds: [64, 422, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$softline"}
+  - elementId: n5
+    elementType: text
+    bounds: [64, 430, 44, 30]
+    content: {fontSize: 24, bold: true, color: "$teal", wrap: false, text: "05"}
+  - elementId: i5
+    elementType: icon
+    bounds: [122, 433, 20, 20]
+    iconName: "fas:microchip"
+    fill: {type: solid, color: "$tealDark"}
+  - elementId: t5
+    elementType: text
+    bounds: [158, 430, 200, 24]
+    content: {fontSize: 16, bold: true, color: "$ink", wrap: false, text: 边缘引擎}
+  - elementId: d5
+    elementType: text
+    bounds: [158, 456, 738, 34]
+    content:
+      style: "$body"
+      text: FIN Framework 内嵌于 F200 / NEXIO 边缘控制器，单机 3,000 / 5,000 点；BACnet、Modbus、KNX、MQTT、M-Bus 多协议接入，浏览器完成全部组态。
+  - elementId: footnote
+    elementType: text
+    bounds: [64, 508, 832, 16]
+    content:
+      style: "$note"
+      wrap: false
+      text: 软件：energyMatrix（FIN Pod · Fantom 后端 + React 前端）｜硬件：F200 / NEXIO 边缘控制器 + 多功能电表、水气冷热量表与采集器

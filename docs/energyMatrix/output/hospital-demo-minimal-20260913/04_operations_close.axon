@@ -1,0 +1,44 @@
+// energyMatrix hospital minimal demo data
+// generation: hospital-demo-minimal-20260913
+// batch: 04_operations_close
+// Default is preview-only. Change preview to false only after FIN Expert stages the unchanged request and the user confirms it.
+do
+  preview: true
+  generation: "hospital-demo-minimal-20260913"
+  demoTags: {emSynthetic, emDataProvenance: generation}
+  if (preview) return {batch: "04_operations_close", generation: generation, preview, summary: "3 anomalies, 3 work orders, 1 baseline, 1 savings project, 1 closed period"}
+
+  site_east: read(energyMatrix and site and emDemoKey=="site-east", true)->id
+  m_hvac: read(energyMatrix and meter and emDemoKey=="meter-east-hvac", true)->id
+  m_medical: read(energyMatrix and meter and emDemoKey=="meter-east-medical", true)->id
+  m_water: read(energyMatrix and meter and emDemoKey=="meter-east-water-gw", true)->id
+  dq: read(emDiagnostic and emDemoKey=="diag-east-dq", true)->id
+  bal: read(emDiagnostic and emDemoKey=="diag-east-balance", true)->id
+  curSpan: toSpan(2026-09-01..2026-09-13)
+
+  anomaly_hvac_qualityOld: read(emAnomaly and emDemoKey=="anomaly-hvac-quality", false)
+  anomaly_hvac_quality: if (anomaly_hvac_qualityOld != null) anomaly_hvac_qualityOld->id else commit(diff(null, {energyMatrix, emAnomaly, emSynthetic, emDataProvenance: generation, emDemoKey: "anomaly-hvac-quality", siteRef: site_east, emDiagRef: dq, emSubjectRef: m_hvac, dis: "空调冷热源表本期完好率偏低", emCategory: "dataQuality", emSeverity: "warn", emPeriod: "2026-09", span: curSpan, ts: now(), emVal: 0.82, emExpected: 0.9, emDeviation: -0.0889, emAnomalyStatus: "open"}, {add}))->id
+
+  anomaly_medical_balanceOld: read(emAnomaly and emDemoKey=="anomaly-medical-balance", false)
+  anomaly_medical_balance: if (anomaly_medical_balanceOld != null) anomaly_medical_balanceOld->id else commit(diff(null, {energyMatrix, emAnomaly, emSynthetic, emDataProvenance: generation, emDemoKey: "anomaly-medical-balance", siteRef: site_east, emDiagRef: bal, emSubjectRef: m_medical, dis: "医技动力分项与总表平衡偏差待复核", emCategory: "balance", emSeverity: "critical", emPeriod: "2026-09", span: curSpan, ts: now(), emVal: 0.071, emExpected: 0.05, emDeviation: 0.42, emAnomalyStatus: "open"}, {add}))->id
+
+  anomaly_water_qualityOld: read(emAnomaly and emDemoKey=="anomaly-water-quality", false)
+  anomaly_water_quality: if (anomaly_water_qualityOld != null) anomaly_water_qualityOld->id else commit(diff(null, {energyMatrix, emAnomaly, emSynthetic, emDataProvenance: generation, emDemoKey: "anomaly-water-quality", siteRef: site_east, emDiagRef: dq, emSubjectRef: m_water, dis: "市政进水表存在补录时段", emCategory: "dataQuality", emSeverity: "warn", emPeriod: "2026-09", span: curSpan, ts: now(), emVal: 0.86, emExpected: 0.9, emDeviation: -0.0444, emAnomalyStatus: "open"}, {add}))->id
+
+  if (read(emWorkOrder and emDemoKey=="wo-hvac-quality", false) == null) commit(diff(null, {energyMatrix, emWorkOrder, emSynthetic, emDataProvenance: generation, emDemoKey: "wo-hvac-quality", siteRef: site_east, emSubjectRef: m_hvac, emAnomalyRefs: [anomaly_hvac_quality], dis: "空调冷热源表数据补录复核", emOrderNo: "W-DEMO-001", emAssignee: "能源管理员", emDueDate: 2026-09-20, emWorkOrderStatus: "assigned", emCategory: "dataQuality", emSeverity: "warn", ts: now()}, {add}))
+
+  if (read(emWorkOrder and emDemoKey=="wo-medical-balance", false) == null) commit(diff(null, {energyMatrix, emWorkOrder, emSynthetic, emDataProvenance: generation, emDemoKey: "wo-medical-balance", siteRef: site_east, emSubjectRef: m_medical, emAnomalyRefs: [anomaly_medical_balance], dis: "医技动力分项平衡核查", emOrderNo: "W-DEMO-002", emAssignee: "能源管理员", emDueDate: 2026-09-20, emWorkOrderStatus: "inProgress", emCategory: "balance", emSeverity: "critical", ts: now()}, {add}))
+
+  if (read(emWorkOrder and emDemoKey=="wo-water-quality", false) == null) commit(diff(null, {energyMatrix, emWorkOrder, emSynthetic, emDataProvenance: generation, emDemoKey: "wo-water-quality", siteRef: site_east, emSubjectRef: m_water, emAnomalyRefs: [anomaly_water_quality], dis: "市政进水表补录确认", emOrderNo: "W-DEMO-003", emAssignee: "能源管理员", emDueDate: 2026-09-20, emWorkOrderStatus: "done", emCategory: "dataQuality", emSeverity: "warn", ts: now()}, {add}))
+
+  baselineOld: read(emBaseline and emDemoKey=="baseline-east-elec-2025", false)
+  baseline: if (baselineOld != null) baselineOld->id else commit(diff(null, {energyMatrix, emBaseline, emSynthetic, emDataProvenance: generation, emDemoKey: "baseline-east-elec-2025", siteRef: site_east, emSubjectRef: site_east, dis: "东院区电耗基线 2025", emMedium: "elec", emIpmvpOption: "optionC", emModelType: "multiVarRegression", emGranularity: "monthly", emBaselineSpan: toSpan(2025-01-01..2025-12-31), emIndepVars: ["cdd", "hdd", "opHours"], emR2: 0.91, emCvRmse: 0.11, emNmbe: 0.02, emValid: true}, {add}))->id
+  projectOld: read(emSavingsProject and emDemoKey=="savings-east-chiller", false)
+  if (projectOld == null) do
+    p: emAddSavingsProject("东院区冷站群控优化", site_east, 186400)
+    commit(diff(readById(p), {emSynthetic, emDataProvenance: generation, emDemoKey: "savings-east-chiller", emBaselineRef: baseline, emEcmType: "control", emInvest: 480000, emReportSpan: curSpan, emSavingsMeasured: 142600, emVerifyStatus: "monitoring"}))
+  end
+  closeResult: emClosePeriod(site_east, toSpan(2026-08-01..2026-08-31), "daily", null, false)
+  readAll(energyMatrix and emDataProvenance==generation).each(rec => commit(diff(rec, demoTags)))
+  {batch: "04_operations_close", generation: generation, anomalies: 3, workOrders: 3, baselines: 1, savingsProjects: 1, closeStatus: closeResult.meta->status}
+end

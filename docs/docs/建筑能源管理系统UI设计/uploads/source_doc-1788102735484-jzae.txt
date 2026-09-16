@@ -1,0 +1,54 @@
+//
+// 域 1：空间与组织域
+// 原则：空间树来自 ph::Site/Floor/Space，本库只扩展"计量/考核"必需的属性，
+//       组织树（业主/物业/租户/成本中心）作为与空间正交的第二棵树独立建模。
+//
+
+EmSite: Site {
+  energyMatrix
+  emUsageType
+  area:        Number <quantity:"area", unit:"m²">
+  emCoolArea:  Number? <quantity:"area", unit:"m²", doc:"空调面积">
+  emOccupancy: Number? <doc:"设计在册人数，人均指标分母">
+  emClimateZone: Str? <doc:"建筑热工分区：severeCold/cold/hotSummerColdWinter/hotSummerWarmWinter/mild">
+  emBaseYear:  Number? <doc:"能耗基准年">
+}
+
+EmFloor: Floor {
+  energyMatrix
+  area: Number <quantity:"area", unit:"m²">
+  emUsageType
+}
+
+// 计量分区：可跨楼层的能耗核算最小空间单元
+EmZone: Space {
+  energyMatrix
+  emZone
+  area: Number <quantity:"area", unit:"m²">
+  emUsageType
+  emTenantRef: Ref? <of:EmTenant>
+}
+emZone: Marker <doc:"能耗核算分区">
+
+// -----------------------------------------------------------------------
+// 组织维度（与空间正交）
+// -----------------------------------------------------------------------
+
+EmOrg: Dict {
+  energyMatrix
+  emOrg
+  id:   Ref
+  dis:  Str
+  parentRef: Ref? <of:EmOrg, doc:"上级组织，构成成本中心树">
+}
+emOrg: Marker <doc:"组织单元 / 成本中心">
+
+EmTenant: EmOrg {
+  emTenant
+  emUsageType
+  area:          Number? <quantity:"area", unit:"m²", doc:"租赁面积">
+  emContractNo:  Str?
+  emLeaseStart:  Date?
+  emLeaseEnd:    Date?
+}
+emTenant: Marker <doc:"租户">

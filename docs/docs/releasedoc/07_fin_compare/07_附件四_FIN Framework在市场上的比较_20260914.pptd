@@ -1,0 +1,36 @@
+version: v2
+title: 附件四 · FIN Framework 在市场上的比较（energyMatrix 视角）
+size: [960, 540]
+theme:
+  colors:
+    ink: "#0F1820"
+    paper: "#F7F9FA"
+    teal: "#138BAA"
+    tealDark: "#0B5F77"
+    amber: "#E8A33D"
+    steel: "#5C6B78"
+    mist: "#8A97A3"
+    line: "#D5DDE3"
+    softline: "#E3E9EE"
+  textStyles:
+    eyebrow:
+      fontSize: 11
+      color: "$teal"
+      bold: true
+      letterSpacing: 3
+    title:
+      fontSize: 28
+      color: "$ink"
+      bold: true
+    body:
+      fontSize: 12
+      color: "$steel"
+      lineHeight: 1.5
+    note:
+      fontSize: 10
+      color: "$mist"
+      lineHeight: 1.4
+pages:
+  - pages/1_compare.page
+  - pages/2_n4.page
+  - pages/3_em.page

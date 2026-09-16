@@ -1,0 +1,49 @@
+@startuml
+!include style.iuml
+title 图 6-2  分摊执行与红冲时序
+autonumber "<b>[0]"
+
+actor "计费专员" as U
+participant "EmRestMod" as API
+participant "EmAllocEngine" as AE
+participant "EmFormulaEval" as EV
+participant "EmRepo" as REPO
+participant "EmAudit" as AUD
+database "Folio" as F
+
+== 正常分摊 ==
+U -> API : POST /api/em/alloc/run {ruleId, span, dryRun:true}
+API -> AE : run(ctx.dryRun = true)
+AE -> REPO : readRules(span)
+AE -> AE : 按 emPriority 升序排序
+loop 每条规则
+  alt method = custom
+    AE -> EV : eval(emFormula, scope)
+    EV --> AE : Number
+  else 内置方法
+    AE -> AE : byArea / byRemainder / bySubMeterPro
+  end
+  AE -> AE : 生成 allocated 条目\n(emRuleRef, emDataSource = allocated)
+end
+AE --> API : 预览 Grid（不落库）
+API --> U : 200 分摊预览
+
+U -> API : POST /api/em/alloc/run {ruleId, span, dryRun:false}
+API -> AE : run(ctx)
+AE -> REPO : commitLedger(allocated[])
+REPO -> F : commit
+AE -> AUD : write(actor, "alloc.run", ruleId)
+
+== 发现错误后红冲 ==
+U -> API : POST /api/em/ledger/reverse\n{entryId, reason}
+API -> REPO : readLedger(entryId)
+alt 条目未关账
+  API --> U : 400 EM-3004 未关账条目应直接重算
+else 条目已关账
+  API -> REPO : commitLedger([entry.negate()])
+  note right of REPO : 新增负数条目\nemReversalOf 指向原条目\n原条目保留不删
+  REPO -> F : commit
+  API -> AUD : write(actor, "ledger.reverse", entryId)
+  API --> U : 200 红冲完成，等待重录
+end
+@enduml

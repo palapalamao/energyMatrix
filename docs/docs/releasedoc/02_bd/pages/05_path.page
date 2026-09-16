@@ -1,0 +1,125 @@
+pageType: content
+background:
+  type: solid
+  color: "$ink"
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [64, 36, 500, 16]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: NEW PATH · 新路径
+  - elementId: title
+    elementType: text
+    bounds: [64, 58, 832, 46]
+    content:
+      fontSize: 30
+      bold: true
+      color: "#FFFFFF"
+      wrap: false
+      text: 语义模型 + 边缘引擎：实现低碳智能建筑的新路径
+  - elementId: c1t
+    elementType: text
+    bounds: [64, 130, 260, 24]
+    content: {fontSize: 15, bold: true, color: "$teal", wrap: false, text: Project Haystack 语义}
+  - elementId: c1d
+    elementType: text
+    bounds: [64, 158, 260, 120]
+    content:
+      fontSize: 11.5
+      color: "#C7D0D8"
+      lineHeight: 1.6
+      text: 每一个表计、点位、设备都带语义标签；系统不再依赖点表翻译，数据集成简单，工程效率显著提升。
+  - elementId: c2t
+    elementType: text
+    bounds: [348, 130, 260, 24]
+    content: {fontSize: 15, bold: true, color: "$teal", wrap: false, text: 能耗台账为唯一通道}
+  - elementId: c2d
+    elementType: text
+    bounds: [348, 158, 260, 120]
+    content:
+      fontSize: 11.5
+      color: "#C7D0D8"
+      lineHeight: 1.6
+      text: 对象层与业务层之间唯一的数据通道是能耗台账 EmLedgerEntry；账单、碳账、指标全部从台账投影，可无损重算。
+  - elementId: c3t
+    elementType: text
+    bounds: [632, 130, 264, 24]
+    content: {fontSize: 15, bold: true, color: "$teal", wrap: false, text: 边缘智能}
+  - elementId: c3d
+    elementType: text
+    bounds: [632, 158, 264, 120]
+    content:
+      fontSize: 11.5
+      color: "#C7D0D8"
+      lineHeight: 1.6
+      text: 核心计算下沉至本地边缘引擎，秒级响应、断网续传；多协议接入既有表计与楼控系统，新建与改造场景通吃。
+  - elementId: r1
+    elementType: shape
+    bounds: [64, 128, 48, 3]
+    shapeName: rect
+    fill: {type: solid, color: "$teal"}
+  - elementId: r2
+    elementType: shape
+    bounds: [348, 128, 48, 3]
+    shapeName: rect
+    fill: {type: solid, color: "$teal"}
+  - elementId: r3
+    elementType: shape
+    bounds: [632, 128, 48, 3]
+    shapeName: rect
+    fill: {type: solid, color: "$teal"}
+  - elementId: midrule
+    elementType: shape
+    bounds: [64, 300, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "#253039"}
+  - elementId: b1t
+    elementType: text
+    bounds: [64, 322, 200, 22]
+    content: {fontSize: 13, bold: true, color: "#FFFFFF", wrap: false, text: 直接节能}
+  - elementId: b1d
+    elementType: text
+    bounds: [64, 348, 200, 100]
+    content:
+      fontSize: 11
+      color: "#C7D0D8"
+      lineHeight: 1.55
+      text: 分时电价负荷曲线 + 需量预警，指导负荷转移与申报值优化。
+  - elementId: b2t
+    elementType: text
+    bounds: [288, 322, 200, 22]
+    content: {fontSize: 13, bold: true, color: "#FFFFFF", wrap: false, text: 管理节能}
+  - elementId: b2d
+    elementType: text
+    bounds: [288, 348, 200, 100]
+    content:
+      fontSize: 11
+      color: "#C7D0D8"
+      lineHeight: 1.55
+      text: 分项计量 + 定额考核 + 异常工单，把节能动作落到责任人。
+  - elementId: b3t
+    elementType: text
+    bounds: [512, 322, 200, 22]
+    content: {fontSize: 13, bold: true, color: "#FFFFFF", wrap: false, text: 核证节能}
+  - elementId: b3d
+    elementType: text
+    bounds: [512, 348, 200, 100]
+    content:
+      fontSize: 11
+      color: "#C7D0D8"
+      lineHeight: 1.55
+      text: 基线模型通过统计验收后，节能量才可转 verified 对外。
+  - elementId: b4t
+    elementType: text
+    bounds: [736, 322, 160, 22]
+    content: {fontSize: 13, bold: true, color: "#FFFFFF", wrap: false, text: 碳资产}
+  - elementId: b4d
+    elementType: text
+    bounds: [736, 348, 160, 100]
+    content:
+      fontSize: 11
+      color: "#C7D0D8"
+      lineHeight: 1.55
+      text: 因子版本化 + 绿证核销，双碳目标进度可量化跟踪。

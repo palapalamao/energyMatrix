@@ -1,0 +1,36 @@
+// energyMatrix hospital rich demo data
+// generation: hospital-rich-demo-20260913
+// batch: 05_acceptance
+// Default is preview-only. Change preview to false only after FIN Expert stages the unchanged request and the user confirms it.
+do
+  preview: true
+  generation: "hospital-rich-demo-20260913"
+  demoTags: {emSynthetic, emDataProvenance: generation}
+  if (preview) return {batch: "05_acceptance", generation: generation, preview, summary: "read-only acceptance counts for every energyMatrix page"}
+
+  site_hospital: read(energyMatrix and site and emDemoKey=="site-hospital-main", true)->id
+  span: toSpan(2026-09-01..2026-09-13)
+  sites: readAll(energyMatrix and site).size
+  meters: readAll(energyMatrix and meter and siteRef==site_hospital).size
+  ledgers: emLedgerEntries(site_hospital, span).size
+  mediumAgg: emLedgerAggregate(site_hospital, span, "medium").size
+  subItemAgg: emLedgerAggregate(site_hospital, span, "subItem", "elec").size
+  crosstabCols: emLedgerCrosstab(site_hospital, span, "period", "subItem", "elec").meta->emCols
+  meterTree: emMeterTree(site_hospital).size
+  gaps: emSiteGaps(site_hospital, span).size
+  quotas: emQuotaProgressAll(site_hospital, span).size
+  kpis: emKpiDefs().size
+  rules: emDiagRules(site_hospital).size
+  anomalies: emAnomalies(site_hospital).size
+  workOrders: emWorkOrders(site_hospital).size
+  baselines: emBaselines(site_hospital).size
+  savings: emSavingsProjects(site_hospital).size
+  carbonRows: emCarbonAccount(site_hospital, span).size
+  carbonTargets: emCarbonTargets(site_hospital).size
+  greenCerts: emGreenCerts(site_hospital).size
+  closePeriods: emClosePeriods(site_hospital).size
+  devices: emMeterInventory(site_hospital, span).size
+  connectors: emConnectors(site_hospital).size
+  tariffs: emTariffs(site_hospital).size
+  {batch: "05_acceptance", generation: generation, sites: sites, meters: meters, ledgers: ledgers, mediumAgg: mediumAgg, subItemAgg: subItemAgg, crosstabCols: crosstabCols, meterTree: meterTree, gaps: gaps, quotas: quotas, kpis: kpis, rules: rules, anomalies: anomalies, workOrders: workOrders, baselines: baselines, savings: savings, carbonRows: carbonRows, carbonTargets: carbonTargets, greenCerts: greenCerts, closePeriods: closePeriods, devices: devices, connectors: connectors, tariffs: tariffs}
+end

@@ -1,0 +1,111 @@
+pageType: content
+background:
+  type: solid
+  color: "$paper"
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [64, 36, 500, 16]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: 附件四 · 平台选型依据 —— energyMatrix 的加成
+  - elementId: title
+    elementType: text
+    bounds: [64, 58, 832, 42]
+    content:
+      style: "$title"
+      wrap: false
+      text: energyMatrix = FIN 底座 + 能源语义与台账纪律
+  - elementId: headrule
+    elementType: shape
+    bounds: [64, 110, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: q1box
+    elementType: shape
+    bounds: [64, 128, 404, 158]
+    shapeName: rect
+    fill: {type: solid, color: "#FFFFFF"}
+    border: {style: solid, color: "$softline", width: 1}
+  - elementId: q1t
+    elementType: text
+    bounds: [84, 144, 364, 20]
+    content: {fontSize: 14, bold: true, color: "$teal", wrap: false, text: ① 语义模型 em 库}
+  - elementId: q1d
+    elementType: text
+    bounds: [84, 172, 364, 100]
+    content:
+      style: "$body"
+      lineHeight: 1.6
+      text: |
+        <p>站点 / 楼层 / 分区 / 租户 / 计量树全部以 Haystack 4 标签建模；三层点位体系 L1 原始值 → L2 表码差 → L3 分项指标，每一度电的来路可追溯。</p>
+  - elementId: q2box
+    elementType: shape
+    bounds: [492, 128, 404, 158]
+    shapeName: rect
+    fill: {type: solid, color: "#FFFFFF"}
+    border: {style: solid, color: "$softline", width: 1}
+  - elementId: q2t
+    elementType: text
+    bounds: [512, 144, 364, 20]
+    content: {fontSize: 14, bold: true, color: "$teal", wrap: false, text: ② 80+ Axon 开放函数}
+  - elementId: q2d
+    elementType: text
+    bounds: [512, 172, 364, 100]
+    content:
+      style: "$body"
+      lineHeight: 1.6
+      text: |
+        <p>计量、定额、对标、诊断、核证、碳排全部 API 化；第三方系统与 AI Agent（标准 OpenAI 接口）可直接读写 Haystack 数据库，不被界面锁死。</p>
+  - elementId: q3box
+    elementType: shape
+    bounds: [64, 302, 404, 158]
+    shapeName: rect
+    fill: {type: solid, color: "#FFFFFF"}
+    border: {style: solid, color: "$softline", width: 1}
+  - elementId: q3t
+    elementType: text
+    bounds: [84, 318, 364, 20]
+    content: {fontSize: 14, bold: true, color: "$teal", wrap: false, text: ③ 台账纪律与数据质量闸门}
+  - elementId: q3d
+    elementType: text
+    bounds: [84, 346, 364, 100]
+    content:
+      style: "$body"
+      lineHeight: 1.6
+      text: |
+        <p>EmLedgerEntry 台账是两层语义模型的唯一桥梁；缺口率 5% 闸门、关账批次、因子版本化必填来源文件 —— 先对账，再分析。</p>
+  - elementId: q4box
+    elementType: shape
+    bounds: [492, 302, 404, 158]
+    shapeName: rect
+    fill: {type: solid, color: "#FFFFFF"}
+    border: {style: solid, color: "$softline", width: 1}
+  - elementId: q4t
+    elementType: text
+    bounds: [512, 318, 364, 20]
+    content: {fontSize: 14, bold: true, color: "$teal", wrap: false, text: ④ 面向未来的可迁移性}
+  - elementId: q4d
+    elementType: text
+    bounds: [512, 346, 364, 100]
+    content:
+      style: "$body"
+      lineHeight: 1.6
+      text: |
+        <p>Xeto 规格只读校验、模型可导出迁移；节能核证内置 ASHRAE Guideline 14 / IPMVP Option C 口径，报告经得起审计。</p>
+  - elementId: bottomrule
+    elementType: shape
+    bounds: [64, 478, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: slogan
+    elementType: text
+    bounds: [64, 490, 832, 22]
+    content:
+      fontSize: 13
+      bold: true
+      color: "$ink"
+      wrap: false
+      align: [center, top]
+      text: 选 FIN 不是选一个界面，是选一个开放的数据底座 —— energyMatrix 把它变成一本不会撒谎的能耗账。

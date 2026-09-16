@@ -1,0 +1,284 @@
+// energyMatrix hospital rich demo data
+// generation: hospital-rich-demo-20260913
+// batch: 03_history_ledger
+// Default is preview-only. Change preview to false only after FIN Expert stages the unchanged request and the user confirms it.
+do
+  preview: true
+  generation: "hospital-rich-demo-20260913"
+  demoTags: {emSynthetic, emDataProvenance: generation}
+  if (preview) return {batch: "03_history_ledger", generation: generation, preview, summary: "writes current, prior and last-year history, then builds daily ledgers for every site"}
+
+  hospitalCur: 510000
+  hospitalPrior: 550000
+  hospitalLy: 590000
+  eastCur: 110000
+  eastPrior: 150000
+  eastLy: 190000
+  westCur: 210000
+  westPrior: 250000
+  westLy: 290000
+  southCur: 310000
+  southPrior: 350000
+  southLy: 390000
+
+  meter_h_elec_gw: read(energyMatrix and meter and emDemoKey=="meter-h-elec-gw", true)->id
+  meter_h_lighting_main: read(energyMatrix and meter and emDemoKey=="meter-h-lighting-main", true)->id
+  meter_h_lighting_emergency: read(energyMatrix and meter and emDemoKey=="meter-h-lighting-emergency", true)->id
+  meter_h_landscape: read(energyMatrix and meter and emDemoKey=="meter-h-landscape", true)->id
+  meter_h_chiller_plant: read(energyMatrix and meter and emDemoKey=="meter-h-chiller-plant", true)->id
+  meter_h_hvac_terminal: read(energyMatrix and meter and emDemoKey=="meter-h-hvac-terminal", true)->id
+  meter_h_elevator: read(energyMatrix and meter and emDemoKey=="meter-h-elevator", true)->id
+  meter_h_pumps: read(energyMatrix and meter and emDemoKey=="meter-h-pumps", true)->id
+  meter_h_ventilation: read(energyMatrix and meter and emDemoKey=="meter-h-ventilation", true)->id
+  meter_h_data_center: read(energyMatrix and meter and emDemoKey=="meter-h-data-center", true)->id
+  meter_h_kitchen_elec: read(energyMatrix and meter and emDemoKey=="meter-h-kitchen-elec", true)->id
+  meter_h_laundry: read(energyMatrix and meter and emDemoKey=="meter-h-laundry", true)->id
+  meter_h_medical_other: read(energyMatrix and meter and emDemoKey=="meter-h-medical-other", true)->id
+  meter_h_imaging_elec: read(energyMatrix and meter and emDemoKey=="meter-h-imaging-elec", true)->id
+  meter_h_or_elec: read(energyMatrix and meter and emDemoKey=="meter-h-or-elec", true)->id
+  meter_h_water_gw: read(energyMatrix and meter and emDemoKey=="meter-h-water-gw", true)->id
+  meter_h_water_domestic: read(energyMatrix and meter and emDemoKey=="meter-h-water-domestic", true)->id
+  meter_h_water_medical: read(energyMatrix and meter and emDemoKey=="meter-h-water-medical", true)->id
+  meter_h_water_cooling: read(energyMatrix and meter and emDemoKey=="meter-h-water-cooling", true)->id
+  meter_h_water_kitchen: read(energyMatrix and meter and emDemoKey=="meter-h-water-kitchen", true)->id
+  meter_h_gas_gw: read(energyMatrix and meter and emDemoKey=="meter-h-gas-gw", true)->id
+  meter_h_gas_kitchen: read(energyMatrix and meter and emDemoKey=="meter-h-gas-kitchen", true)->id
+  meter_h_gas_boiler: read(energyMatrix and meter and emDemoKey=="meter-h-gas-boiler", true)->id
+  meter_h_steam_gw: read(energyMatrix and meter and emDemoKey=="meter-h-steam-gw", true)->id
+  meter_h_steam_sterile: read(energyMatrix and meter and emDemoKey=="meter-h-steam-sterile", true)->id
+  meter_h_steam_laundry: read(energyMatrix and meter and emDemoKey=="meter-h-steam-laundry", true)->id
+  meter_h_heat_gw: read(energyMatrix and meter and emDemoKey=="meter-h-heat-gw", true)->id
+  meter_h_heat_inpatient: read(energyMatrix and meter and emDemoKey=="meter-h-heat-inpatient", true)->id
+  meter_h_heat_outpatient: read(energyMatrix and meter and emDemoKey=="meter-h-heat-outpatient", true)->id
+  meter_h_cool_gw: read(energyMatrix and meter and emDemoKey=="meter-h-cool-gw", true)->id
+  meter_h_cool_or: read(energyMatrix and meter and emDemoKey=="meter-h-cool-or", true)->id
+  meter_h_cool_ward: read(energyMatrix and meter and emDemoKey=="meter-h-cool-ward", true)->id
+  meter_h_cool_outpatient: read(energyMatrix and meter and emDemoKey=="meter-h-cool-outpatient", true)->id
+  meter_h_elec_gap: read(energyMatrix and meter and emDemoKey=="meter-h-elec-gap", true)->id
+  meter_h_water_gap: read(energyMatrix and meter and emDemoKey=="meter-h-water-gap", true)->id
+  meter_h_gas_gap: read(energyMatrix and meter and emDemoKey=="meter-h-gas-gap", true)->id
+  meter_h_steam_gap: read(energyMatrix and meter and emDemoKey=="meter-h-steam-gap", true)->id
+  meter_h_heat_gap: read(energyMatrix and meter and emDemoKey=="meter-h-heat-gap", true)->id
+  meter_h_cool_gap: read(energyMatrix and meter and emDemoKey=="meter-h-cool-gap", true)->id
+  meter_east_elec_gw: read(energyMatrix and meter and emDemoKey=="meter-east-elec-gw", true)->id
+  meter_east_lighting: read(energyMatrix and meter and emDemoKey=="meter-east-lighting", true)->id
+  meter_east_hvac: read(energyMatrix and meter and emDemoKey=="meter-east-hvac", true)->id
+  meter_east_medical: read(energyMatrix and meter and emDemoKey=="meter-east-medical", true)->id
+  meter_east_water_gw: read(energyMatrix and meter and emDemoKey=="meter-east-water-gw", true)->id
+  meter_east_gas_gw: read(energyMatrix and meter and emDemoKey=="meter-east-gas-gw", true)->id
+  meter_west_elec_gw: read(energyMatrix and meter and emDemoKey=="meter-west-elec-gw", true)->id
+  meter_west_lighting: read(energyMatrix and meter and emDemoKey=="meter-west-lighting", true)->id
+  meter_west_hvac: read(energyMatrix and meter and emDemoKey=="meter-west-hvac", true)->id
+  meter_west_medical: read(energyMatrix and meter and emDemoKey=="meter-west-medical", true)->id
+  meter_west_water_gw: read(energyMatrix and meter and emDemoKey=="meter-west-water-gw", true)->id
+  meter_west_gas_gw: read(energyMatrix and meter and emDemoKey=="meter-west-gas-gw", true)->id
+  meter_south_elec_gw: read(energyMatrix and meter and emDemoKey=="meter-south-elec-gw", true)->id
+  meter_south_lighting: read(energyMatrix and meter and emDemoKey=="meter-south-lighting", true)->id
+  meter_south_hvac: read(energyMatrix and meter and emDemoKey=="meter-south-hvac", true)->id
+  meter_south_medical: read(energyMatrix and meter and emDemoKey=="meter-south-medical", true)->id
+  meter_south_water_gw: read(energyMatrix and meter and emDemoKey=="meter-south-water-gw", true)->id
+  meter_south_gas_gw: read(energyMatrix and meter and emDemoKey=="meter-south-gas-gw", true)->id
+  site_hospital: read(energyMatrix and site and emDemoKey=="site-hospital-main", true)->id
+  site_east: read(energyMatrix and site and emDemoKey=="site-east", true)->id
+  site_west: read(energyMatrix and site and emDemoKey=="site-west", true)->id
+  site_south: read(energyMatrix and site and emDemoKey=="site-south", true)->id
+
+  writeSeries: (meter, daily, startDate, days, base) => do
+    pt: read(point and emL1Point and equipRef==meter, false)
+    if (pt == null) return 0
+    commit(diff(pt, {hisCollectInterval: 1day, emSynthetic, emDataProvenance: generation}))
+    hisClear(pt, toSpan(startDate..(startDate + days * 1day)))
+    dayNums: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]
+    items: [{ts: dateTime(startDate, 00:00:00, "Asia/Shanghai"), val: base}]
+    fullItems: items.addAll(dayNums.findAll(d => d < days).map(d => {ts: dateTime(startDate + (d + 1) * 1day, 00:00:00, "Asia/Shanghai"), val: base + daily * (d + 1)}))
+    hisWrite(fullItems.toGrid, pt)
+    fullItems.size
+  end
+
+  samples: writeSeries(meter_h_elec_gw, 51600.0, 2026-09-01, 13, hospitalCur + 0)
+    + writeSeries(meter_h_lighting_main, 8200.0, 2026-09-01, 13, hospitalCur + 1000)
+    + writeSeries(meter_h_lighting_emergency, 2600.0, 2026-09-01, 13, hospitalCur + 2000)
+    + writeSeries(meter_h_landscape, 920.0, 2026-09-01, 13, hospitalCur + 3000)
+    + writeSeries(meter_h_chiller_plant, 11600.0, 2026-09-01, 13, hospitalCur + 4000)
+    + writeSeries(meter_h_hvac_terminal, 6700.0, 2026-09-01, 13, hospitalCur + 5000)
+    + writeSeries(meter_h_elevator, 2400.0, 2026-09-01, 13, hospitalCur + 6000)
+    + writeSeries(meter_h_pumps, 3100.0, 2026-09-01, 13, hospitalCur + 7000)
+    + writeSeries(meter_h_ventilation, 2800.0, 2026-09-01, 13, hospitalCur + 8000)
+    + writeSeries(meter_h_data_center, 5400.0, 2026-09-01, 13, hospitalCur + 9000)
+    + writeSeries(meter_h_kitchen_elec, 2100.0, 2026-09-01, 13, hospitalCur + 10000)
+    + writeSeries(meter_h_laundry, 1600.0, 2026-09-01, 13, hospitalCur + 11000)
+    + writeSeries(meter_h_medical_other, 5100.0, 2026-09-01, 13, hospitalCur + 12000)
+    + writeSeries(meter_h_imaging_elec, 4300.0, 2026-09-01, 13, hospitalCur + 13000)
+    + writeSeries(meter_h_or_elec, 3800.0, 2026-09-01, 13, hospitalCur + 14000)
+    + writeSeries(meter_h_water_gw, 720.0, 2026-09-01, 13, hospitalCur + 15000)
+    + writeSeries(meter_h_water_domestic, 360.0, 2026-09-01, 13, hospitalCur + 16000)
+    + writeSeries(meter_h_water_medical, 110.0, 2026-09-01, 13, hospitalCur + 17000)
+    + writeSeries(meter_h_water_cooling, 150.0, 2026-09-01, 13, hospitalCur + 18000)
+    + writeSeries(meter_h_water_kitchen, 80.0, 2026-09-01, 13, hospitalCur + 19000)
+    + writeSeries(meter_h_gas_gw, 920.0, 2026-09-01, 13, hospitalCur + 20000)
+    + writeSeries(meter_h_gas_kitchen, 610.0, 2026-09-01, 13, hospitalCur + 21000)
+    + writeSeries(meter_h_gas_boiler, 260.0, 2026-09-01, 13, hospitalCur + 22000)
+    + writeSeries(meter_h_steam_gw, 13800.0, 2026-09-01, 13, hospitalCur + 23000)
+    + writeSeries(meter_h_steam_sterile, 4200.0, 2026-09-01, 13, hospitalCur + 24000)
+    + writeSeries(meter_h_steam_laundry, 6100.0, 2026-09-01, 13, hospitalCur + 25000)
+    + writeSeries(meter_h_heat_gw, 9800.0, 2026-09-01, 13, hospitalCur + 26000)
+    + writeSeries(meter_h_heat_inpatient, 3600.0, 2026-09-01, 13, hospitalCur + 27000)
+    + writeSeries(meter_h_heat_outpatient, 2600.0, 2026-09-01, 13, hospitalCur + 28000)
+    + writeSeries(meter_h_cool_gw, 16400.0, 2026-09-01, 13, hospitalCur + 29000)
+    + writeSeries(meter_h_cool_or, 3600.0, 2026-09-01, 13, hospitalCur + 30000)
+    + writeSeries(meter_h_cool_ward, 5200.0, 2026-09-01, 13, hospitalCur + 31000)
+    + writeSeries(meter_h_cool_outpatient, 3800.0, 2026-09-01, 13, hospitalCur + 32000)
+    + writeSeries(meter_h_elec_gap, 480.0, 2026-09-01, 13, hospitalCur + 33000)
+    + writeSeries(meter_h_water_gap, 20.0, 2026-09-01, 13, hospitalCur + 34000)
+    + writeSeries(meter_h_gas_gap, 50.0, 2026-09-01, 13, hospitalCur + 35000)
+    + writeSeries(meter_h_steam_gap, 3000.0, 2026-09-01, 13, hospitalCur + 36000)
+    + writeSeries(meter_h_heat_gap, 3200.0, 2026-09-01, 13, hospitalCur + 37000)
+    + writeSeries(meter_h_cool_gap, 3000.0, 2026-09-01, 13, hospitalCur + 38000)
+    + writeSeries(meter_east_elec_gw, 18000.0, 2026-09-01, 13, eastCur + 39000)
+    + writeSeries(meter_east_lighting, 3800.0, 2026-09-01, 13, eastCur + 40000)
+    + writeSeries(meter_east_hvac, 6200.0, 2026-09-01, 13, eastCur + 41000)
+    + writeSeries(meter_east_medical, 7600.0, 2026-09-01, 13, eastCur + 42000)
+    + writeSeries(meter_east_water_gw, 260.0, 2026-09-01, 13, eastCur + 43000)
+    + writeSeries(meter_east_gas_gw, 420.0, 2026-09-01, 13, eastCur + 44000)
+    + writeSeries(meter_west_elec_gw, 15000.0, 2026-09-01, 13, westCur + 45000)
+    + writeSeries(meter_west_lighting, 3200.0, 2026-09-01, 13, westCur + 46000)
+    + writeSeries(meter_west_hvac, 5200.0, 2026-09-01, 13, westCur + 47000)
+    + writeSeries(meter_west_medical, 6200.0, 2026-09-01, 13, westCur + 48000)
+    + writeSeries(meter_west_water_gw, 220.0, 2026-09-01, 13, westCur + 49000)
+    + writeSeries(meter_west_gas_gw, 320.0, 2026-09-01, 13, westCur + 50000)
+    + writeSeries(meter_south_elec_gw, 11000.0, 2026-09-01, 13, southCur + 51000)
+    + writeSeries(meter_south_lighting, 2300.0, 2026-09-01, 13, southCur + 52000)
+    + writeSeries(meter_south_hvac, 3800.0, 2026-09-01, 13, southCur + 53000)
+    + writeSeries(meter_south_medical, 4650.0, 2026-09-01, 13, southCur + 54000)
+    + writeSeries(meter_south_water_gw, 180.0, 2026-09-01, 13, southCur + 55000)
+    + writeSeries(meter_south_gas_gw, 210.0, 2026-09-01, 13, southCur + 56000)
+    + writeSeries(meter_h_elec_gw, 48504.0, 2026-08-01, 31, hospitalPrior + 0)
+    + writeSeries(meter_h_lighting_main, 7708.0, 2026-08-01, 31, hospitalPrior + 1000)
+    + writeSeries(meter_h_lighting_emergency, 2444.0, 2026-08-01, 31, hospitalPrior + 2000)
+    + writeSeries(meter_h_landscape, 864.8, 2026-08-01, 31, hospitalPrior + 3000)
+    + writeSeries(meter_h_chiller_plant, 10904.0, 2026-08-01, 31, hospitalPrior + 4000)
+    + writeSeries(meter_h_hvac_terminal, 6298.0, 2026-08-01, 31, hospitalPrior + 5000)
+    + writeSeries(meter_h_elevator, 2256.0, 2026-08-01, 31, hospitalPrior + 6000)
+    + writeSeries(meter_h_pumps, 2914.0, 2026-08-01, 31, hospitalPrior + 7000)
+    + writeSeries(meter_h_ventilation, 2632.0, 2026-08-01, 31, hospitalPrior + 8000)
+    + writeSeries(meter_h_data_center, 5076.0, 2026-08-01, 31, hospitalPrior + 9000)
+    + writeSeries(meter_h_kitchen_elec, 1974.0, 2026-08-01, 31, hospitalPrior + 10000)
+    + writeSeries(meter_h_laundry, 1504.0, 2026-08-01, 31, hospitalPrior + 11000)
+    + writeSeries(meter_h_medical_other, 4794.0, 2026-08-01, 31, hospitalPrior + 12000)
+    + writeSeries(meter_h_imaging_elec, 4042.0, 2026-08-01, 31, hospitalPrior + 13000)
+    + writeSeries(meter_h_or_elec, 3572.0, 2026-08-01, 31, hospitalPrior + 14000)
+    + writeSeries(meter_h_water_gw, 676.8, 2026-08-01, 31, hospitalPrior + 15000)
+    + writeSeries(meter_h_water_domestic, 338.4, 2026-08-01, 31, hospitalPrior + 16000)
+    + writeSeries(meter_h_water_medical, 103.4, 2026-08-01, 31, hospitalPrior + 17000)
+    + writeSeries(meter_h_water_cooling, 141.0, 2026-08-01, 31, hospitalPrior + 18000)
+    + writeSeries(meter_h_water_kitchen, 75.2, 2026-08-01, 31, hospitalPrior + 19000)
+    + writeSeries(meter_h_gas_gw, 864.8, 2026-08-01, 31, hospitalPrior + 20000)
+    + writeSeries(meter_h_gas_kitchen, 573.4, 2026-08-01, 31, hospitalPrior + 21000)
+    + writeSeries(meter_h_gas_boiler, 244.4, 2026-08-01, 31, hospitalPrior + 22000)
+    + writeSeries(meter_h_steam_gw, 12972.0, 2026-08-01, 31, hospitalPrior + 23000)
+    + writeSeries(meter_h_steam_sterile, 3948.0, 2026-08-01, 31, hospitalPrior + 24000)
+    + writeSeries(meter_h_steam_laundry, 5734.0, 2026-08-01, 31, hospitalPrior + 25000)
+    + writeSeries(meter_h_heat_gw, 9212.0, 2026-08-01, 31, hospitalPrior + 26000)
+    + writeSeries(meter_h_heat_inpatient, 3384.0, 2026-08-01, 31, hospitalPrior + 27000)
+    + writeSeries(meter_h_heat_outpatient, 2444.0, 2026-08-01, 31, hospitalPrior + 28000)
+    + writeSeries(meter_h_cool_gw, 15416.0, 2026-08-01, 31, hospitalPrior + 29000)
+    + writeSeries(meter_h_cool_or, 3384.0, 2026-08-01, 31, hospitalPrior + 30000)
+    + writeSeries(meter_h_cool_ward, 4888.0, 2026-08-01, 31, hospitalPrior + 31000)
+    + writeSeries(meter_h_cool_outpatient, 3572.0, 2026-08-01, 31, hospitalPrior + 32000)
+    + writeSeries(meter_h_elec_gap, 451.2, 2026-08-01, 31, hospitalPrior + 33000)
+    + writeSeries(meter_h_water_gap, 18.8, 2026-08-01, 31, hospitalPrior + 34000)
+    + writeSeries(meter_h_gas_gap, 47.0, 2026-08-01, 31, hospitalPrior + 35000)
+    + writeSeries(meter_h_steam_gap, 2820.0, 2026-08-01, 31, hospitalPrior + 36000)
+    + writeSeries(meter_h_heat_gap, 3008.0, 2026-08-01, 31, hospitalPrior + 37000)
+    + writeSeries(meter_h_cool_gap, 2820.0, 2026-08-01, 31, hospitalPrior + 38000)
+    + writeSeries(meter_east_elec_gw, 16920.0, 2026-08-01, 31, eastPrior + 39000)
+    + writeSeries(meter_east_lighting, 3572.0, 2026-08-01, 31, eastPrior + 40000)
+    + writeSeries(meter_east_hvac, 5828.0, 2026-08-01, 31, eastPrior + 41000)
+    + writeSeries(meter_east_medical, 7144.0, 2026-08-01, 31, eastPrior + 42000)
+    + writeSeries(meter_east_water_gw, 244.4, 2026-08-01, 31, eastPrior + 43000)
+    + writeSeries(meter_east_gas_gw, 394.8, 2026-08-01, 31, eastPrior + 44000)
+    + writeSeries(meter_west_elec_gw, 14100.0, 2026-08-01, 31, westPrior + 45000)
+    + writeSeries(meter_west_lighting, 3008.0, 2026-08-01, 31, westPrior + 46000)
+    + writeSeries(meter_west_hvac, 4888.0, 2026-08-01, 31, westPrior + 47000)
+    + writeSeries(meter_west_medical, 5828.0, 2026-08-01, 31, westPrior + 48000)
+    + writeSeries(meter_west_water_gw, 206.8, 2026-08-01, 31, westPrior + 49000)
+    + writeSeries(meter_west_gas_gw, 300.8, 2026-08-01, 31, westPrior + 50000)
+    + writeSeries(meter_south_elec_gw, 10340.0, 2026-08-01, 31, southPrior + 51000)
+    + writeSeries(meter_south_lighting, 2162.0, 2026-08-01, 31, southPrior + 52000)
+    + writeSeries(meter_south_hvac, 3572.0, 2026-08-01, 31, southPrior + 53000)
+    + writeSeries(meter_south_medical, 4371.0, 2026-08-01, 31, southPrior + 54000)
+    + writeSeries(meter_south_water_gw, 169.2, 2026-08-01, 31, southPrior + 55000)
+    + writeSeries(meter_south_gas_gw, 197.4, 2026-08-01, 31, southPrior + 56000)
+    + writeSeries(meter_h_elec_gw, 55728.0, 2025-09-01, 13, hospitalLy + 0)
+    + writeSeries(meter_h_lighting_main, 8856.0, 2025-09-01, 13, hospitalLy + 1000)
+    + writeSeries(meter_h_lighting_emergency, 2808.0, 2025-09-01, 13, hospitalLy + 2000)
+    + writeSeries(meter_h_landscape, 993.6, 2025-09-01, 13, hospitalLy + 3000)
+    + writeSeries(meter_h_chiller_plant, 12528.0, 2025-09-01, 13, hospitalLy + 4000)
+    + writeSeries(meter_h_hvac_terminal, 7236.0, 2025-09-01, 13, hospitalLy + 5000)
+    + writeSeries(meter_h_elevator, 2592.0, 2025-09-01, 13, hospitalLy + 6000)
+    + writeSeries(meter_h_pumps, 3348.0, 2025-09-01, 13, hospitalLy + 7000)
+    + writeSeries(meter_h_ventilation, 3024.0, 2025-09-01, 13, hospitalLy + 8000)
+    + writeSeries(meter_h_data_center, 5832.0, 2025-09-01, 13, hospitalLy + 9000)
+    + writeSeries(meter_h_kitchen_elec, 2268.0, 2025-09-01, 13, hospitalLy + 10000)
+    + writeSeries(meter_h_laundry, 1728.0, 2025-09-01, 13, hospitalLy + 11000)
+    + writeSeries(meter_h_medical_other, 5508.0, 2025-09-01, 13, hospitalLy + 12000)
+    + writeSeries(meter_h_imaging_elec, 4644.0, 2025-09-01, 13, hospitalLy + 13000)
+    + writeSeries(meter_h_or_elec, 4104.0, 2025-09-01, 13, hospitalLy + 14000)
+    + writeSeries(meter_h_water_gw, 777.6, 2025-09-01, 13, hospitalLy + 15000)
+    + writeSeries(meter_h_water_domestic, 388.8, 2025-09-01, 13, hospitalLy + 16000)
+    + writeSeries(meter_h_water_medical, 118.8, 2025-09-01, 13, hospitalLy + 17000)
+    + writeSeries(meter_h_water_cooling, 162.0, 2025-09-01, 13, hospitalLy + 18000)
+    + writeSeries(meter_h_water_kitchen, 86.4, 2025-09-01, 13, hospitalLy + 19000)
+    + writeSeries(meter_h_gas_gw, 993.6, 2025-09-01, 13, hospitalLy + 20000)
+    + writeSeries(meter_h_gas_kitchen, 658.8, 2025-09-01, 13, hospitalLy + 21000)
+    + writeSeries(meter_h_gas_boiler, 280.8, 2025-09-01, 13, hospitalLy + 22000)
+    + writeSeries(meter_h_steam_gw, 14904.0, 2025-09-01, 13, hospitalLy + 23000)
+    + writeSeries(meter_h_steam_sterile, 4536.0, 2025-09-01, 13, hospitalLy + 24000)
+    + writeSeries(meter_h_steam_laundry, 6588.0, 2025-09-01, 13, hospitalLy + 25000)
+    + writeSeries(meter_h_heat_gw, 10584.0, 2025-09-01, 13, hospitalLy + 26000)
+    + writeSeries(meter_h_heat_inpatient, 3888.0, 2025-09-01, 13, hospitalLy + 27000)
+    + writeSeries(meter_h_heat_outpatient, 2808.0, 2025-09-01, 13, hospitalLy + 28000)
+    + writeSeries(meter_h_cool_gw, 17712.0, 2025-09-01, 13, hospitalLy + 29000)
+    + writeSeries(meter_h_cool_or, 3888.0, 2025-09-01, 13, hospitalLy + 30000)
+    + writeSeries(meter_h_cool_ward, 5616.0, 2025-09-01, 13, hospitalLy + 31000)
+    + writeSeries(meter_h_cool_outpatient, 4104.0, 2025-09-01, 13, hospitalLy + 32000)
+    + writeSeries(meter_h_elec_gap, 518.4, 2025-09-01, 13, hospitalLy + 33000)
+    + writeSeries(meter_h_water_gap, 21.6, 2025-09-01, 13, hospitalLy + 34000)
+    + writeSeries(meter_h_gas_gap, 54.0, 2025-09-01, 13, hospitalLy + 35000)
+    + writeSeries(meter_h_steam_gap, 3240.0, 2025-09-01, 13, hospitalLy + 36000)
+    + writeSeries(meter_h_heat_gap, 3456.0, 2025-09-01, 13, hospitalLy + 37000)
+    + writeSeries(meter_h_cool_gap, 3240.0, 2025-09-01, 13, hospitalLy + 38000)
+    + writeSeries(meter_east_elec_gw, 19440.0, 2025-09-01, 13, eastLy + 39000)
+    + writeSeries(meter_east_lighting, 4104.0, 2025-09-01, 13, eastLy + 40000)
+    + writeSeries(meter_east_hvac, 6696.0, 2025-09-01, 13, eastLy + 41000)
+    + writeSeries(meter_east_medical, 8208.0, 2025-09-01, 13, eastLy + 42000)
+    + writeSeries(meter_east_water_gw, 280.8, 2025-09-01, 13, eastLy + 43000)
+    + writeSeries(meter_east_gas_gw, 453.6, 2025-09-01, 13, eastLy + 44000)
+    + writeSeries(meter_west_elec_gw, 16200.0, 2025-09-01, 13, westLy + 45000)
+    + writeSeries(meter_west_lighting, 3456.0, 2025-09-01, 13, westLy + 46000)
+    + writeSeries(meter_west_hvac, 5616.0, 2025-09-01, 13, westLy + 47000)
+    + writeSeries(meter_west_medical, 6696.0, 2025-09-01, 13, westLy + 48000)
+    + writeSeries(meter_west_water_gw, 237.6, 2025-09-01, 13, westLy + 49000)
+    + writeSeries(meter_west_gas_gw, 345.6, 2025-09-01, 13, westLy + 50000)
+    + writeSeries(meter_south_elec_gw, 11880.0, 2025-09-01, 13, southLy + 51000)
+    + writeSeries(meter_south_lighting, 2484.0, 2025-09-01, 13, southLy + 52000)
+    + writeSeries(meter_south_hvac, 4104.0, 2025-09-01, 13, southLy + 53000)
+    + writeSeries(meter_south_medical, 5022.0, 2025-09-01, 13, southLy + 54000)
+    + writeSeries(meter_south_water_gw, 194.4, 2025-09-01, 13, southLy + 55000)
+    + writeSeries(meter_south_gas_gw, 226.8, 2025-09-01, 13, southLy + 56000)
+
+  ledgerRows: emLedgerBuild(site_hospital, toSpan(2026-09-01..2026-09-13), "daily").size
+    + emLedgerBuild(site_east, toSpan(2026-09-01..2026-09-13), "daily").size
+    + emLedgerBuild(site_west, toSpan(2026-09-01..2026-09-13), "daily").size
+    + emLedgerBuild(site_south, toSpan(2026-09-01..2026-09-13), "daily").size
+    + emLedgerBuild(site_hospital, toSpan(2026-08-01..2026-08-31), "daily").size
+    + emLedgerBuild(site_east, toSpan(2026-08-01..2026-08-31), "daily").size
+    + emLedgerBuild(site_west, toSpan(2026-08-01..2026-08-31), "daily").size
+    + emLedgerBuild(site_south, toSpan(2026-08-01..2026-08-31), "daily").size
+    + emLedgerBuild(site_hospital, toSpan(2025-09-01..2025-09-13), "daily").size
+    + emLedgerBuild(site_east, toSpan(2025-09-01..2025-09-13), "daily").size
+    + emLedgerBuild(site_west, toSpan(2025-09-01..2025-09-13), "daily").size
+    + emLedgerBuild(site_south, toSpan(2025-09-01..2025-09-13), "daily").size
+  readAll(energyMatrix and emLedger and emDataProvenance==generation).each(rec => commit(diff(rec, demoTags)))
+  {batch: "03_history_ledger", generation: generation, samples: samples, ledgerRows: ledgerRows}
+end

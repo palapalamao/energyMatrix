@@ -1,0 +1,80 @@
+//
+// 域 3：供能 / 产能 / 储能域
+// 原则：产能与储能设备既是"能源节点"，也必须挂表，走与用能侧一致的计量模型。
+//       净电量约定：正 = 从电网购入 / 放电，负 = 上网 / 充电。
+//
+
+EmSupplyEquip: Equip {
+  energyMatrix
+  emSupply
+  emMeterRef: Ref? <of:EmMeter, doc:"该能源节点的权威计量表">
+}
+emSupply: Marker <doc:"供能/产能/储能设备">
+
+// 市政接入（产权分界点）
+EmUtilityInlet: EmSupplyEquip {
+  emUtilityInlet
+  emMediumRef: Str <doc:"介质：elec|water|gas|steam|heat|cool">
+  emSupplierName: Str? <doc:"供能单位">
+  emTariffRef: Ref? <doc:"关联费率方案（业务层对象）">
+}
+emUtilityInlet: Marker <doc:"市政能源接入点/关口">
+
+// 变配电
+EmTransformer: EmSupplyEquip {
+  elec
+  transformer
+  emRatedCapacity: Number <quantity:"apparentPower", unit:"kVA">
+  points: {
+    loadRate:     EmLoadRate?
+    tempWinding:  EmTemp?
+    powerActive:  EmElecPowerActive?
+  }
+}
+
+// 光伏
+EmPvSystem: EmSupplyEquip {
+  elec
+  emPv
+  emRatedCapacity: Number <quantity:"power", unit:"kW">
+  emPvArea: Number? <quantity:"area", unit:"m²">
+  points: {
+    energyGen:    EmElecEnergyTotal
+    powerActive:  EmElecPowerActive?
+    energyExport: EmElecEnergyTotal?  // 上网
+    energySelf:   EmElecEnergyTotal?  // 自发自用
+    irradiance:   EmIrradiance?
+    pr:           EmPerformanceRatio?
+  }
+}
+emPv: Marker <doc:"光伏发电系统">
+
+// 储能
+EmBess: EmSupplyEquip {
+  elec
+  emBess
+  emRatedCapacity: Number <quantity:"energy", unit:"kWh">
+  emRatedPower:    Number <quantity:"power", unit:"kW">
+  points: {
+    soc:           EmSoc
+    powerActive:   EmElecPowerActive?
+    energyCharge:  EmElecEnergyTotal?
+    energyDischarge: EmElecEnergyTotal?
+    soh:           EmSoh?
+  }
+}
+emBess: Marker <doc:"电化学储能系统">
+
+// 充电桩（作为特殊用电 D6，但独立建模以支持计费）
+EmEvCharger: EmSupplyEquip {
+  elec
+  emEvCharger
+  emRatedPower: Number <quantity:"power", unit:"kW">
+  emChargerType: Str? <doc:"ac | dc">
+  emGunQty: Number?
+  points: {
+    energyTotal:  EmElecEnergyTotal
+    powerActive:  EmElecPowerActive?
+  }
+}
+emEvCharger: Marker <doc:"充电桩">

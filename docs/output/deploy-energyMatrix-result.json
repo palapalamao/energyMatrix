@@ -1,0 +1,10 @@
+﻿{
+    "success":  true,
+    "source":  "D:\\tmp\\finhome5.3\\lib\\fan\\energyMatrix.pod",
+    "production":  "C:\\Program Files (x86)\\FIN\\FIN 5.3.0.2761\\lib\\fan\\energyMatrix.pod",
+    "backup":  "D:\\work\\yiliaohouqin\\haystack code\\energy\\output\\backups\\energyMatrix-production-20260912-211739.pod",
+    "sha256":  "1C95155234B3CF6C20F0C1232BF1C1A4A345B6237DE8FAB2C51FE89027098626",
+    "service":  "Running",
+    "port8080":  true,
+    "error":  null
+}

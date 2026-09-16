@@ -1,0 +1,41 @@
+//
+// EmLoad.trio —— 用能设备的「能耗身份」（说明书 §3.5 域 4）
+//
+// 铁律 5：**不重复定义冷机、水泵、空调机组** —— 那是 ph.equips 与
+// CoolMatrix / heatMatrix 的职责。energyMatrix 只负责给既有 equip 挂上
+// 分项归类 + 计量归属 + 额定值。
+//
+// 因此这个模板的正常用法**不是** commit 一个新 equip，而是
+// EmEntityCrud.attachLoad 把这些标签合并到目标设备上。
+// 模板本身保留，用于两种场景：
+//   1. 新建一个纯粹为了核算而存在的设备组（EmLoadGroup，一批无独立计量的灯具）
+//   2. 演示 / 测试数据播种
+//
+// 分项归类只对电介质有效（说明书表 4-1）。无表设备通过 emAllocWeight
+// 参与分摊，默认权重 = 额定功率 × 运行时长。
+//
+
+---
+emLoadModelId:"_equip:emLoad"
+id:@_equip:emLoad
+energyMatrix
+equip
+emLoad
+siteRef:Arg("parentId")
+floorRef:Arg("floorRef:N")
+navName:Arg("entityDis:Load")
+disMacro:"$siteRef $navName"
+tz:Arg("tz:Asia/Shanghai")
+// GB 分项：a1-a3 照明插座 / b1-b2 空调 / c1-c3 动力 / d1-d6 特殊
+emSubItem:Arg("emSubItem:a1")
+// 该设备的直接计量表；无表则依赖分摊
+emMeterRef:Arg("emMeterRef:N")
+emSpaceRef:Arg("emSpaceRef:N")
+emTenantRef:Arg("emTenantRef:N")
+// 额定功率 —— byRatedRuntime 分摊的基数
+emRatedPower:Arg("emRatedPower:N")
+emRatedFlow:Arg("emRatedFlow:N")
+// 同型设备数量（灯具 / 末端等批量对象）
+emQty:Arg("emQty:1")
+// 无表设备的分摊权重；留空则用 emRatedPower × 运行时长
+emAllocWeight:Arg("emAllocWeight:N")

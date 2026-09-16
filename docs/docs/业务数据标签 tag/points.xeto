@@ -1,0 +1,85 @@
+//
+// 点位规范
+// 三层点位约定（能耗数据链的关键）：
+//   L1 raw    累积读数（表底数）  total + sensor        —— 直采，禁止修改
+//   L2 delta  区间增量           emDelta + his rollup  —— 由 raw 差分，含翻转/换表补偿
+//   L3 index  归一化指标         emNormalized          —— 业务层生成（见业务对象模型）
+// 所有 L1/L2 点位强制 his + hisInterpolate:"linear" + tz 继承 site。
+//
+
+emDelta: Marker <doc:"区间增量点，由累积量差分得到">
+
+// --- 电 -------------------------------------------------------------------
+
+EmElecEnergyTotal: NumberPoint {
+  elec, energy, sensor, total
+  unit: "kWh"
+  his
+}
+
+EmElecEnergyTou: NumberPoint {
+  elec, energy, sensor, total
+  emTouPeriod: Str <doc:"sharp | peak | flat | valley">
+  unit: "kWh"
+  his
+}
+emTouPeriod: Str <doc:"分时电价时段">
+
+EmElecPowerActive: NumberPoint {
+  elec, power, sensor
+  unit: "kW"
+  his
+}
+
+EmElecPowerReactive: NumberPoint {
+  elec, power, reactive, sensor
+  unit: "kVAR"
+  his
+}
+
+EmElecDemand: NumberPoint {
+  elec, power, sensor, max
+  emDemand
+  unit: "kW"
+  his
+}
+emDemand: Marker <doc:"需量">
+
+EmPowerFactor: NumberPoint { elec, pf, sensor, his }
+EmVolt:        NumberPoint { elec, volt, sensor, unit:"V", his }
+EmCurrent:     NumberPoint { elec, current, sensor, unit:"A", his }
+EmFreq:        NumberPoint { elec, freq, sensor, unit:"Hz", his }
+EmLoadRate:    NumberPoint { elec, sensor, emLoadRate, unit:"%", his }
+emLoadRate:    Marker <doc:"负载率">
+
+// --- 水 / 气 / 汽 ---------------------------------------------------------
+
+EmWaterVolumeTotal: NumberPoint { water, volume, sensor, total, unit:"m³", his }
+EmWaterFlow:        NumberPoint { water, flow, sensor, unit:"m³/h", his }
+EmGasVolumeTotal:   NumberPoint { naturalGas, volume, sensor, total, unit:"m³", his }
+EmGasFlow:          NumberPoint { naturalGas, flow, sensor, unit:"m³/h", his }
+EmGasTempComp:      NumberPoint { naturalGas, volume, sensor, total, emStandardCond, unit:"m³", his }
+emStandardCond:     Marker <doc:"标况折算量">
+EmSteamMassTotal:   NumberPoint { steam, sensor, total, unit:"kg", his }
+EmSteamFlow:        NumberPoint { steam, flow, sensor, unit:"kg/h", his }
+EmSteamTemp:        NumberPoint { steam, temp, sensor, unit:"°C", his }
+EmSteamPressure:    NumberPoint { steam, pressure, sensor, unit:"kPa", his }
+
+// --- 冷 / 热 --------------------------------------------------------------
+
+EmThermalEnergyTotal: NumberPoint { energy, sensor, total, unit:"kWh", his }
+EmThermalPower:       NumberPoint { power, sensor, unit:"kW", his }
+EmEnteringTemp:       NumberPoint { water, temp, sensor, entering, unit:"°C", his }
+EmLeavingTemp:        NumberPoint { water, temp, sensor, leaving, unit:"°C", his }
+EmDeltaTemp:          NumberPoint { water, temp, sensor, delta, unit:"°C", his }
+EmTemp:               NumberPoint { temp, sensor, unit:"°C", his }
+
+// --- 产储 -----------------------------------------------------------------
+
+EmIrradiance:       NumberPoint { solar, sensor, unit:"W/m²", his }
+EmPerformanceRatio: NumberPoint { emPr, sensor, unit:"%", his }
+emPr: Marker <doc:"光伏系统效率 PR">
+EmSoc: NumberPoint { emSoc, sensor, unit:"%", his }
+emSoc: Marker <doc:"荷电状态">
+EmSoh: NumberPoint { emSoh, sensor, unit:"%", his }
+emSoh: Marker <doc:"健康度">

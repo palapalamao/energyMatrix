@@ -1,0 +1,89 @@
+//
+// 域 7：费率、合约与账单
+// 原则：费率是随时间版本化的业务参数，绝不写死在设备属性里。
+//       账单只是台账 × 费率的确定性投影，可无损重算。
+//
+
+EmTariff: Dict {
+  energyMatrix
+  emTariff
+  id:          Ref
+  dis:         Str
+  emMedium:  EmMedium
+  emPricingModel: EmPricingModel
+  emEffective: Span <doc:"费率生效期；换版即新增记录，旧版只读">
+  emCurrency:  Str  <doc:"CNY">
+  emRates:     List? <of:EmTariffRate>
+  emDemandChargeRef: Ref? <of:EmDemandCharge, doc:"基本电费方案。偏差 #2：原稿此处的标签名与下方当作 marker 用的 emDemandCharge 撞名">
+  emTaxRate:   Number? <unit:"%">
+  emSourceDoc: Str? <doc:"依据文件：政府批复文号/合同编号，可追溯">
+}
+emTariff: Marker
+
+EmPricingModel: Enum {
+  flat        <doc:"单一制">
+  tou         <doc:"分时电价（尖峰平谷）">
+  tiered      <doc:"阶梯计价">
+  twoPart     <doc:"两部制：电度电费 + 基本电费">
+  contract    <doc:"合约价（对租户/能源托管）">
+}
+emPricingModel: EmPricingModel
+
+EmTariffRate: Dict {
+  emTouPeriod: Str?    <doc:"tou 模式：sharp|peak|flat|valley">
+  emTierMin:   Number? <doc:"tiered 模式：阶梯下限">
+  emTierMax:   Number?
+  emMonths:    List?   <of:Number, doc:"适用月份，空=全年">
+  emHours:     List?   <of:Number, doc:"适用小时，空=全天">
+  emPrice:     Number  <doc:"单价">
+}
+
+// 两部制基本电费：容量制 or 需量制
+emDemandCharge: Marker <doc:"两部制基本电费方案。偏差 #2：原稿把它当 marker 用却从未声明">
+
+EmDemandCharge: Dict {
+  energyMatrix
+  emDemandCharge
+  id:           Ref
+  emChargeBasis: Str    <doc:"capacity（按变压器容量）| demand（按最大需量）">
+  emUnitPrice:  Number  <doc:"元/kVA·月 或 元/kW·月">
+  emDeclared:   Number? <doc:"申报需量">
+  emOverRatio:  Number? <doc:"超申报部分加倍系数，默认 2">
+}
+
+// 账单
+EmBill: Dict {
+  energyMatrix
+  emBill
+  id:          Ref
+  emBillNo:    Str
+  emPayerRef:    Ref  <doc:"付费方：EmTenant | EmOrg | EmSite">
+  span:        Span
+  emTariffRef: Ref  <of:EmTariff>
+  emItems:     List? <of:EmBillItem>
+  emAmountNet: Number
+  emAmountTax: Number?
+  emAmountTotal: Number
+  emBillStatus: EmBillStatus
+  emIssuedAt:  DateTime?
+}
+emBill: Marker
+
+EmBillStatus: Enum {
+  draft
+  issued
+  disputed
+  settled
+  voided
+}
+emBillStatus: EmBillStatus <doc:"账单状态。偏差 #1：原稿用一个 emStatus 同时承载账单/异常/工单三种类型">
+
+EmBillItem: Dict {
+  emMedium:  EmMedium
+  emItemType:  Str    <doc:"energy | demand | basic | loss | service | adjust">
+  emLedgerRefs:  List?  <of:Ref, doc:"来源台账条目，逐笔可追溯">
+  emQty:       Number
+  emPrice:     Number
+  emAmount:    Number
+  emNote:      Str?
+}

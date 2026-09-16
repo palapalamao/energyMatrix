@@ -1,0 +1,139 @@
+pageType: content
+background:
+  type: solid
+  color: "$ink"
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [64, 36, 500, 16]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: AI AGENT · 大模型
+  - elementId: title
+    elementType: text
+    bounds: [64, 58, 832, 46]
+    content:
+      fontSize: 30
+      bold: true
+      color: "#FFFFFF"
+      wrap: false
+      text: Manager of Haystack Database —— AI Agent
+  - elementId: sub
+    elementType: text
+    bounds: [64, 112, 832, 24]
+    content:
+      fontSize: 13
+      color: "#C7D0D8"
+      wrap: false
+      text: 为第三方 AI 智能体提供读写楼宇设备参数与 Haystack 数据库的基础设施与能力
+  - elementId: flow1
+    elementType: shape
+    bounds: [64, 168, 200, 54]
+    shapeName: rect
+    fill: {type: solid, color: "$ink2"}
+    border: {style: solid, width: 1, color: "#3A4854"}
+  - elementId: flow1t
+    elementType: text
+    bounds: [76, 174, 176, 42]
+    content:
+      fontSize: 11
+      color: "#C7D0D8"
+      lineHeight: 1.4
+      align: [left, middle]
+      text: |
+        <p><span style="color:#FFFFFF;"><strong>第三方 AI 智能体</strong></span></p>
+        <p>本地或云端大模型</p>
+  - elementId: farrow1
+    elementType: shape
+    bounds: [272, 182, 26, 26]
+    shapeName: rightArrow
+    fill: {type: solid, color: "$teal"}
+  - elementId: flow2
+    elementType: shape
+    bounds: [306, 168, 200, 54]
+    shapeName: rect
+    fill: {type: solid, color: "$ink2"}
+    border: {style: solid, width: 1, color: "#3A4854"}
+  - elementId: flow2t
+    elementType: text
+    bounds: [318, 174, 176, 42]
+    content:
+      fontSize: 11
+      color: "#C7D0D8"
+      lineHeight: 1.4
+      align: [left, middle]
+      text: |
+        <p><span style="color:#FFFFFF;"><strong>标准 OpenAI API</strong></span></p>
+        <p>无协议与语义转化问题</p>
+  - elementId: farrow2
+    elementType: shape
+    bounds: [514, 182, 26, 26]
+    shapeName: rightArrow
+    fill: {type: solid, color: "$teal"}
+  - elementId: flow3
+    elementType: shape
+    bounds: [548, 168, 200, 54]
+    shapeName: rect
+    fill: {type: solid, color: "$tealDark"}
+  - elementId: flow3t
+    elementType: text
+    bounds: [560, 174, 176, 42]
+    content:
+      fontSize: 11
+      color: "#C7D0D8"
+      lineHeight: 1.4
+      align: [left, middle]
+      text: |
+        <p><span style="color:#FFFFFF;"><strong>energyMatrix</strong></span></p>
+        <p>台账 · 指标 · 碳账 · 诊断</p>
+  - elementId: farrow3
+    elementType: shape
+    bounds: [756, 182, 26, 26]
+    shapeName: rightArrow
+    fill: {type: solid, color: "$teal"}
+  - elementId: flow4
+    elementType: shape
+    bounds: [790, 168, 106, 54]
+    shapeName: rect
+    fill: {type: solid, color: "$ink2"}
+    border: {style: solid, width: 1, color: "#3A4854"}
+  - elementId: flow4t
+    elementType: text
+    bounds: [796, 174, 94, 42]
+    content:
+      fontSize: 11
+      color: "#C7D0D8"
+      lineHeight: 1.4
+      align: [center, middle]
+      text: |
+        <p><span style="color:#FFFFFF;"><strong>Haystack</strong></span></p>
+        <p>数据库</p>
+  - elementId: capTitle
+    elementType: text
+    bounds: [64, 258, 500, 22]
+    content: {fontSize: 14, bold: true, color: "#FFFFFF", wrap: false, text: AI Agent 能做什么}
+  - elementId: capL
+    elementType: text
+    bounds: [64, 288, 400, 190]
+    content:
+      fontSize: 11.5
+      color: "#C7D0D8"
+      lineHeight: 1.75
+      text: |
+        <p>· 自然语言查询：本月能耗、定额执行、碳排进度</p>
+        <p>· 生成能耗分析与空间使用报告，辅助管理决策</p>
+        <p>· 读取实时 / 历史数据与运维手册信息</p>
+        <p>· 在授权范围内设置设备参数</p>
+  - elementId: capR
+    elementType: text
+    bounds: [496, 288, 400, 190]
+    content:
+      fontSize: 11.5
+      color: "#C7D0D8"
+      lineHeight: 1.75
+      text: |
+        <p>· 调用已有数学模型，获得建议参数或模拟结果</p>
+        <p>· 本地知识库检索，数据不出项目内网</p>
+        <p>· 第三方智能体专注业务应用，无需担心数据准确性</p>
+        <p>· 语义标签底座：AI 理解“这块表计量什么”</p>

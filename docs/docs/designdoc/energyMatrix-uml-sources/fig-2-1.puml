@@ -1,0 +1,38 @@
+@startuml
+!include style.iuml
+title 图 2-1  energyMatrix 逻辑架构
+
+rectangle "表现层  Presentation" as L1 #F4F7FA {
+  rectangle "React SPA (energyMatrix UI)  ·  大屏视图 Dashboard" as A1
+}
+rectangle "服务接口层  Service API" as L2 #F4F7FA {
+  rectangle "EmRestMod  REST /api/em/**\nEmAxonFuncs  Axon 函数库\nHaystack Ops  read / hisRead / eval" as A2
+}
+rectangle "计算引擎层  Engine" as L3 #F4F7FA {
+  rectangle "EmScheduler  任务调度\nEmCloseTx  关账事务" as A3a
+  rectangle "EmLedgerEngine  台账生成\nEmAllocEngine  分摊执行\nEmBillEngine  账单生成" as A3b
+  rectangle "EmKpiEngine  指标计算\nEmBaselineEngine  基线核证\nEmCarbonEngine  碳核算\nEmDiagEngine  诊断规则" as A3c
+}
+rectangle "领域与持久层  Domain" as L4 #F4F7FA {
+  rectangle "EmRepo  Folio 读写封装\nEmModel  Xeto 命名空间" as A4
+  database "Folio\nrec + his" as DB
+}
+rectangle "数据接入层  Connector" as L5 #F4F7FA {
+  rectangle "FIN 内置连接器\nModbus · BACnet · M-Bus · OPC UA" as A5a
+  rectangle "aliiotExt 阿里云 IoT\nMQTT / HTTP 第三方平台" as A5b
+}
+
+A1 --> A2 : HTTPS / JSON
+A2 --> A3a
+A2 --> A3b
+A2 --> A3c
+A3a --> A3b : 派发
+A3b --> A4
+A3c --> A4
+A4 --> DB
+A5a --> DB : 写点位
+A5b --> DB : 写点位
+A3a -[hidden]right- A3b
+A3b -[hidden]right- A3c
+A5a -[hidden]right- A5b
+@enduml

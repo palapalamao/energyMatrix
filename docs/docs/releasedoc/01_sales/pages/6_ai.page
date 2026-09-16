@@ -1,0 +1,137 @@
+pageType: content
+background:
+  type: solid
+  color: "$paper"
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [64, 36, 500, 16]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: AI · 智能赋能
+  - elementId: title
+    elementType: text
+    bounds: [64, 58, 760, 42]
+    content:
+      style: "$title"
+      wrap: false
+      text: AI 赋能运维及决策
+  - elementId: headrule
+    elementType: shape
+    bounds: [64, 110, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: aicon
+    elementType: icon
+    bounds: [64, 132, 26, 26]
+    iconName: "fas:brain"
+    fill: {type: solid, color: "$teal"}
+  - elementId: atitle
+    elementType: text
+    bounds: [102, 132, 380, 24]
+    content: {fontSize: 16, bold: true, color: "$ink", wrap: false, text: FIN Intelligence · 内置智能}
+  - elementId: arule
+    elementType: shape
+    bounds: [102, 164, 360, 2]
+    shapeName: rect
+    fill: {type: solid, color: "$teal"}
+  - elementId: abody
+    elementType: text
+    bounds: [102, 178, 380, 130]
+    content:
+      style: "$body"
+      text: |
+        <p>· 诊断规则引擎：数据质量、平衡校核等判据持续评估台账</p>
+        <p>· 异常幂等创建：同规则、同对象、同账期只产生一条异常</p>
+        <p>· 未实现判据明示跳过（meta.emSkipped），不谎报规则在工作</p>
+        <p>· 诊断只产生异常，不直写控制点，确认后才可升级工单</p>
+  - elementId: bicon
+    elementType: icon
+    bounds: [520, 132, 26, 26]
+    iconName: "fas:robot"
+    fill: {type: solid, color: "$teal"}
+  - elementId: btitle
+    elementType: text
+    bounds: [558, 132, 338, 24]
+    content: {fontSize: 16, bold: true, color: "$ink", wrap: false, text: AI Agent · 大模型接入}
+  - elementId: brule
+    elementType: shape
+    bounds: [558, 164, 338, 2]
+    shapeName: rect
+    fill: {type: solid, color: "$teal"}
+  - elementId: bbody
+    elementType: text
+    bounds: [558, 178, 338, 130]
+    content:
+      style: "$body"
+      text: |
+        <p>· 标准 OpenAI API 接口，支持自然语言与图像访问</p>
+        <p>· 授权读写 Haystack 数据库：查能耗、读台账、设参数</p>
+        <p>· 生成能耗分析、定额执行与空间使用报告</p>
+        <p>· 支持本地或云端大模型，数据不出项目内网</p>
+  - elementId: flowrule
+    elementType: shape
+    bounds: [64, 330, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: flowlabel
+    elementType: text
+    bounds: [64, 346, 400, 20]
+    content: {fontSize: 12, bold: true, color: "$teal", wrap: false, text: 诊断 → 核证闭环}
+  - elementId: s1
+    elementType: shape
+    bounds: [64, 376, 130, 44]
+    shapeName: homePlate
+    adjustments: [30000]
+    fill: {type: solid, color: "$ink"}
+  - elementId: s1t
+    elementType: text
+    bounds: [70, 376, 110, 44]
+    content: {fontSize: 11.5, bold: true, color: "#FFFFFF", align: [center, middle], wrap: false, text: 诊断规则}
+  - elementId: s2
+    elementType: shape
+    bounds: [204, 376, 130, 44]
+    shapeName: homePlate
+    adjustments: [30000]
+    fill: {type: solid, color: "$ink2"}
+  - elementId: s2t
+    elementType: text
+    bounds: [210, 376, 110, 44]
+    content: {fontSize: 11.5, bold: true, color: "#FFFFFF", align: [center, middle], wrap: false, text: 异常确认}
+  - elementId: s3
+    elementType: shape
+    bounds: [344, 376, 130, 44]
+    shapeName: homePlate
+    adjustments: [30000]
+    fill: {type: solid, color: "$tealDark"}
+  - elementId: s3t
+    elementType: text
+    bounds: [350, 376, 110, 44]
+    content: {fontSize: 11.5, bold: true, color: "#FFFFFF", align: [center, middle], wrap: false, text: 派单工单}
+  - elementId: s4
+    elementType: shape
+    bounds: [484, 376, 130, 44]
+    shapeName: homePlate
+    adjustments: [30000]
+    fill: {type: solid, color: "$teal"}
+  - elementId: s4t
+    elementType: text
+    bounds: [490, 376, 110, 44]
+    content: {fontSize: 11.5, bold: true, color: "#FFFFFF", align: [center, middle], wrap: false, text: 节能项目}
+  - elementId: s5
+    elementType: shape
+    bounds: [624, 376, 130, 44]
+    shapeName: homePlate
+    adjustments: [30000]
+    fill: {type: solid, color: "$amber"}
+  - elementId: s5t
+    elementType: text
+    bounds: [630, 376, 110, 44]
+    content: {fontSize: 11.5, bold: true, color: "#FFFFFF", align: [center, middle], wrap: false, text: 核证 verified}
+  - elementId: flowcaption
+    elementType: text
+    bounds: [64, 436, 832, 40]
+    content:
+      style: "$note"
+      text: 形成长期措施的工单挂到节能项目，基线通过 ASHRAE Guideline 14 统计验收后节能量才可转 verified；未通过核证的节能量一律 planned，禁止对外宣称。

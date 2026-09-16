@@ -1,0 +1,99 @@
+// 07 provenance-scoped cutover; stage separately after acceptance.
+do
+  generation:"hospitalDemo-20260909"
+  byKey:key=>do
+    keyMatches:readAll(energyMatrix and emDemoKey==key)
+    if(keyMatches.size>1) throw("duplicate emDemoKey: "+key)
+    if(keyMatches.size==0) return null
+    keyMatches.first
+  end
+  must:key=>do
+    rec:byKey(key)
+    if(rec==null) throw("missing exact emDemoKey: "+key)
+    rec->id
+  end
+  primary:must("hd-site-primary")
+  primaryRec:readById(primary)
+  newPrimary:readAll(energyMatrix and site and emDemoKey=="hd-site-primary" and emDataProvenance==generation)
+  if(newPrimary.size!=1) throw("cutover blocked: expected exactly one new primary")
+  if(primaryRec.missing("emSynthetic") or (primaryRec["dis"]!="某医院（构建中）" and primaryRec["dis"]!="某医院")) throw("cutover blocked: primary identity or activation name mismatch")
+  ledgerCount:readAll(emLedger and siteRef==primary and emSynthetic and emDataProvenance==generation).size
+  if(ledgerCount==0) throw("cutover blocked: new primary ledger is empty")
+  generated:readAll(energyMatrix and emDataProvenance==generation)
+  missingSynthetic:generated.findAll(r=>r.missing("emSynthetic")).size
+  demoKeyed:readAll(energyMatrix and emSynthetic and emDemoKey).findAll(r=>r["emDemoKey"].toStr.startsWith("hd-"))
+  demoKeyed.each(r=>byKey(r["emDemoKey"]))
+  missingProvenance:demoKeyed.findAll(r=>r["emDataProvenance"]!=generation).size
+  if(missingSynthetic>0 or missingProvenance>0) throw("cutover blocked: generation provenance audit failed")
+  requiredSiteKeys:["hd-site-primary","hd-site-east","hd-site-rehab"]
+  requiredSiteCount:requiredSiteKeys.findAll(key=>do
+    rec:byKey(key)
+    rec!=null and not rec.missing("site") and not rec.missing("emSynthetic") and rec["emDataProvenance"]==generation
+  end).size
+  requiredGeneratedKeys:["hd-site-primary","hd-site-east","hd-site-rehab","hd-floor-primary--2","hd-floor-primary--1","hd-floor-primary-01","hd-floor-primary-02","hd-floor-primary-03","hd-floor-primary-04","hd-floor-primary-05","hd-floor-primary-06","hd-floor-primary-07","hd-floor-primary-08","hd-floor-primary-09","hd-floor-primary-10","hd-floor-east-01","hd-floor-rehab-01","hd-zone-outpatient","hd-zone-emergency","hd-zone-imaging","hd-zone-lab","hd-zone-operating","hd-zone-icu","hd-zone-ward-a","hd-zone-ward-b","hd-zone-sterilization","hd-zone-pharmacy","hd-zone-kitchen","hd-zone-laundry","hd-zone-plant","hd-zone-parking","hd-zone-information","hd-zone-east-campus","hd-zone-rehab-campus","hd-org-outpatient","hd-org-emergency","hd-org-inpatient","hd-org-critical","hd-org-medtech","hd-org-pharmacy","hd-org-logistics","hd-org-information","hd-org-east-logistics","hd-org-rehab-logistics","hd-meter-primary-elec-gateway","hd-meter-primary-water-gateway","hd-meter-primary-gas-gateway","hd-meter-primary-steam-gateway","hd-meter-primary-heat-gateway","hd-meter-primary-cool-gateway","hd-meter-primary-elec-lighting-sockets","hd-meter-primary-elec-cooling-plant","hd-meter-primary-elec-hvac-terminals","hd-meter-primary-elec-elevators","hd-meter-primary-elec-pumps-fans","hd-meter-primary-elec-information-rooms","hd-meter-primary-elec-outpatient","hd-meter-primary-elec-emergency","hd-meter-primary-elec-wards-a","hd-meter-primary-elec-wards-b","hd-meter-primary-elec-icu","hd-meter-primary-elec-operating-theatres","hd-meter-primary-elec-lab","hd-meter-primary-elec-imaging","hd-meter-primary-elec-sterilization","hd-meter-primary-elec-pharmacy","hd-meter-primary-elec-kitchen","hd-meter-primary-elec-laundry","hd-meter-primary-elec-parking","hd-meter-primary-elec-charging","hd-meter-primary-elec-medical-gas","hd-meter-primary-elec-fire-safety","hd-meter-primary-elec-admin","hd-meter-primary-water-outpatient","hd-meter-primary-water-wards","hd-meter-primary-water-surgery","hd-meter-primary-water-sterilization","hd-meter-primary-water-kitchen","hd-meter-primary-water-laundry","hd-meter-primary-water-cooling","hd-meter-primary-gas-kitchen","hd-meter-primary-gas-boiler","hd-meter-primary-steam-sterilization","hd-meter-primary-steam-laundry","hd-meter-primary-steam-kitchen","hd-meter-primary-heat-wards","hd-meter-primary-heat-outpatient","hd-meter-primary-heat-hot-water","hd-meter-primary-cool-medical","hd-meter-primary-cool-wards","hd-meter-primary-cool-critical","hd-meter-primary-cool-public","hd-meter-primary-elec-check-01","hd-meter-primary-elec-check-02","hd-meter-primary-elec-gateway-gap","hd-meter-primary-water-gateway-gap","hd-meter-primary-cool-main-gap","hd-meter-primary-lighting-branch-gap","hd-meter-east-elec-gateway","hd-meter-east-elec-clinical","hd-meter-east-elec-logistics","hd-meter-east-water-gateway","hd-meter-east-water-clinical","hd-meter-east-water-logistics","hd-meter-east-gas-gateway","hd-meter-east-gas-boiler","hd-meter-east-heat-gateway","hd-meter-east-heat-campus","hd-meter-east-elec-gap","hd-meter-rehab-elec-gateway","hd-meter-rehab-elec-clinical","hd-meter-rehab-elec-logistics","hd-meter-rehab-water-gateway","hd-meter-rehab-water-clinical","hd-meter-rehab-water-logistics","hd-meter-rehab-gas-gateway","hd-meter-rehab-gas-boiler","hd-meter-rehab-heat-gateway","hd-meter-rehab-heat-campus","hd-meter-rehab-elec-gap","hd-tariff-elec-previous","hd-tariff-elec-current","hd-tariff-water-previous","hd-tariff-water-current","hd-tariff-gas-previous","hd-tariff-gas-current","hd-tariff-steam-previous","hd-tariff-steam-current","hd-tariff-heat-previous","hd-tariff-heat-current","hd-tariff-cool-previous","hd-tariff-cool-current","hd-quota-primary-elec","hd-quota-east-water","hd-quota-rehab-heat","hd-quota-primary-gas","hd-quota-outpatient-elec","hd-quota-inpatient-water","hd-quota-critical-cool","hd-quota-logistics-steam","hd-rule-night-base","hd-rule-balance","hd-rule-quota","hd-rule-peak","hd-rule-water-leak","hd-rule-hvac-drift","hd-rule-carbon","hd-rule-coverage","hd-baseline-cooling","hd-baseline-lighting","hd-project-cooling-optimization","hd-project-lighting-led","hd-project-steam-recovery","hd-project-ward-hvac","hd-project-pv-canopy","hd-carbon-target-1","hd-carbon-target-2","hd-carbon-target-3","hd-green-cert-01","hd-green-cert-02","hd-green-cert-03","hd-green-cert-04","hd-anomaly-01","hd-anomaly-02","hd-anomaly-03","hd-anomaly-04","hd-anomaly-05","hd-anomaly-06","hd-anomaly-07","hd-anomaly-08","hd-anomaly-09","hd-anomaly-10","hd-anomaly-11","hd-anomaly-12","hd-work-order-01","hd-work-order-02","hd-work-order-03","hd-work-order-04","hd-work-order-05","hd-work-order-06","hd-close-primary-previous-month"]
+  requiredGeneratedKeyCount:requiredGeneratedKeys.findAll(key=>do
+    rec:byKey(key)
+    rec!=null and not rec.missing("emSynthetic") and rec["emDataProvenance"]==generation
+  end).size
+  siteCount:readAll(energyMatrix and site and emSynthetic and emDataProvenance==generation).size
+  floorCount:readAll(energyMatrix and floor and emSynthetic and emDataProvenance==generation).size
+  zoneCount:readAll(energyMatrix and space and not floor and emSynthetic and emDataProvenance==generation).size
+  orgCount:readAll(energyMatrix and emTenant and emSynthetic and emDataProvenance==generation).size
+  physical:readAll(energyMatrix and meter and not emVirtual and emMeterRole!="check" and emSynthetic and emDataProvenance==generation)
+  checks:readAll(energyMatrix and meter and emMeterRole=="check" and emSynthetic and emDataProvenance==generation)
+  physicalCount:physical.size
+  checkCount:checks.size
+  gapCount:readAll(energyMatrix and meter and emGap and emSynthetic and emDataProvenance==generation).size
+  if(siteCount!=3 or requiredSiteCount!=3 or requiredGeneratedKeyCount!=requiredGeneratedKeys.size or floorCount!=14 or zoneCount!=17 or orgCount!=10 or physicalCount!=68 or checkCount!=2 or gapCount!=6) throw("cutover blocked: model counts or required stable keys mismatch")
+  quotaCount:readAll(energyMatrix and emQuota and emSynthetic and emDataProvenance==generation).size
+  ruleCount:readAll(energyMatrix and emDiagnostic and emSynthetic and emDataProvenance==generation).size
+  anomalyCount:readAll(energyMatrix and emAnomaly and emSynthetic and emDataProvenance==generation).size
+  workCount:readAll(energyMatrix and emWorkOrder and emSynthetic and emDataProvenance==generation).size
+  baselineCount:readAll(energyMatrix and emBaseline and emValid and emSynthetic and emDataProvenance==generation).size
+  projectCount:readAll(energyMatrix and emSavingsProject and emSynthetic and emDataProvenance==generation).size
+  targetCount:readAll(energyMatrix and emCarbonTarget and emSynthetic and emDataProvenance==generation).size
+  certCount:readAll(energyMatrix and emGreenCert and emSynthetic and emDataProvenance==generation).size
+  closeCount:readAll(energyMatrix and emClosePeriod and emClosed and emSynthetic and emDataProvenance==generation).size
+  if(quotaCount!=8 or ruleCount!=8 or anomalyCount!=12 or workCount!=6 or baselineCount!=2 or projectCount!=5 or targetCount!=3 or certCount!=4 or closeCount<1) throw("cutover blocked: business counts mismatch")
+  kpiCodes:["ELEC_AREA","WATER_AREA","TOTAL_TCE_AREA","COOL_AREA","HEAT_AREA","ELEC_OCCUPANT","CARBON_AREA"]
+  kpiCount:kpiCodes.findAll(code=>readAll(emKpi and emKpiCode==code).size==1).size
+  normalizeRegion:region=>if(region==null or trim(region.toStr)=="")"national" else lower(trim(region.toStr))
+  factorKeys:[
+    {m:"elec",y:2025,reg:"华北电网"},
+    {m:"elec",y:2026,reg:"华北电网"},
+    {m:"water",y:2025,reg:"national"},
+    {m:"water",y:2026,reg:"national"},
+    {m:"gas",y:2025,reg:"national"},
+    {m:"gas",y:2026,reg:"national"},
+    {m:"steam",y:2025,reg:"national"},
+    {m:"steam",y:2026,reg:"national"},
+    {m:"heat",y:2025,reg:"national"},
+    {m:"heat",y:2026,reg:"national"},
+    {m:"cool",y:2025,reg:"national"},
+    {m:"cool",y:2026,reg:"national"}
+  ]
+  factorCount:factorKeys.findAll(d=>readAll(emEmissionFactor and emMedium==d->m and emYear==d->y).findAll(r=>normalizeRegion(r["emRegion"])==normalizeRegion(d->reg)).size==1).size
+  tariffCount:readAll(emTariff and emSynthetic and emDataProvenance==generation).size
+  if(kpiCount!=7 or factorCount!=12 or tariffCount!=12) throw("cutover blocked: global definitions mismatch")
+  if(physical.size==0 or not physical.colNames.contains("id")) throw("cutover blocked: physical meter id column missing")
+  physicalIds:physical.colToList("id")
+  l1Points:readAll(point and emL1Point and emSynthetic and emDataProvenance==generation).findAll(p=>physicalIds.contains(p["equipRef"]))
+  priorStart:dateTime(date(today().year-1,today().month,1),00:00:00,"Asia/Shanghai")
+  missingHistory:l1Points.findAll(p=>p["hisSize"]==null or p["hisSize"]<=0 or p["hisStart"]==null or p["hisStart"]>priorStart or p["hisEnd"]==null or p["hisEnd"]<dateTime(today(),00:00:00,"Asia/Shanghai")).size+(physicalCount-l1Points.size)
+  if(l1Points.size!=physicalCount or missingHistory>0) throw("cutover blocked: incomplete physical meter history")
+  currentLedgers:readAll(emLedger and emSynthetic and emDataProvenance==generation).findAll(e=>e["span"]!=null and e["span"].start.date>=today()-90day and e["span"].end.date<=today())
+  if(currentLedgers.size==0 or not currentLedgers.colNames.contains("emMeterRef")) throw("cutover blocked: current ledger schema missing")
+  currentMeterRefs:currentLedgers.colToList("emMeterRef")
+  missingCurrentLedger:physical.findAll(m=>not currentMeterRefs.contains(m->id)).size
+  priorLedgers:readAll(emLedger and siteRef==primary and emSynthetic and emDataProvenance==generation).findAll(e=>e["span"]!=null and e["span"].start.date.year==today().year-1 and e["span"].start.date.month==today().month)
+  if(priorLedgers.size==0 or not priorLedgers.colNames.contains("emMeterRef")) throw("cutover blocked: prior ledger schema missing")
+  priorMeterRefs:priorLedgers.colToList("emMeterRef")
+  primaryPhysical:physical.findAll(m=>m["siteRef"]==primary)
+  missingPriorLedger:primaryPhysical.findAll(m=>not priorMeterRefs.contains(m->id)).size
+  if(missingCurrentLedger>0 or missingPriorLedger>0) throw("cutover blocked: incomplete meter ledgers")
+  old:readAll(energyMatrix and emSynthetic and emDataProvenance=="emDemoBuild")
+  if(old.size==0) throw("cutover blocked: old generation is empty")
+  renameNeeded:primaryRec["dis"]=="某医院（构建中）"
+  if(renameNeeded) commit(diff(readById(primary),{dis:"某医院",navName:"某医院"}))
+  {generation:generation,attempted:1,written:if(renameNeeded)1 else 0,skipped:if(renameNeeded)0 else 1,errors:0,renamed:if(renameNeeded)1 else 0,oldDeferred:old.size,cleanupRequired:old.size>0}
+end

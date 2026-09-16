@@ -1,0 +1,142 @@
+pageType: content
+background:
+  type: solid
+  color: "$paper"
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [64, 36, 500, 16]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: 附件四 · 平台选型依据 —— 市场比较
+  - elementId: title
+    elementType: text
+    bounds: [64, 58, 832, 42]
+    content:
+      style: "$title"
+      wrap: false
+      text: FIN Framework 在市场上的比较
+  - elementId: headrule
+    elementType: shape
+    bounds: [64, 110, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: openLabel
+    elementType: text
+    bounds: [64, 122, 300, 18]
+    content: {fontSize: 12, bold: true, color: "$tealDark", wrap: false, text: 开放性}
+  - elementId: openTable
+    elementType: table
+    bounds: [64, 146, 416, 234]
+    columnWidths: [0.68, 0.16, 0.16]
+    rowHeights: [0.1, 0.1125, 0.1125, 0.1125, 0.1125, 0.1125, 0.1125, 0.1125, 0.1125]
+    style:
+      cellStyle: {fontSize: 10, color: "$steel", align: [left, middle], border: [null, null, {style: solid, width: 1, color: "#E3E9EE"}, null]}
+      firstRowStyle: {bold: true, color: "$ink", fontSize: 10.5}
+    rows:
+      - - text: 特性
+        - text: FIN
+          align: [center, middle]
+        - text: 其他
+          align: [center, middle]
+      - - text: 直观、移动端友好的用户体验
+        - {text: "●", color: "$teal", align: [center, middle]}
+        - {text: "○", color: "$amber", align: [center, middle]}
+      - - text: 不锁定在专有系统中，可自由选择集成商
+        - {text: "●", color: "$teal", align: [center, middle]}
+        - {text: "—", color: "$mist", align: [center, middle]}
+      - - text: 在现有自动化系统之上提供标准用户界面
+        - {text: "●", color: "$teal", align: [center, middle]}
+        - {text: "—", color: "$mist", align: [center, middle]}
+      - - text: 原生支持 Haystack 4
+        - {text: "●", color: "$teal", align: [center, middle]}
+        - {text: "—", color: "$mist", align: [center, middle]}
+      - - text: 简化多系统的集成
+        - {text: "●", color: "$teal", align: [center, middle]}
+        - {text: "○", color: "$amber", align: [center, middle]}
+      - - text: 基于浏览器的组态与调试
+        - {text: "●", color: "$teal", align: [center, middle]}
+        - {text: "○", color: "$amber", align: [center, middle]}
+      - - text: 为数据分析优化的快速数据库
+        - {text: "●", color: "$teal", align: [center, middle]}
+        - {text: "○", color: "$amber", align: [center, middle]}
+      - - text: 强大的数据库查询语言
+        - {text: "●", color: "$teal", align: [center, middle]}
+        - {text: "—", color: "$mist", align: [center, middle]}
+  - elementId: vaLabel
+    elementType: text
+    bounds: [64, 396, 300, 18]
+    content: {fontSize: 12, bold: true, color: "$tealDark", wrap: false, text: 增值服务}
+  - elementId: vaTable
+    elementType: table
+    bounds: [64, 420, 416, 66]
+    columnWidths: [0.68, 0.16, 0.16]
+    rowHeights: [0.5, 0.5]
+    style:
+      cellStyle: {fontSize: 10, color: "$steel", align: [left, middle], border: [null, null, {style: solid, width: 1, color: "#E3E9EE"}, null]}
+    rows:
+      - - text: Edge2Cloud：随时随地安全远程访问
+        - {text: "●", color: "$teal", align: [center, middle]}
+        - {text: "○", color: "$amber", align: [center, middle]}
+      - - text: 标准通讯驱动随平台附带
+        - {text: "●", color: "$teal", align: [center, middle]}
+        - {text: "○", color: "$amber", align: [center, middle]}
+  - elementId: legend
+    elementType: text
+    bounds: [64, 496, 416, 16]
+    content: {style: "$note", wrap: false, text: "● 有    — 没有    ○ 需要额外费用或额外编程"}
+  - elementId: easeLabel
+    elementType: text
+    bounds: [512, 122, 300, 18]
+    content: {fontSize: 12, bold: true, color: "$tealDark", wrap: false, text: 易使用}
+  - elementId: easeTable
+    elementType: table
+    bounds: [512, 146, 384, 366]
+    columnWidths: [0.72, 0.14, 0.14]
+    rowHeights: [0.076, 0.077, 0.077, 0.077, 0.077, 0.077, 0.077, 0.077, 0.077, 0.077, 0.077, 0.077, 0.077]
+    style:
+      cellStyle: {fontSize: 9.5, color: "$steel", align: [left, middle], border: [null, null, {style: solid, width: 1, color: "#E3E9EE"}, null]}
+      firstRowStyle: {bold: true, color: "$ink", fontSize: 10}
+    rows:
+      - - text: 特性
+        - text: FIN
+          align: [center, middle]
+        - text: 其他
+          align: [center, middle]
+      - - text: 上下文相关的导航栏，减少不必要的点击
+        - {text: "●", color: "$teal", align: [center, middle]}
+        - {text: "—", color: "$mist", align: [center, middle]}
+      - - text: 自动生成超链接（Magic Bubbles），节省工程时间
+        - {text: "●", color: "$teal", align: [center, middle]}
+        - {text: "—", color: "$mist", align: [center, middle]}
+      - - text: 仪表盘生成器可定制化 UI
+        - {text: "●", color: "$teal", align: [center, middle]}
+        - {text: "○", color: "$amber", align: [center, middle]}
+      - - text: 集成的报警控制台
+        - {text: "●", color: "$teal", align: [center, middle]}
+        - {text: "○", color: "$amber", align: [center, middle]}
+      - - text: 语义标签模型改善数据管理
+        - {text: "●", color: "$teal", align: [center, middle]}
+        - {text: "—", color: "$mist", align: [center, middle]}
+      - - text: 工作流工具提升效率
+        - {text: "●", color: "$teal", align: [center, middle]}
+        - {text: "○", color: "$amber", align: [center, middle]}
+      - - text: 大量向导简化通用任务
+        - {text: "●", color: "$teal", align: [center, middle]}
+        - {text: "○", color: "$amber", align: [center, middle]}
+      - - text: 可变尺寸的 2D 和 3D 画面
+        - {text: "●", color: "$teal", align: [center, middle]}
+        - {text: "○", color: "$amber", align: [center, middle]}
+      - - text: 简化设备管理的模板
+        - {text: "●", color: "$teal", align: [center, middle]}
+        - {text: "○", color: "$amber", align: [center, middle]}
+      - - text: 通过标签让画面与逻辑复用
+        - {text: "●", color: "$teal", align: [center, middle]}
+        - {text: "—", color: "$mist", align: [center, middle]}
+      - - text: 上下文相关的计划功能
+        - {text: "●", color: "$teal", align: [center, middle]}
+        - {text: "○", color: "$amber", align: [center, middle]}
+      - - text: 自动生成点画面与摘要表 —— 工程零工作量
+        - {text: "●", color: "$teal", align: [center, middle]}
+        - {text: "—", color: "$mist", align: [center, middle]}

@@ -1,0 +1,35 @@
+//
+// EmSite.trio —— 站点（说明书 §3.2 表 3-1）
+//
+// EUI 与人均指标的分母来源。空间树来自 ph::Site，本库只扩展计量与考核
+// 必需的属性。
+//
+// emGapThreshold 是本 pod 的增补字段（说明书没有）：关账缺口率闸门允许
+// 按站点覆盖 —— 不同项目的计量完备程度差别很大，一刀切 5% 会让计量薄弱的
+// 老项目永远关不了账。缺省走 EnergyMatrixExt.defaultGapThreshold。
+//
+
+---
+emSiteModelId:"_site:emSite"
+id:@_site:emSite
+energyMatrix
+site
+dis:Arg("entityDis:Site")
+navName:Arg("entityDis:Site")
+tz:Arg("tz:Asia/Shanghai")
+// 建筑面积 —— EUI 分母
+area:Arg("area:10000m²")
+// 空调面积 —— 空调 EUI 分母
+emCoolArea:Arg("emCoolArea:N")
+// 设计在册人数 —— 人均指标分母
+emOccupancy:Arg("emOccupancy:N")
+// 业态：office|retail|hotel|hospital|datacenter|industrial|residence|common|parking
+emUsageType:Arg("emUsageType:office")
+// 建筑热工分区：severeCold|cold|hotSummerColdWinter|hotSummerWarmWinter|mild
+emClimateZone:Arg("emClimateZone:hotSummerColdWinter")
+// 能耗基准年（IPMVP 基准期与碳目标基年的默认值）
+emBaseYear:Arg("emBaseYear:N")
+// 关账缺口率闸门阈值（0~1），缺省 0.05
+emGapThreshold:Arg("emGapThreshold:0.05")
+geoCity:Arg("geoCity:N")
+geoCountry:Arg("geoCountry:CN")

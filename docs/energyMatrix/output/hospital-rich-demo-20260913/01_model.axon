@@ -1,0 +1,724 @@
+// energyMatrix hospital rich demo data
+// generation: hospital-rich-demo-20260913
+// batch: 01_model
+// Default is preview-only. Change preview to false only after FIN Expert stages the unchanged request and the user confirms it.
+do
+  preview: true
+  generation: "hospital-rich-demo-20260913"
+  demoTags: {emSynthetic, emDataProvenance: generation}
+  if (preview) return {batch: "01_model", generation: generation, preview, summary: "4 sites, rich primary hospital model, demo collectors are disabled/stale instead of healthy"}
+
+  demoConnOld: read(conn and emDemoKey=="conn-hospital-demo-disabled", false)
+  demoConn: if (demoConnOld != null) demoConnOld->id else commit(diff(null, {
+    conn, energyMatrix, emSynthetic, emDataProvenance: generation,
+    emDemoKey: "conn-hospital-demo-disabled", dis: "某医院 演示未绑定采集器",
+    emCommStatus: "unbound"
+  }, {add}))->id
+
+  site_hospitalByKey: read(energyMatrix and site and emDemoKey=="site-hospital-main", false)
+  site_hospitalByDis: read(energyMatrix and site and dis=="某医院", false)
+  site_hospital: if (site_hospitalByKey != null) site_hospitalByKey->id else if (site_hospitalByDis != null) site_hospitalByDis->id else emAddSite("某医院", {
+    energyMatrix, emSynthetic, emDataProvenance: generation,
+    emDemoKey: "site-hospital-main", area: 286000m², emCoolArea: 184000m²,
+    emOccupancy: 14200, emUsageType: "hospital", emClimateZone: "hotSummerColdWinter",
+    emRegion: "华东", emBaseYear: 2025, emGapThreshold: 0.05, tz: "Asia/Shanghai"
+  })
+  commit(diff(readById(site_hospital), {emSynthetic, emDataProvenance: generation, emDemoKey: "site-hospital-main", dis: "某医院", navName: "某医院"}))
+
+  site_eastByKey: read(energyMatrix and site and emDemoKey=="site-east", false)
+  site_eastByDis: read(energyMatrix and site and dis=="东院区", false)
+  site_east: if (site_eastByKey != null) site_eastByKey->id else if (site_eastByDis != null) site_eastByDis->id else emAddSite("东院区", {
+    energyMatrix, emSynthetic, emDataProvenance: generation,
+    emDemoKey: "site-east", area: 132000m², emCoolArea: 84000m²,
+    emOccupancy: 6800, emUsageType: "hospital", emClimateZone: "hotSummerColdWinter",
+    emRegion: "华东", emBaseYear: 2025, emGapThreshold: 0.05, tz: "Asia/Shanghai"
+  })
+  commit(diff(readById(site_east), {emSynthetic, emDataProvenance: generation, emDemoKey: "site-east", dis: "东院区", navName: "东院区"}))
+
+  site_westByKey: read(energyMatrix and site and emDemoKey=="site-west", false)
+  site_westByDis: read(energyMatrix and site and dis=="西院区", false)
+  site_west: if (site_westByKey != null) site_westByKey->id else if (site_westByDis != null) site_westByDis->id else emAddSite("西院区", {
+    energyMatrix, emSynthetic, emDataProvenance: generation,
+    emDemoKey: "site-west", area: 98000m², emCoolArea: 61000m²,
+    emOccupancy: 4200, emUsageType: "hospital", emClimateZone: "hotSummerColdWinter",
+    emRegion: "华东", emBaseYear: 2025, emGapThreshold: 0.05, tz: "Asia/Shanghai"
+  })
+  commit(diff(readById(site_west), {emSynthetic, emDataProvenance: generation, emDemoKey: "site-west", dis: "西院区", navName: "西院区"}))
+
+  site_southByKey: read(energyMatrix and site and emDemoKey=="site-south", false)
+  site_southByDis: read(energyMatrix and site and dis=="南院区", false)
+  site_south: if (site_southByKey != null) site_southByKey->id else if (site_southByDis != null) site_southByDis->id else emAddSite("南院区", {
+    energyMatrix, emSynthetic, emDataProvenance: generation,
+    emDemoKey: "site-south", area: 76000m², emCoolArea: 44000m²,
+    emOccupancy: 3100, emUsageType: "hospital", emClimateZone: "hotSummerColdWinter",
+    emRegion: "华东", emBaseYear: 2025, emGapThreshold: 0.05, tz: "Asia/Shanghai"
+  })
+  commit(diff(readById(site_south), {emSynthetic, emDataProvenance: generation, emDemoKey: "site-south", dis: "南院区", navName: "南院区"}))
+
+  tenant_hospital_opsOld: read(energyMatrix and emTenant and emDemoKey=="tenant-hospital-ops", false)
+  tenant_hospital_ops: if (tenant_hospital_opsOld != null) tenant_hospital_opsOld->id else emAddTenant(null, "医院运营中心", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "tenant-hospital-ops", emUsageType: "hospital"
+  })
+  commit(diff(readById(tenant_hospital_ops), {emSynthetic, emDataProvenance: generation, emDemoKey: "tenant-hospital-ops"}))
+
+  tenant_logisticsOld: read(energyMatrix and emTenant and emDemoKey=="tenant-logistics", false)
+  tenant_logistics: if (tenant_logisticsOld != null) tenant_logisticsOld->id else emAddTenant(tenant_hospital_ops, "后勤保障部", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "tenant-logistics", emUsageType: "hospital"
+  })
+  commit(diff(readById(tenant_logistics), {emSynthetic, emDataProvenance: generation, emDemoKey: "tenant-logistics"}))
+
+  tenant_clinicalOld: read(energyMatrix and emTenant and emDemoKey=="tenant-clinical", false)
+  tenant_clinical: if (tenant_clinicalOld != null) tenant_clinicalOld->id else emAddTenant(tenant_hospital_ops, "临床医技部", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "tenant-clinical", emUsageType: "hospital"
+  })
+  commit(diff(readById(tenant_clinical), {emSynthetic, emDataProvenance: generation, emDemoKey: "tenant-clinical"}))
+
+  tenant_itOld: read(energyMatrix and emTenant and emDemoKey=="tenant-it", false)
+  tenant_it: if (tenant_itOld != null) tenant_itOld->id else emAddTenant(tenant_hospital_ops, "信息中心", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "tenant-it", emUsageType: "hospital"
+  })
+  commit(diff(readById(tenant_it), {emSynthetic, emDataProvenance: generation, emDemoKey: "tenant-it"}))
+
+  tenant_surgeryOld: read(energyMatrix and emTenant and emDemoKey=="tenant-surgery", false)
+  tenant_surgery: if (tenant_surgeryOld != null) tenant_surgeryOld->id else emAddTenant(tenant_clinical, "手术麻醉中心", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "tenant-surgery", emUsageType: "hospital"
+  })
+  commit(diff(readById(tenant_surgery), {emSynthetic, emDataProvenance: generation, emDemoKey: "tenant-surgery"}))
+
+  tenant_inpatientOld: read(energyMatrix and emTenant and emDemoKey=="tenant-inpatient", false)
+  tenant_inpatient: if (tenant_inpatientOld != null) tenant_inpatientOld->id else emAddTenant(tenant_clinical, "住院护理部", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "tenant-inpatient", emUsageType: "hospital"
+  })
+  commit(diff(readById(tenant_inpatient), {emSynthetic, emDataProvenance: generation, emDemoKey: "tenant-inpatient"}))
+
+  floor_h_b1Old: read(energyMatrix and floor and emDemoKey=="floor-h-b1", false)
+  floor_h_b1: if (floor_h_b1Old != null) floor_h_b1Old->id else emAddFloor(site_hospital, "地下能源中心 B1", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "floor-h-b1",
+    area: 43000m², floorNum: -1, emUsageType: "common"
+  })
+  commit(diff(readById(floor_h_b1), {emSynthetic, emDataProvenance: generation, emDemoKey: "floor-h-b1"}))
+
+  floor_h_f1Old: read(energyMatrix and floor and emDemoKey=="floor-h-f1", false)
+  floor_h_f1: if (floor_h_f1Old != null) floor_h_f1Old->id else emAddFloor(site_hospital, "门急诊医技 1F", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "floor-h-f1",
+    area: 38000m², floorNum: 1, emUsageType: "hospital"
+  })
+  commit(diff(readById(floor_h_f1), {emSynthetic, emDataProvenance: generation, emDemoKey: "floor-h-f1"}))
+
+  floor_h_f2Old: read(energyMatrix and floor and emDemoKey=="floor-h-f2", false)
+  floor_h_f2: if (floor_h_f2Old != null) floor_h_f2Old->id else emAddFloor(site_hospital, "门急诊医技 2F", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "floor-h-f2",
+    area: 36000m², floorNum: 2, emUsageType: "hospital"
+  })
+  commit(diff(readById(floor_h_f2), {emSynthetic, emDataProvenance: generation, emDemoKey: "floor-h-f2"}))
+
+  floor_h_f6Old: read(energyMatrix and floor and emDemoKey=="floor-h-f6", false)
+  floor_h_f6: if (floor_h_f6Old != null) floor_h_f6Old->id else emAddFloor(site_hospital, "住院护理 6F", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "floor-h-f6",
+    area: 32000m², floorNum: 6, emUsageType: "hospital"
+  })
+  commit(diff(readById(floor_h_f6), {emSynthetic, emDataProvenance: generation, emDemoKey: "floor-h-f6"}))
+
+  floor_h_f9Old: read(energyMatrix and floor and emDemoKey=="floor-h-f9", false)
+  floor_h_f9: if (floor_h_f9Old != null) floor_h_f9Old->id else emAddFloor(site_hospital, "手术 ICU 9F", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "floor-h-f9",
+    area: 28000m², floorNum: 9, emUsageType: "hospital"
+  })
+  commit(diff(readById(floor_h_f9), {emSynthetic, emDataProvenance: generation, emDemoKey: "floor-h-f9"}))
+
+  floor_h_roofOld: read(energyMatrix and floor and emDemoKey=="floor-h-roof", false)
+  floor_h_roof: if (floor_h_roofOld != null) floor_h_roofOld->id else emAddFloor(site_hospital, "屋面能源设施", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "floor-h-roof",
+    area: 12000m², floorNum: 18, emUsageType: "common"
+  })
+  commit(diff(readById(floor_h_roof), {emSynthetic, emDataProvenance: generation, emDemoKey: "floor-h-roof"}))
+
+  zone_h_outpatientOld: read(energyMatrix and emZone and emDemoKey=="zone-h-outpatient", false)
+  zone_h_outpatient: if (zone_h_outpatientOld != null) zone_h_outpatientOld->id else emAddZone(site_hospital, "门急诊公共区", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "zone-h-outpatient", area: 42000m², emUsageType: "hospital", floorRef: floor_h_f1
+  })
+  commit(diff(readById(zone_h_outpatient), {emSynthetic, emDataProvenance: generation, emDemoKey: "zone-h-outpatient"}))
+
+  zone_h_imagingOld: read(energyMatrix and emZone and emDemoKey=="zone-h-imaging", false)
+  zone_h_imaging: if (zone_h_imagingOld != null) zone_h_imagingOld->id else emAddZone(site_hospital, "影像检验中心", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "zone-h-imaging", area: 28000m², emUsageType: "hospital", floorRef: floor_h_f2
+  })
+  commit(diff(readById(zone_h_imaging), {emSynthetic, emDataProvenance: generation, emDemoKey: "zone-h-imaging"}))
+
+  zone_h_inpatientOld: read(energyMatrix and emZone and emDemoKey=="zone-h-inpatient", false)
+  zone_h_inpatient: if (zone_h_inpatientOld != null) zone_h_inpatientOld->id else emAddZone(site_hospital, "住院病区", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "zone-h-inpatient", area: 92000m², emUsageType: "hospital", floorRef: floor_h_f6
+  })
+  commit(diff(readById(zone_h_inpatient), {emSynthetic, emDataProvenance: generation, emDemoKey: "zone-h-inpatient"}))
+
+  zone_h_orOld: read(energyMatrix and emZone and emDemoKey=="zone-h-or", false)
+  zone_h_or: if (zone_h_orOld != null) zone_h_orOld->id else emAddZone(site_hospital, "手术 ICU 区", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "zone-h-or", area: 32000m², emUsageType: "hospital", floorRef: floor_h_f9
+  })
+  commit(diff(readById(zone_h_or), {emSynthetic, emDataProvenance: generation, emDemoKey: "zone-h-or"}))
+
+  zone_h_energyOld: read(energyMatrix and emZone and emDemoKey=="zone-h-energy", false)
+  zone_h_energy: if (zone_h_energyOld != null) zone_h_energyOld->id else emAddZone(site_hospital, "能源站与后勤机房", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "zone-h-energy", area: 36000m², emUsageType: "common", floorRef: floor_h_b1
+  })
+  commit(diff(readById(zone_h_energy), {emSynthetic, emDataProvenance: generation, emDemoKey: "zone-h-energy"}))
+
+  zone_h_itOld: read(energyMatrix and emZone and emDemoKey=="zone-h-it", false)
+  zone_h_it: if (zone_h_itOld != null) zone_h_itOld->id else emAddZone(site_hospital, "信息中心", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "zone-h-it", area: 9000m², emUsageType: "hospital", floorRef: floor_h_f2
+  })
+  commit(diff(readById(zone_h_it), {emSynthetic, emDataProvenance: generation, emDemoKey: "zone-h-it"}))
+
+  zone_h_kitchenOld: read(energyMatrix and emZone and emDemoKey=="zone-h-kitchen", false)
+  zone_h_kitchen: if (zone_h_kitchenOld != null) zone_h_kitchenOld->id else emAddZone(site_hospital, "营养厨房与洗衣房", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "zone-h-kitchen", area: 16000m², emUsageType: "common", floorRef: floor_h_b1
+  })
+  commit(diff(readById(zone_h_kitchen), {emSynthetic, emDataProvenance: generation, emDemoKey: "zone-h-kitchen"}))
+
+  zone_h_publicOld: read(energyMatrix and emZone and emDemoKey=="zone-h-public", false)
+  zone_h_public: if (zone_h_publicOld != null) zone_h_publicOld->id else emAddZone(site_hospital, "公共照明与室外", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "zone-h-public", area: 31000m², emUsageType: "common"
+  })
+  commit(diff(readById(zone_h_public), {emSynthetic, emDataProvenance: generation, emDemoKey: "zone-h-public"}))
+
+  meter_h_elec_gwByKey: read(energyMatrix and meter and emDemoKey=="meter-h-elec-gw", false)
+  meter_h_elec_gwByDis: read(energyMatrix and meter and dis=="某医院 10kV 总进线", false)
+  meter_h_elec_gw: if (meter_h_elec_gwByKey != null) meter_h_elec_gwByKey->id else if (meter_h_elec_gwByDis != null) meter_h_elec_gwByDis->id else emAddMeter(site_hospital, "elec", "10kV 总进线", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-elec-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, floorRef: floor_h_b1, emSettlement
+  })
+  commit(diff(readById(meter_h_elec_gw), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-elec-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, floorRef: floor_h_b1, emSettlement
+  }))
+
+  meter_h_lighting_mainByKey: read(energyMatrix and meter and emDemoKey=="meter-h-lighting-main", false)
+  meter_h_lighting_mainByDis: read(energyMatrix and meter and dis=="某医院 照明插座总表", false)
+  meter_h_lighting_main: if (meter_h_lighting_mainByKey != null) meter_h_lighting_mainByKey->id else if (meter_h_lighting_mainByDis != null) meter_h_lighting_mainByDis->id else emAddMeter(site_hospital, "elec", "照明插座总表", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-lighting-main", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_elec_gw, emSubItem: "a1", floorRef: floor_h_f1, emSpaceRef: zone_h_public, emTenantRef: tenant_logistics
+  })
+  commit(diff(readById(meter_h_lighting_main), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-lighting-main", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_elec_gw, emSubItem: "a1", floorRef: floor_h_f1, emSpaceRef: zone_h_public, emTenantRef: tenant_logistics
+  }))
+
+  meter_h_lighting_emergencyByKey: read(energyMatrix and meter and emDemoKey=="meter-h-lighting-emergency", false)
+  meter_h_lighting_emergencyByDis: read(energyMatrix and meter and dis=="某医院 走廊与应急照明", false)
+  meter_h_lighting_emergency: if (meter_h_lighting_emergencyByKey != null) meter_h_lighting_emergencyByKey->id else if (meter_h_lighting_emergencyByDis != null) meter_h_lighting_emergencyByDis->id else emAddMeter(site_hospital, "elec", "走廊与应急照明", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-lighting-emergency", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_lighting_main, emSubItem: "a2", floorRef: floor_h_f6, emSpaceRef: zone_h_inpatient, emTenantRef: tenant_logistics
+  })
+  commit(diff(readById(meter_h_lighting_emergency), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-lighting-emergency", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_lighting_main, emSubItem: "a2", floorRef: floor_h_f6, emSpaceRef: zone_h_inpatient, emTenantRef: tenant_logistics
+  }))
+
+  meter_h_landscapeByKey: read(energyMatrix and meter and emDemoKey=="meter-h-landscape", false)
+  meter_h_landscapeByDis: read(energyMatrix and meter and dis=="某医院 室外景观照明", false)
+  meter_h_landscape: if (meter_h_landscapeByKey != null) meter_h_landscapeByKey->id else if (meter_h_landscapeByDis != null) meter_h_landscapeByDis->id else emAddMeter(site_hospital, "elec", "室外景观照明", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-landscape", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_lighting_main, emSubItem: "a3", floorRef: floor_h_roof, emSpaceRef: zone_h_public, emTenantRef: tenant_logistics
+  })
+  commit(diff(readById(meter_h_landscape), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-landscape", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_lighting_main, emSubItem: "a3", floorRef: floor_h_roof, emSpaceRef: zone_h_public, emTenantRef: tenant_logistics
+  }))
+
+  meter_h_chiller_plantByKey: read(energyMatrix and meter and emDemoKey=="meter-h-chiller-plant", false)
+  meter_h_chiller_plantByDis: read(energyMatrix and meter and dis=="某医院 冷站群控总表", false)
+  meter_h_chiller_plant: if (meter_h_chiller_plantByKey != null) meter_h_chiller_plantByKey->id else if (meter_h_chiller_plantByDis != null) meter_h_chiller_plantByDis->id else emAddMeter(site_hospital, "elec", "冷站群控总表", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-chiller-plant", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_elec_gw, emSubItem: "b1", floorRef: floor_h_b1, emSpaceRef: zone_h_energy, emTenantRef: tenant_logistics
+  })
+  commit(diff(readById(meter_h_chiller_plant), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-chiller-plant", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_elec_gw, emSubItem: "b1", floorRef: floor_h_b1, emSpaceRef: zone_h_energy, emTenantRef: tenant_logistics
+  }))
+
+  meter_h_hvac_terminalByKey: read(energyMatrix and meter and emDemoKey=="meter-h-hvac-terminal", false)
+  meter_h_hvac_terminalByDis: read(energyMatrix and meter and dis=="某医院 空调末端风机盘管", false)
+  meter_h_hvac_terminal: if (meter_h_hvac_terminalByKey != null) meter_h_hvac_terminalByKey->id else if (meter_h_hvac_terminalByDis != null) meter_h_hvac_terminalByDis->id else emAddMeter(site_hospital, "elec", "空调末端风机盘管", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-hvac-terminal", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_elec_gw, emSubItem: "b2", floorRef: floor_h_f6, emSpaceRef: zone_h_inpatient, emTenantRef: tenant_logistics
+  })
+  commit(diff(readById(meter_h_hvac_terminal), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-hvac-terminal", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_elec_gw, emSubItem: "b2", floorRef: floor_h_f6, emSpaceRef: zone_h_inpatient, emTenantRef: tenant_logistics
+  }))
+
+  meter_h_elevatorByKey: read(energyMatrix and meter and emDemoKey=="meter-h-elevator", false)
+  meter_h_elevatorByDis: read(energyMatrix and meter and dis=="某医院 电梯扶梯动力", false)
+  meter_h_elevator: if (meter_h_elevatorByKey != null) meter_h_elevatorByKey->id else if (meter_h_elevatorByDis != null) meter_h_elevatorByDis->id else emAddMeter(site_hospital, "elec", "电梯扶梯动力", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-elevator", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_elec_gw, emSubItem: "c1", floorRef: floor_h_f1, emSpaceRef: zone_h_public, emTenantRef: tenant_logistics
+  })
+  commit(diff(readById(meter_h_elevator), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-elevator", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_elec_gw, emSubItem: "c1", floorRef: floor_h_f1, emSpaceRef: zone_h_public, emTenantRef: tenant_logistics
+  }))
+
+  meter_h_pumpsByKey: read(energyMatrix and meter and emDemoKey=="meter-h-pumps", false)
+  meter_h_pumpsByDis: read(energyMatrix and meter and dis=="某医院 给排水循环泵", false)
+  meter_h_pumps: if (meter_h_pumpsByKey != null) meter_h_pumpsByKey->id else if (meter_h_pumpsByDis != null) meter_h_pumpsByDis->id else emAddMeter(site_hospital, "elec", "给排水循环泵", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-pumps", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_elec_gw, emSubItem: "c2", floorRef: floor_h_b1, emSpaceRef: zone_h_energy, emTenantRef: tenant_logistics
+  })
+  commit(diff(readById(meter_h_pumps), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-pumps", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_elec_gw, emSubItem: "c2", floorRef: floor_h_b1, emSpaceRef: zone_h_energy, emTenantRef: tenant_logistics
+  }))
+
+  meter_h_ventilationByKey: read(energyMatrix and meter and emDemoKey=="meter-h-ventilation", false)
+  meter_h_ventilationByDis: read(energyMatrix and meter and dis=="某医院 通风排烟系统", false)
+  meter_h_ventilation: if (meter_h_ventilationByKey != null) meter_h_ventilationByKey->id else if (meter_h_ventilationByDis != null) meter_h_ventilationByDis->id else emAddMeter(site_hospital, "elec", "通风排烟系统", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-ventilation", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_elec_gw, emSubItem: "c3", floorRef: floor_h_f9, emSpaceRef: zone_h_or, emTenantRef: tenant_logistics
+  })
+  commit(diff(readById(meter_h_ventilation), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-ventilation", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_elec_gw, emSubItem: "c3", floorRef: floor_h_f9, emSpaceRef: zone_h_or, emTenantRef: tenant_logistics
+  }))
+
+  meter_h_data_centerByKey: read(energyMatrix and meter and emDemoKey=="meter-h-data-center", false)
+  meter_h_data_centerByDis: read(energyMatrix and meter and dis=="某医院 信息中心机房", false)
+  meter_h_data_center: if (meter_h_data_centerByKey != null) meter_h_data_centerByKey->id else if (meter_h_data_centerByDis != null) meter_h_data_centerByDis->id else emAddMeter(site_hospital, "elec", "信息中心机房", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-data-center", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_elec_gw, emSubItem: "d1", floorRef: floor_h_f2, emSpaceRef: zone_h_it, emTenantRef: tenant_it
+  })
+  commit(diff(readById(meter_h_data_center), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-data-center", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_elec_gw, emSubItem: "d1", floorRef: floor_h_f2, emSpaceRef: zone_h_it, emTenantRef: tenant_it
+  }))
+
+  meter_h_kitchen_elecByKey: read(energyMatrix and meter and emDemoKey=="meter-h-kitchen-elec", false)
+  meter_h_kitchen_elecByDis: read(energyMatrix and meter and dis=="某医院 营养厨房用电", false)
+  meter_h_kitchen_elec: if (meter_h_kitchen_elecByKey != null) meter_h_kitchen_elecByKey->id else if (meter_h_kitchen_elecByDis != null) meter_h_kitchen_elecByDis->id else emAddMeter(site_hospital, "elec", "营养厨房用电", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-kitchen-elec", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_elec_gw, emSubItem: "d2", floorRef: floor_h_b1, emSpaceRef: zone_h_kitchen, emTenantRef: tenant_logistics
+  })
+  commit(diff(readById(meter_h_kitchen_elec), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-kitchen-elec", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_elec_gw, emSubItem: "d2", floorRef: floor_h_b1, emSpaceRef: zone_h_kitchen, emTenantRef: tenant_logistics
+  }))
+
+  meter_h_laundryByKey: read(energyMatrix and meter and emDemoKey=="meter-h-laundry", false)
+  meter_h_laundryByDis: read(energyMatrix and meter and dis=="某医院 洗衣房动力", false)
+  meter_h_laundry: if (meter_h_laundryByKey != null) meter_h_laundryByKey->id else if (meter_h_laundryByDis != null) meter_h_laundryByDis->id else emAddMeter(site_hospital, "elec", "洗衣房动力", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-laundry", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_elec_gw, emSubItem: "d3", floorRef: floor_h_b1, emSpaceRef: zone_h_kitchen, emTenantRef: tenant_logistics
+  })
+  commit(diff(readById(meter_h_laundry), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-laundry", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_elec_gw, emSubItem: "d3", floorRef: floor_h_b1, emSpaceRef: zone_h_kitchen, emTenantRef: tenant_logistics
+  }))
+
+  meter_h_medical_otherByKey: read(energyMatrix and meter and emDemoKey=="meter-h-medical-other", false)
+  meter_h_medical_otherByDis: read(energyMatrix and meter and dis=="某医院 医疗专项其他用电", false)
+  meter_h_medical_other: if (meter_h_medical_otherByKey != null) meter_h_medical_otherByKey->id else if (meter_h_medical_otherByDis != null) meter_h_medical_otherByDis->id else emAddMeter(site_hospital, "elec", "医疗专项其他用电", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-medical-other", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_elec_gw, emSubItem: "d6", floorRef: floor_h_f2, emSpaceRef: zone_h_imaging, emTenantRef: tenant_clinical
+  })
+  commit(diff(readById(meter_h_medical_other), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-medical-other", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_elec_gw, emSubItem: "d6", floorRef: floor_h_f2, emSpaceRef: zone_h_imaging, emTenantRef: tenant_clinical
+  }))
+
+  meter_h_imaging_elecByKey: read(energyMatrix and meter and emDemoKey=="meter-h-imaging-elec", false)
+  meter_h_imaging_elecByDis: read(energyMatrix and meter and dis=="某医院 影像设备专用电", false)
+  meter_h_imaging_elec: if (meter_h_imaging_elecByKey != null) meter_h_imaging_elecByKey->id else if (meter_h_imaging_elecByDis != null) meter_h_imaging_elecByDis->id else emAddMeter(site_hospital, "elec", "影像设备专用电", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-imaging-elec", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_medical_other, emSubItem: "d6", floorRef: floor_h_f2, emSpaceRef: zone_h_imaging, emTenantRef: tenant_clinical
+  })
+  commit(diff(readById(meter_h_imaging_elec), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-imaging-elec", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_medical_other, emSubItem: "d6", floorRef: floor_h_f2, emSpaceRef: zone_h_imaging, emTenantRef: tenant_clinical
+  }))
+
+  meter_h_or_elecByKey: read(energyMatrix and meter and emDemoKey=="meter-h-or-elec", false)
+  meter_h_or_elecByDis: read(energyMatrix and meter and dis=="某医院 手术 ICU 净化用电", false)
+  meter_h_or_elec: if (meter_h_or_elecByKey != null) meter_h_or_elecByKey->id else if (meter_h_or_elecByDis != null) meter_h_or_elecByDis->id else emAddMeter(site_hospital, "elec", "手术 ICU 净化用电", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-or-elec", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_medical_other, emSubItem: "d6", floorRef: floor_h_f9, emSpaceRef: zone_h_or, emTenantRef: tenant_surgery
+  })
+  commit(diff(readById(meter_h_or_elec), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-or-elec", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_medical_other, emSubItem: "d6", floorRef: floor_h_f9, emSpaceRef: zone_h_or, emTenantRef: tenant_surgery
+  }))
+
+  meter_h_water_gwByKey: read(energyMatrix and meter and emDemoKey=="meter-h-water-gw", false)
+  meter_h_water_gwByDis: read(energyMatrix and meter and dis=="某医院 市政进水总表", false)
+  meter_h_water_gw: if (meter_h_water_gwByKey != null) meter_h_water_gwByKey->id else if (meter_h_water_gwByDis != null) meter_h_water_gwByDis->id else emAddMeter(site_hospital, "water", "市政进水总表", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-water-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, floorRef: floor_h_b1, emSettlement
+  })
+  commit(diff(readById(meter_h_water_gw), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-water-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, floorRef: floor_h_b1, emSettlement
+  }))
+
+  meter_h_water_domesticByKey: read(energyMatrix and meter and emDemoKey=="meter-h-water-domestic", false)
+  meter_h_water_domesticByDis: read(energyMatrix and meter and dis=="某医院 生活用水", false)
+  meter_h_water_domestic: if (meter_h_water_domesticByKey != null) meter_h_water_domesticByKey->id else if (meter_h_water_domesticByDis != null) meter_h_water_domesticByDis->id else emAddMeter(site_hospital, "water", "生活用水", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-water-domestic", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_water_gw, floorRef: floor_h_f6, emSpaceRef: zone_h_inpatient, emTenantRef: tenant_inpatient
+  })
+  commit(diff(readById(meter_h_water_domestic), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-water-domestic", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_water_gw, floorRef: floor_h_f6, emSpaceRef: zone_h_inpatient, emTenantRef: tenant_inpatient
+  }))
+
+  meter_h_water_medicalByKey: read(energyMatrix and meter and emDemoKey=="meter-h-water-medical", false)
+  meter_h_water_medicalByDis: read(energyMatrix and meter and dis=="某医院 医技纯水补水", false)
+  meter_h_water_medical: if (meter_h_water_medicalByKey != null) meter_h_water_medicalByKey->id else if (meter_h_water_medicalByDis != null) meter_h_water_medicalByDis->id else emAddMeter(site_hospital, "water", "医技纯水补水", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-water-medical", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_water_gw, floorRef: floor_h_f2, emSpaceRef: zone_h_imaging, emTenantRef: tenant_clinical
+  })
+  commit(diff(readById(meter_h_water_medical), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-water-medical", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_water_gw, floorRef: floor_h_f2, emSpaceRef: zone_h_imaging, emTenantRef: tenant_clinical
+  }))
+
+  meter_h_water_coolingByKey: read(energyMatrix and meter and emDemoKey=="meter-h-water-cooling", false)
+  meter_h_water_coolingByDis: read(energyMatrix and meter and dis=="某医院 冷却补水", false)
+  meter_h_water_cooling: if (meter_h_water_coolingByKey != null) meter_h_water_coolingByKey->id else if (meter_h_water_coolingByDis != null) meter_h_water_coolingByDis->id else emAddMeter(site_hospital, "water", "冷却补水", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-water-cooling", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_water_gw, floorRef: floor_h_b1, emSpaceRef: zone_h_energy, emTenantRef: tenant_logistics
+  })
+  commit(diff(readById(meter_h_water_cooling), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-water-cooling", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_water_gw, floorRef: floor_h_b1, emSpaceRef: zone_h_energy, emTenantRef: tenant_logistics
+  }))
+
+  meter_h_water_kitchenByKey: read(energyMatrix and meter and emDemoKey=="meter-h-water-kitchen", false)
+  meter_h_water_kitchenByDis: read(energyMatrix and meter and dis=="某医院 厨房洗衣用水", false)
+  meter_h_water_kitchen: if (meter_h_water_kitchenByKey != null) meter_h_water_kitchenByKey->id else if (meter_h_water_kitchenByDis != null) meter_h_water_kitchenByDis->id else emAddMeter(site_hospital, "water", "厨房洗衣用水", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-water-kitchen", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_water_gw, floorRef: floor_h_b1, emSpaceRef: zone_h_kitchen, emTenantRef: tenant_logistics
+  })
+  commit(diff(readById(meter_h_water_kitchen), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-water-kitchen", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_water_gw, floorRef: floor_h_b1, emSpaceRef: zone_h_kitchen, emTenantRef: tenant_logistics
+  }))
+
+  meter_h_gas_gwByKey: read(energyMatrix and meter and emDemoKey=="meter-h-gas-gw", false)
+  meter_h_gas_gwByDis: read(energyMatrix and meter and dis=="某医院 天然气总表", false)
+  meter_h_gas_gw: if (meter_h_gas_gwByKey != null) meter_h_gas_gwByKey->id else if (meter_h_gas_gwByDis != null) meter_h_gas_gwByDis->id else emAddMeter(site_hospital, "gas", "天然气总表", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-gas-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, floorRef: floor_h_b1, emSettlement
+  })
+  commit(diff(readById(meter_h_gas_gw), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-gas-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, floorRef: floor_h_b1, emSettlement
+  }))
+
+  meter_h_gas_kitchenByKey: read(energyMatrix and meter and emDemoKey=="meter-h-gas-kitchen", false)
+  meter_h_gas_kitchenByDis: read(energyMatrix and meter and dis=="某医院 营养厨房天然气", false)
+  meter_h_gas_kitchen: if (meter_h_gas_kitchenByKey != null) meter_h_gas_kitchenByKey->id else if (meter_h_gas_kitchenByDis != null) meter_h_gas_kitchenByDis->id else emAddMeter(site_hospital, "gas", "营养厨房天然气", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-gas-kitchen", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_gas_gw, floorRef: floor_h_b1, emSpaceRef: zone_h_kitchen, emTenantRef: tenant_logistics
+  })
+  commit(diff(readById(meter_h_gas_kitchen), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-gas-kitchen", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_gas_gw, floorRef: floor_h_b1, emSpaceRef: zone_h_kitchen, emTenantRef: tenant_logistics
+  }))
+
+  meter_h_gas_boilerByKey: read(energyMatrix and meter and emDemoKey=="meter-h-gas-boiler", false)
+  meter_h_gas_boilerByDis: read(energyMatrix and meter and dis=="某医院 锅炉房天然气", false)
+  meter_h_gas_boiler: if (meter_h_gas_boilerByKey != null) meter_h_gas_boilerByKey->id else if (meter_h_gas_boilerByDis != null) meter_h_gas_boilerByDis->id else emAddMeter(site_hospital, "gas", "锅炉房天然气", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-gas-boiler", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_gas_gw, floorRef: floor_h_b1, emSpaceRef: zone_h_energy, emTenantRef: tenant_logistics
+  })
+  commit(diff(readById(meter_h_gas_boiler), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-gas-boiler", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_gas_gw, floorRef: floor_h_b1, emSpaceRef: zone_h_energy, emTenantRef: tenant_logistics
+  }))
+
+  meter_h_steam_gwByKey: read(energyMatrix and meter and emDemoKey=="meter-h-steam-gw", false)
+  meter_h_steam_gwByDis: read(energyMatrix and meter and dis=="某医院 外购蒸汽总表", false)
+  meter_h_steam_gw: if (meter_h_steam_gwByKey != null) meter_h_steam_gwByKey->id else if (meter_h_steam_gwByDis != null) meter_h_steam_gwByDis->id else emAddMeter(site_hospital, "steam", "外购蒸汽总表", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-steam-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, floorRef: floor_h_b1, emSettlement
+  })
+  commit(diff(readById(meter_h_steam_gw), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-steam-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, floorRef: floor_h_b1, emSettlement
+  }))
+
+  meter_h_steam_sterileByKey: read(energyMatrix and meter and emDemoKey=="meter-h-steam-sterile", false)
+  meter_h_steam_sterileByDis: read(energyMatrix and meter and dis=="某医院 消毒供应蒸汽", false)
+  meter_h_steam_sterile: if (meter_h_steam_sterileByKey != null) meter_h_steam_sterileByKey->id else if (meter_h_steam_sterileByDis != null) meter_h_steam_sterileByDis->id else emAddMeter(site_hospital, "steam", "消毒供应蒸汽", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-steam-sterile", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_steam_gw, floorRef: floor_h_f2, emSpaceRef: zone_h_imaging, emTenantRef: tenant_clinical
+  })
+  commit(diff(readById(meter_h_steam_sterile), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-steam-sterile", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_steam_gw, floorRef: floor_h_f2, emSpaceRef: zone_h_imaging, emTenantRef: tenant_clinical
+  }))
+
+  meter_h_steam_laundryByKey: read(energyMatrix and meter and emDemoKey=="meter-h-steam-laundry", false)
+  meter_h_steam_laundryByDis: read(energyMatrix and meter and dis=="某医院 洗衣房蒸汽", false)
+  meter_h_steam_laundry: if (meter_h_steam_laundryByKey != null) meter_h_steam_laundryByKey->id else if (meter_h_steam_laundryByDis != null) meter_h_steam_laundryByDis->id else emAddMeter(site_hospital, "steam", "洗衣房蒸汽", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-steam-laundry", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_steam_gw, floorRef: floor_h_b1, emSpaceRef: zone_h_kitchen, emTenantRef: tenant_logistics
+  })
+  commit(diff(readById(meter_h_steam_laundry), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-steam-laundry", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_steam_gw, floorRef: floor_h_b1, emSpaceRef: zone_h_kitchen, emTenantRef: tenant_logistics
+  }))
+
+  meter_h_heat_gwByKey: read(energyMatrix and meter and emDemoKey=="meter-h-heat-gw", false)
+  meter_h_heat_gwByDis: read(energyMatrix and meter and dis=="某医院 供热热量总表", false)
+  meter_h_heat_gw: if (meter_h_heat_gwByKey != null) meter_h_heat_gwByKey->id else if (meter_h_heat_gwByDis != null) meter_h_heat_gwByDis->id else emAddMeter(site_hospital, "heat", "供热热量总表", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-heat-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, floorRef: floor_h_b1, emSettlement
+  })
+  commit(diff(readById(meter_h_heat_gw), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-heat-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, floorRef: floor_h_b1, emSettlement
+  }))
+
+  meter_h_heat_inpatientByKey: read(energyMatrix and meter and emDemoKey=="meter-h-heat-inpatient", false)
+  meter_h_heat_inpatientByDis: read(energyMatrix and meter and dis=="某医院 住院供热支路", false)
+  meter_h_heat_inpatient: if (meter_h_heat_inpatientByKey != null) meter_h_heat_inpatientByKey->id else if (meter_h_heat_inpatientByDis != null) meter_h_heat_inpatientByDis->id else emAddMeter(site_hospital, "heat", "住院供热支路", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-heat-inpatient", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_heat_gw, floorRef: floor_h_f6, emSpaceRef: zone_h_inpatient, emTenantRef: tenant_inpatient
+  })
+  commit(diff(readById(meter_h_heat_inpatient), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-heat-inpatient", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_heat_gw, floorRef: floor_h_f6, emSpaceRef: zone_h_inpatient, emTenantRef: tenant_inpatient
+  }))
+
+  meter_h_heat_outpatientByKey: read(energyMatrix and meter and emDemoKey=="meter-h-heat-outpatient", false)
+  meter_h_heat_outpatientByDis: read(energyMatrix and meter and dis=="某医院 门急诊供热支路", false)
+  meter_h_heat_outpatient: if (meter_h_heat_outpatientByKey != null) meter_h_heat_outpatientByKey->id else if (meter_h_heat_outpatientByDis != null) meter_h_heat_outpatientByDis->id else emAddMeter(site_hospital, "heat", "门急诊供热支路", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-heat-outpatient", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_heat_gw, floorRef: floor_h_f1, emSpaceRef: zone_h_outpatient, emTenantRef: tenant_clinical
+  })
+  commit(diff(readById(meter_h_heat_outpatient), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-heat-outpatient", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_heat_gw, floorRef: floor_h_f1, emSpaceRef: zone_h_outpatient, emTenantRef: tenant_clinical
+  }))
+
+  meter_h_cool_gwByKey: read(energyMatrix and meter and emDemoKey=="meter-h-cool-gw", false)
+  meter_h_cool_gwByDis: read(energyMatrix and meter and dis=="某医院 供冷冷量总表", false)
+  meter_h_cool_gw: if (meter_h_cool_gwByKey != null) meter_h_cool_gwByKey->id else if (meter_h_cool_gwByDis != null) meter_h_cool_gwByDis->id else emAddMeter(site_hospital, "cool", "供冷冷量总表", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-cool-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, floorRef: floor_h_b1, emSettlement
+  })
+  commit(diff(readById(meter_h_cool_gw), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-cool-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, floorRef: floor_h_b1, emSettlement
+  }))
+
+  meter_h_cool_orByKey: read(energyMatrix and meter and emDemoKey=="meter-h-cool-or", false)
+  meter_h_cool_orByDis: read(energyMatrix and meter and dis=="某医院 手术 ICU 供冷", false)
+  meter_h_cool_or: if (meter_h_cool_orByKey != null) meter_h_cool_orByKey->id else if (meter_h_cool_orByDis != null) meter_h_cool_orByDis->id else emAddMeter(site_hospital, "cool", "手术 ICU 供冷", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-cool-or", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_cool_gw, floorRef: floor_h_f9, emSpaceRef: zone_h_or, emTenantRef: tenant_surgery
+  })
+  commit(diff(readById(meter_h_cool_or), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-cool-or", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_cool_gw, floorRef: floor_h_f9, emSpaceRef: zone_h_or, emTenantRef: tenant_surgery
+  }))
+
+  meter_h_cool_wardByKey: read(energyMatrix and meter and emDemoKey=="meter-h-cool-ward", false)
+  meter_h_cool_wardByDis: read(energyMatrix and meter and dis=="某医院 住院病区供冷", false)
+  meter_h_cool_ward: if (meter_h_cool_wardByKey != null) meter_h_cool_wardByKey->id else if (meter_h_cool_wardByDis != null) meter_h_cool_wardByDis->id else emAddMeter(site_hospital, "cool", "住院病区供冷", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-cool-ward", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_cool_gw, floorRef: floor_h_f6, emSpaceRef: zone_h_inpatient, emTenantRef: tenant_inpatient
+  })
+  commit(diff(readById(meter_h_cool_ward), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-cool-ward", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_cool_gw, floorRef: floor_h_f6, emSpaceRef: zone_h_inpatient, emTenantRef: tenant_inpatient
+  }))
+
+  meter_h_cool_outpatientByKey: read(energyMatrix and meter and emDemoKey=="meter-h-cool-outpatient", false)
+  meter_h_cool_outpatientByDis: read(energyMatrix and meter and dis=="某医院 门急诊供冷", false)
+  meter_h_cool_outpatient: if (meter_h_cool_outpatientByKey != null) meter_h_cool_outpatientByKey->id else if (meter_h_cool_outpatientByDis != null) meter_h_cool_outpatientByDis->id else emAddMeter(site_hospital, "cool", "门急诊供冷", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-cool-outpatient", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_cool_gw, floorRef: floor_h_f1, emSpaceRef: zone_h_outpatient, emTenantRef: tenant_clinical
+  })
+  commit(diff(readById(meter_h_cool_outpatient), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-cool-outpatient", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_cool_gw, floorRef: floor_h_f1, emSpaceRef: zone_h_outpatient, emTenantRef: tenant_clinical
+  }))
+
+  meter_h_elec_gapByKey: read(energyMatrix and meter and emDemoKey=="meter-h-elec-gap", false)
+  meter_h_elec_gapByDis: read(energyMatrix and meter and dis=="某医院 电耗平衡缺口", false)
+  meter_h_elec_gap: if (meter_h_elec_gapByKey != null) meter_h_elec_gapByKey->id else if (meter_h_elec_gapByDis != null) meter_h_elec_gapByDis->id else emAddMeter(site_hospital, "elec", "电耗平衡缺口", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-elec-gap", emMeterRole: "branch", emDataSource: "derived", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_elec_gw, emSubItem: "d6"
+  })
+  commit(diff(readById(meter_h_elec_gap), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-elec-gap", emMeterRole: "branch", emDataSource: "derived", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_elec_gw, emSubItem: "d6"
+  }))
+
+  meter_h_water_gapByKey: read(energyMatrix and meter and emDemoKey=="meter-h-water-gap", false)
+  meter_h_water_gapByDis: read(energyMatrix and meter and dis=="某医院 水耗平衡缺口", false)
+  meter_h_water_gap: if (meter_h_water_gapByKey != null) meter_h_water_gapByKey->id else if (meter_h_water_gapByDis != null) meter_h_water_gapByDis->id else emAddMeter(site_hospital, "water", "水耗平衡缺口", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-water-gap", emMeterRole: "branch", emDataSource: "derived", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_water_gw
+  })
+  commit(diff(readById(meter_h_water_gap), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-water-gap", emMeterRole: "branch", emDataSource: "derived", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_water_gw
+  }))
+
+  meter_h_gas_gapByKey: read(energyMatrix and meter and emDemoKey=="meter-h-gas-gap", false)
+  meter_h_gas_gapByDis: read(energyMatrix and meter and dis=="某医院 气耗平衡缺口", false)
+  meter_h_gas_gap: if (meter_h_gas_gapByKey != null) meter_h_gas_gapByKey->id else if (meter_h_gas_gapByDis != null) meter_h_gas_gapByDis->id else emAddMeter(site_hospital, "gas", "气耗平衡缺口", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-gas-gap", emMeterRole: "branch", emDataSource: "derived", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_gas_gw
+  })
+  commit(diff(readById(meter_h_gas_gap), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-gas-gap", emMeterRole: "branch", emDataSource: "derived", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_gas_gw
+  }))
+
+  meter_h_steam_gapByKey: read(energyMatrix and meter and emDemoKey=="meter-h-steam-gap", false)
+  meter_h_steam_gapByDis: read(energyMatrix and meter and dis=="某医院 蒸汽平衡缺口", false)
+  meter_h_steam_gap: if (meter_h_steam_gapByKey != null) meter_h_steam_gapByKey->id else if (meter_h_steam_gapByDis != null) meter_h_steam_gapByDis->id else emAddMeter(site_hospital, "steam", "蒸汽平衡缺口", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-steam-gap", emMeterRole: "branch", emDataSource: "derived", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_steam_gw
+  })
+  commit(diff(readById(meter_h_steam_gap), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-steam-gap", emMeterRole: "branch", emDataSource: "derived", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_steam_gw
+  }))
+
+  meter_h_heat_gapByKey: read(energyMatrix and meter and emDemoKey=="meter-h-heat-gap", false)
+  meter_h_heat_gapByDis: read(energyMatrix and meter and dis=="某医院 供热平衡缺口", false)
+  meter_h_heat_gap: if (meter_h_heat_gapByKey != null) meter_h_heat_gapByKey->id else if (meter_h_heat_gapByDis != null) meter_h_heat_gapByDis->id else emAddMeter(site_hospital, "heat", "供热平衡缺口", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-heat-gap", emMeterRole: "branch", emDataSource: "derived", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_heat_gw
+  })
+  commit(diff(readById(meter_h_heat_gap), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-heat-gap", emMeterRole: "branch", emDataSource: "derived", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_heat_gw
+  }))
+
+  meter_h_cool_gapByKey: read(energyMatrix and meter and emDemoKey=="meter-h-cool-gap", false)
+  meter_h_cool_gapByDis: read(energyMatrix and meter and dis=="某医院 供冷平衡缺口", false)
+  meter_h_cool_gap: if (meter_h_cool_gapByKey != null) meter_h_cool_gapByKey->id else if (meter_h_cool_gapByDis != null) meter_h_cool_gapByDis->id else emAddMeter(site_hospital, "cool", "供冷平衡缺口", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-cool-gap", emMeterRole: "branch", emDataSource: "derived", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_cool_gw
+  })
+  commit(diff(readById(meter_h_cool_gap), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-h-cool-gap", emMeterRole: "branch", emDataSource: "derived", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_h_cool_gw
+  }))
+
+  meter_east_elec_gwByKey: read(energyMatrix and meter and emDemoKey=="meter-east-elec-gw", false)
+  meter_east_elec_gwByDis: read(energyMatrix and meter and dis=="东院区 东院区 10kV 总进线", false)
+  meter_east_elec_gw: if (meter_east_elec_gwByKey != null) meter_east_elec_gwByKey->id else if (meter_east_elec_gwByDis != null) meter_east_elec_gwByDis->id else emAddMeter(site_east, "elec", "东院区 10kV 总进线", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-east-elec-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, emSettlement
+  })
+  commit(diff(readById(meter_east_elec_gw), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-east-elec-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, emSettlement
+  }))
+
+  meter_east_lightingByKey: read(energyMatrix and meter and emDemoKey=="meter-east-lighting", false)
+  meter_east_lightingByDis: read(energyMatrix and meter and dis=="东院区 东院区 照明插座", false)
+  meter_east_lighting: if (meter_east_lightingByKey != null) meter_east_lightingByKey->id else if (meter_east_lightingByDis != null) meter_east_lightingByDis->id else emAddMeter(site_east, "elec", "东院区 照明插座", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-east-lighting", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_east_elec_gw, emSubItem: "a1"
+  })
+  commit(diff(readById(meter_east_lighting), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-east-lighting", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_east_elec_gw, emSubItem: "a1"
+  }))
+
+  meter_east_hvacByKey: read(energyMatrix and meter and emDemoKey=="meter-east-hvac", false)
+  meter_east_hvacByDis: read(energyMatrix and meter and dis=="东院区 东院区 空调冷热源", false)
+  meter_east_hvac: if (meter_east_hvacByKey != null) meter_east_hvacByKey->id else if (meter_east_hvacByDis != null) meter_east_hvacByDis->id else emAddMeter(site_east, "elec", "东院区 空调冷热源", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-east-hvac", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_east_elec_gw, emSubItem: "b1"
+  })
+  commit(diff(readById(meter_east_hvac), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-east-hvac", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_east_elec_gw, emSubItem: "b1"
+  }))
+
+  meter_east_medicalByKey: read(energyMatrix and meter and emDemoKey=="meter-east-medical", false)
+  meter_east_medicalByDis: read(energyMatrix and meter and dis=="东院区 东院区 医技动力", false)
+  meter_east_medical: if (meter_east_medicalByKey != null) meter_east_medicalByKey->id else if (meter_east_medicalByDis != null) meter_east_medicalByDis->id else emAddMeter(site_east, "elec", "东院区 医技动力", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-east-medical", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_east_elec_gw, emSubItem: "d1"
+  })
+  commit(diff(readById(meter_east_medical), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-east-medical", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_east_elec_gw, emSubItem: "d1"
+  }))
+
+  meter_east_water_gwByKey: read(energyMatrix and meter and emDemoKey=="meter-east-water-gw", false)
+  meter_east_water_gwByDis: read(energyMatrix and meter and dis=="东院区 东院区 市政进水", false)
+  meter_east_water_gw: if (meter_east_water_gwByKey != null) meter_east_water_gwByKey->id else if (meter_east_water_gwByDis != null) meter_east_water_gwByDis->id else emAddMeter(site_east, "water", "东院区 市政进水", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-east-water-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, emSettlement
+  })
+  commit(diff(readById(meter_east_water_gw), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-east-water-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, emSettlement
+  }))
+
+  meter_east_gas_gwByKey: read(energyMatrix and meter and emDemoKey=="meter-east-gas-gw", false)
+  meter_east_gas_gwByDis: read(energyMatrix and meter and dis=="东院区 东院区 食堂天然气", false)
+  meter_east_gas_gw: if (meter_east_gas_gwByKey != null) meter_east_gas_gwByKey->id else if (meter_east_gas_gwByDis != null) meter_east_gas_gwByDis->id else emAddMeter(site_east, "gas", "东院区 食堂天然气", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-east-gas-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, emSettlement
+  })
+  commit(diff(readById(meter_east_gas_gw), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-east-gas-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, emSettlement
+  }))
+
+  meter_west_elec_gwByKey: read(energyMatrix and meter and emDemoKey=="meter-west-elec-gw", false)
+  meter_west_elec_gwByDis: read(energyMatrix and meter and dis=="西院区 西院区 10kV 总进线", false)
+  meter_west_elec_gw: if (meter_west_elec_gwByKey != null) meter_west_elec_gwByKey->id else if (meter_west_elec_gwByDis != null) meter_west_elec_gwByDis->id else emAddMeter(site_west, "elec", "西院区 10kV 总进线", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-west-elec-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, emSettlement
+  })
+  commit(diff(readById(meter_west_elec_gw), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-west-elec-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, emSettlement
+  }))
+
+  meter_west_lightingByKey: read(energyMatrix and meter and emDemoKey=="meter-west-lighting", false)
+  meter_west_lightingByDis: read(energyMatrix and meter and dis=="西院区 西院区 照明插座", false)
+  meter_west_lighting: if (meter_west_lightingByKey != null) meter_west_lightingByKey->id else if (meter_west_lightingByDis != null) meter_west_lightingByDis->id else emAddMeter(site_west, "elec", "西院区 照明插座", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-west-lighting", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_west_elec_gw, emSubItem: "a1"
+  })
+  commit(diff(readById(meter_west_lighting), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-west-lighting", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_west_elec_gw, emSubItem: "a1"
+  }))
+
+  meter_west_hvacByKey: read(energyMatrix and meter and emDemoKey=="meter-west-hvac", false)
+  meter_west_hvacByDis: read(energyMatrix and meter and dis=="西院区 西院区 空调冷热源", false)
+  meter_west_hvac: if (meter_west_hvacByKey != null) meter_west_hvacByKey->id else if (meter_west_hvacByDis != null) meter_west_hvacByDis->id else emAddMeter(site_west, "elec", "西院区 空调冷热源", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-west-hvac", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_west_elec_gw, emSubItem: "b1"
+  })
+  commit(diff(readById(meter_west_hvac), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-west-hvac", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_west_elec_gw, emSubItem: "b1"
+  }))
+
+  meter_west_medicalByKey: read(energyMatrix and meter and emDemoKey=="meter-west-medical", false)
+  meter_west_medicalByDis: read(energyMatrix and meter and dis=="西院区 西院区 医技动力", false)
+  meter_west_medical: if (meter_west_medicalByKey != null) meter_west_medicalByKey->id else if (meter_west_medicalByDis != null) meter_west_medicalByDis->id else emAddMeter(site_west, "elec", "西院区 医技动力", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-west-medical", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_west_elec_gw, emSubItem: "d1"
+  })
+  commit(diff(readById(meter_west_medical), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-west-medical", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_west_elec_gw, emSubItem: "d1"
+  }))
+
+  meter_west_water_gwByKey: read(energyMatrix and meter and emDemoKey=="meter-west-water-gw", false)
+  meter_west_water_gwByDis: read(energyMatrix and meter and dis=="西院区 西院区 市政进水", false)
+  meter_west_water_gw: if (meter_west_water_gwByKey != null) meter_west_water_gwByKey->id else if (meter_west_water_gwByDis != null) meter_west_water_gwByDis->id else emAddMeter(site_west, "water", "西院区 市政进水", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-west-water-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, emSettlement
+  })
+  commit(diff(readById(meter_west_water_gw), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-west-water-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, emSettlement
+  }))
+
+  meter_west_gas_gwByKey: read(energyMatrix and meter and emDemoKey=="meter-west-gas-gw", false)
+  meter_west_gas_gwByDis: read(energyMatrix and meter and dis=="西院区 西院区 食堂天然气", false)
+  meter_west_gas_gw: if (meter_west_gas_gwByKey != null) meter_west_gas_gwByKey->id else if (meter_west_gas_gwByDis != null) meter_west_gas_gwByDis->id else emAddMeter(site_west, "gas", "西院区 食堂天然气", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-west-gas-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, emSettlement
+  })
+  commit(diff(readById(meter_west_gas_gw), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-west-gas-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, emSettlement
+  }))
+
+  meter_south_elec_gwByKey: read(energyMatrix and meter and emDemoKey=="meter-south-elec-gw", false)
+  meter_south_elec_gwByDis: read(energyMatrix and meter and dis=="南院区 南院区 10kV 总进线", false)
+  meter_south_elec_gw: if (meter_south_elec_gwByKey != null) meter_south_elec_gwByKey->id else if (meter_south_elec_gwByDis != null) meter_south_elec_gwByDis->id else emAddMeter(site_south, "elec", "南院区 10kV 总进线", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-south-elec-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, emSettlement
+  })
+  commit(diff(readById(meter_south_elec_gw), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-south-elec-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, emSettlement
+  }))
+
+  meter_south_lightingByKey: read(energyMatrix and meter and emDemoKey=="meter-south-lighting", false)
+  meter_south_lightingByDis: read(energyMatrix and meter and dis=="南院区 南院区 照明插座", false)
+  meter_south_lighting: if (meter_south_lightingByKey != null) meter_south_lightingByKey->id else if (meter_south_lightingByDis != null) meter_south_lightingByDis->id else emAddMeter(site_south, "elec", "南院区 照明插座", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-south-lighting", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_south_elec_gw, emSubItem: "a1"
+  })
+  commit(diff(readById(meter_south_lighting), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-south-lighting", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_south_elec_gw, emSubItem: "a1"
+  }))
+
+  meter_south_hvacByKey: read(energyMatrix and meter and emDemoKey=="meter-south-hvac", false)
+  meter_south_hvacByDis: read(energyMatrix and meter and dis=="南院区 南院区 空调冷热源", false)
+  meter_south_hvac: if (meter_south_hvacByKey != null) meter_south_hvacByKey->id else if (meter_south_hvacByDis != null) meter_south_hvacByDis->id else emAddMeter(site_south, "elec", "南院区 空调冷热源", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-south-hvac", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_south_elec_gw, emSubItem: "b1"
+  })
+  commit(diff(readById(meter_south_hvac), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-south-hvac", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_south_elec_gw, emSubItem: "b1"
+  }))
+
+  meter_south_medicalByKey: read(energyMatrix and meter and emDemoKey=="meter-south-medical", false)
+  meter_south_medicalByDis: read(energyMatrix and meter and dis=="南院区 南院区 医技动力", false)
+  meter_south_medical: if (meter_south_medicalByKey != null) meter_south_medicalByKey->id else if (meter_south_medicalByDis != null) meter_south_medicalByDis->id else emAddMeter(site_south, "elec", "南院区 医技动力", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-south-medical", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_south_elec_gw, emSubItem: "d1"
+  })
+  commit(diff(readById(meter_south_medical), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-south-medical", emMeterRole: "branch", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, submeterOf: meter_south_elec_gw, emSubItem: "d1"
+  }))
+
+  meter_south_water_gwByKey: read(energyMatrix and meter and emDemoKey=="meter-south-water-gw", false)
+  meter_south_water_gwByDis: read(energyMatrix and meter and dis=="南院区 南院区 市政进水", false)
+  meter_south_water_gw: if (meter_south_water_gwByKey != null) meter_south_water_gwByKey->id else if (meter_south_water_gwByDis != null) meter_south_water_gwByDis->id else emAddMeter(site_south, "water", "南院区 市政进水", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-south-water-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, emSettlement
+  })
+  commit(diff(readById(meter_south_water_gw), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-south-water-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, emSettlement
+  }))
+
+  meter_south_gas_gwByKey: read(energyMatrix and meter and emDemoKey=="meter-south-gas-gw", false)
+  meter_south_gas_gwByDis: read(energyMatrix and meter and dis=="南院区 南院区 食堂天然气", false)
+  meter_south_gas_gw: if (meter_south_gas_gwByKey != null) meter_south_gas_gwByKey->id else if (meter_south_gas_gwByDis != null) meter_south_gas_gwByDis->id else emAddMeter(site_south, "gas", "南院区 食堂天然气", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "meter-south-gas-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, emSettlement
+  })
+  commit(diff(readById(meter_south_gas_gw), {
+    emSynthetic, emDataProvenance: generation, emDemoKey: "meter-south-gas-gw", emMeterRole: "gateway", emDataSource: "measured", emMaxReading: 9999999, emInstallDate: 2025-01-01, emSettlement
+  }))
+
+  load_lg_lighting_publicOld: read(energyMatrix and emLoad and emDemoKey=="load-lg-lighting-public", false)
+  load_lg_lighting_public: if (load_lg_lighting_publicOld != null) load_lg_lighting_publicOld->id else emAddLoadGroup(site_hospital, "公共照明回路组", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "load-lg-lighting-public", emSubItem: "a1", emMeterRef: meter_h_lighting_main, emRatedPower: 860kW, emQty: 420, floorRef: floor_h_f1, emSpaceRef: zone_h_public, emTenantRef: tenant_logistics
+  })
+  commit(diff(readById(load_lg_lighting_public), {emSynthetic, emDataProvenance: generation, emDemoKey: "load-lg-lighting-public"}))
+
+  load_lg_terminal_wardOld: read(energyMatrix and emLoad and emDemoKey=="load-lg-terminal-ward", false)
+  load_lg_terminal_ward: if (load_lg_terminal_wardOld != null) load_lg_terminal_wardOld->id else emAddLoadGroup(site_hospital, "住院空调末端组", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "load-lg-terminal-ward", emSubItem: "b2", emMeterRef: meter_h_hvac_terminal, emRatedPower: 1320kW, emQty: 260, floorRef: floor_h_f6, emSpaceRef: zone_h_inpatient, emTenantRef: tenant_inpatient
+  })
+  commit(diff(readById(load_lg_terminal_ward), {emSynthetic, emDataProvenance: generation, emDemoKey: "load-lg-terminal-ward"}))
+
+  load_lg_or_ventilationOld: read(energyMatrix and emLoad and emDemoKey=="load-lg-or-ventilation", false)
+  load_lg_or_ventilation: if (load_lg_or_ventilationOld != null) load_lg_or_ventilationOld->id else emAddLoadGroup(site_hospital, "手术净化风机组", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "load-lg-or-ventilation", emSubItem: "c3", emMeterRef: meter_h_ventilation, emRatedPower: 980kW, emQty: 58, floorRef: floor_h_f9, emSpaceRef: zone_h_or, emTenantRef: tenant_surgery
+  })
+  commit(diff(readById(load_lg_or_ventilation), {emSynthetic, emDataProvenance: generation, emDemoKey: "load-lg-or-ventilation"}))
+
+  load_lg_imagingOld: read(energyMatrix and emLoad and emDemoKey=="load-lg-imaging", false)
+  load_lg_imaging: if (load_lg_imagingOld != null) load_lg_imagingOld->id else emAddLoadGroup(site_hospital, "影像设备组", {
+    energyMatrix, emSynthetic, emDataProvenance: generation, emDemoKey: "load-lg-imaging", emSubItem: "d6", emMeterRef: meter_h_imaging_elec, emRatedPower: 2200kW, emQty: 16, floorRef: floor_h_f2, emSpaceRef: zone_h_imaging, emTenantRef: tenant_clinical
+  })
+  commit(diff(readById(load_lg_imaging), {emSynthetic, emDataProvenance: generation, emDemoKey: "load-lg-imaging"}))
+
+  readAll(energyMatrix and point and emDataProvenance==generation).each(p => commit(diff(p, {emDemoConnRef: demoConn})))
+  readAll(energyMatrix and emDataProvenance==generation).each(rec => commit(diff(rec, demoTags)))
+  {batch: "01_model", generation: generation, sites: 4, floors: 6, zones: 8, tenants: 6, meters: 57, loads: 4}
+end

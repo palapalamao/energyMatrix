@@ -1,0 +1,165 @@
+// 05-secondary-ledger-and-diagnostics
+// Generated locally from manifest.py. Review, stage, confirm, then execute once.
+do
+  generation:"hospitalDemo-20260909"
+  demoTags:{emSynthetic,emDataProvenance:"hospitalDemo-20260909"}
+  sumVals:vals=>vals.reduce(0,(acc,val)=>acc+val)
+  byKey:key=>do
+    keyMatches:readAll(energyMatrix and emDemoKey==key)
+    if(keyMatches.size>1) throw("duplicate emDemoKey: "+key)
+    if(keyMatches.size==0) return null
+    keyMatches.first
+  end
+  existingKey:key=>do
+    rec:byKey(key)
+    if(rec!=null and rec["emDataProvenance"]!=generation) throw("emDemoKey generation collision: "+key)
+    rec
+  end
+  must:key=>do
+    rec:existingKey(key)
+    if(rec==null) throw("missing exact emDemoKey: "+key)
+    rec->id
+  end
+  businessFactories:[
+    {t:"Q",k:"hd-quota-primary-elec",n:"主院区电力定额",scope:"site",sub:"hd-site-primary",lim:6800000,ls:"historical",span:toSpan(2026-01-01..2026-12-31),m:"elec",wr:0.9,oa:"notify",doc:"医院年度能源定额演示文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"Q",k:"hd-quota-east-water",n:"东院区水定额",scope:"site",sub:"hd-site-east",lim:150000,ls:"benchmark",span:toSpan(2026-01-01..2026-12-31),m:"water",wr:0.9,oa:"notify",doc:"医院年度能源定额演示文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"Q",k:"hd-quota-rehab-heat",n:"康复院区热定额",scope:"site",sub:"hd-site-rehab",lim:2100000,ls:"benchmark",span:toSpan(2026-01-01..2026-12-31),m:"heat",wr:0.9,oa:"notify",doc:"医院年度能源定额演示文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"Q",k:"hd-quota-primary-gas",n:"主院区燃气定额",scope:"site",sub:"hd-site-primary",lim:420000,ls:"contract",span:toSpan(2026-01-01..2026-12-31),m:"gas",wr:0.9,oa:"bill",doc:"医院年度能源定额演示文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"Q",k:"hd-quota-outpatient-elec",n:"门诊部电力定额",scope:"department",sub:"hd-org-outpatient",lim:820000,ls:"historical",span:toSpan(2026-01-01..2026-12-31),m:"elec",wr:0.9,oa:"notify",doc:"医院年度能源定额演示文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"Q",k:"hd-quota-inpatient-water",n:"住院部水定额",scope:"department",sub:"hd-org-inpatient",lim:96000,ls:"standard",span:toSpan(2026-01-01..2026-12-31),m:"water",wr:0.9,oa:"notify",doc:"医院年度能源定额演示文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"Q",k:"hd-quota-critical-cool",n:"重症手术冷量定额",scope:"department",sub:"hd-org-critical",lim:1350000,ls:"benchmark",span:toSpan(2026-01-01..2026-12-31),m:"cool",wr:0.9,oa:"limitLoad",doc:"医院年度能源定额演示文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"Q",k:"hd-quota-logistics-steam",n:"后勤蒸汽定额",scope:"department",sub:"hd-org-logistics",lim:18000000,ls:"manual",span:toSpan(2026-01-01..2026-12-31),m:"steam",wr:0.9,oa:"notify",doc:"医院年度能源定额演示文件｜演示模拟口径，非结算、合规申报或对外发布依据"}
+  ]
+  regularFactoryResults:businessFactories.map(d=>do
+    existing:existingKey(d->k)
+    if(existing!=null) return {attempted:1,written:0,skipped:1,errors:0}
+    if(d->t=="Q") do
+      quotaTarget:readById(must(d->sub))
+      if((d->scope=="site" and quotaTarget.missing("site")) or (d->scope=="department" and quotaTarget.missing("emTenant"))) throw("quota scope/target mismatch")
+    end
+    common:{emSynthetic,emDataProvenance:"hospitalDemo-20260909",emDemoKey:d->k,dis:d->n}
+    made:emAddQuota(must(d->sub),d->lim,d->ls,d->span,common.merge({emMedium:d->m,emWarnRatio:d->wr,emOverAction:d->oa,emSourceDoc:d->doc}))
+    commit(diff(readById(made),common))
+    {attempted:1,written:1,skipped:0,errors:0}
+  end)
+  kpiTags:d=>{energyMatrix,emKpi,emSynthetic,emDataProvenance:"hospitalDemo-20260909",emDemoKey:d->k,dis:d->n,emKpiCode:d->code,emFormula:d->formula,unit:d->unit,emGranularity:d->gran,emDimension:d->dim,emHigherIsBetter:d->hib,emSourceDoc:d->doc}
+  kpis:[
+    {t:"K",k:"hd-kpi-elec-area",n:"单位面积电耗",s:"hd-site-primary",code:"ELEC_AREA",formula:"emLedgerTotal(emSelf->id, emSpan, \"elec\") / emSelf->area",unit:"kWh/m²",gran:"monthly",dim:["site","floor","zone"],hib:false,doc:"医院能源绩效指标演示定义｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"K",k:"hd-kpi-water-area",n:"单位面积水耗",s:"hd-site-primary",code:"WATER_AREA",formula:"emLedgerTotal(emSelf->id, emSpan, \"water\") / emSelf->area",unit:"m³/m²",gran:"monthly",dim:["site","floor","zone"],hib:false,doc:"医院能源绩效指标演示定义｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"K",k:"hd-kpi-total-tce-area",n:"单位面积综合能耗",s:"hd-site-primary",code:"TOTAL_TCE_AREA",formula:"emCoalEquivalent(emSelf->id, emSpan).meta->val / emSelf->area",unit:"tce/m²",gran:"monthly",dim:["site"],hib:false,doc:"医院能源绩效指标演示定义｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"K",k:"hd-kpi-cool-area",n:"单位面积冷耗",s:"hd-site-primary",code:"COOL_AREA",formula:"emLedgerTotal(emSelf->id, emSpan, \"cool\") / emSelf->area",unit:"kWh/m²",gran:"monthly",dim:["site","floor","zone"],hib:false,doc:"医院能源绩效指标演示定义｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"K",k:"hd-kpi-heat-area",n:"单位面积热耗",s:"hd-site-primary",code:"HEAT_AREA",formula:"emLedgerTotal(emSelf->id, emSpan, \"heat\") / emSelf->area",unit:"kWh/m²",gran:"monthly",dim:["site","floor","zone"],hib:false,doc:"医院能源绩效指标演示定义｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"K",k:"hd-kpi-elec-occupant",n:"人均电耗",s:"hd-site-primary",code:"ELEC_OCCUPANT",formula:"emLedgerTotal(emSelf->id, emSpan, \"elec\") / emSelf->emOccupancy",unit:"kWh/人",gran:"monthly",dim:["site","org"],hib:false,doc:"医院能源绩效指标演示定义｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"K",k:"hd-kpi-carbon-area",n:"单位面积碳排放",s:"hd-site-primary",code:"CARBON_AREA",formula:"emCarbonNet(emSelf->id, emSpan) / emSelf->area",unit:"kgCO2e/m²",gran:"monthly",dim:["site"],hib:false,doc:"医院能源绩效指标演示定义｜演示模拟口径，非结算、合规申报或对外发布依据"}
+  ]
+  kpiResults:kpis.map(d=>do
+    sourceSite:must(d->s)
+    kpiMatches:readAll(emKpi and emKpiCode==d->code)
+    if(kpiMatches.size>1) throw("ambiguous KPI code: "+d->code)
+    if(kpiMatches.size==0) do
+      keyed:byKey(d->k)
+      if(keyed!=null) throw("emDemoKey does not match KPI code: "+d->k)
+      made:emAddKpi(d->code,d->n,d->formula,kpiTags(d))
+      commit(diff(readById(made),kpiTags(d)))
+      return {attempted:1,written:1,skipped:0,errors:0}
+    end
+    match:kpiMatches.first
+    keyed:byKey(d->k)
+    if(keyed!=null and keyed->id!=match->id) throw("emDemoKey does not match KPI code: "+d->k)
+    if(match.missing("emSynthetic")) return {attempted:1,written:0,skipped:1,errors:0}
+    if(match["emDataProvenance"]=="emDemoBuild") do
+      adopted:kpiTags(d)
+      commit(diff(match,adopted))
+      return {attempted:1,written:1,skipped:0,errors:0}
+    end
+    if(match["emDataProvenance"]==generation) do
+      if(keyed==null) do
+        commit(diff(match,kpiTags(d)))
+        return {attempted:1,written:1,skipped:0,errors:0}
+      end
+      return {attempted:1,written:0,skipped:1,errors:0}
+    end
+    throw("unsupported synthetic KPI provenance")
+  end)
+  resolveKpiCode:code=>do
+    matches:readAll(emKpi and emKpiCode==code)
+    if(matches.size!=1) throw("missing or ambiguous authoritative KPI code: "+code)
+    matches.first->id
+  end
+  diagnostics:[
+    {t:"D",k:"hd-rule-night-base",n:"夜间基荷偏高",s:"hd-site-primary",kpi:"hd-kpi-elec-area",kpiCode:"ELEC_AREA",code:"hd-rule-night-base",cat:"scheduleWaste",sev:"warn",th:0.25,filter:"meter and emMedium==\"elec\"",expr:"nightRatio > threshold",gran:"daily",doc:"医院能源诊断规则模拟文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"D",k:"hd-rule-balance",n:"网关平衡率异常",s:"hd-site-primary",kpi:"hd-kpi-elec-area",kpiCode:"ELEC_AREA",code:"hd-rule-balance",cat:"balance",sev:"critical",th:0.05,filter:"meter and emMeterRole==\"gateway\"",expr:"abs(gapRatio) > threshold",gran:"daily",doc:"医院能源诊断规则模拟文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"D",k:"hd-rule-quota",n:"定额进度超限",s:"hd-site-primary",kpi:"hd-kpi-water-area",kpiCode:"WATER_AREA",code:"hd-rule-quota",cat:"quotaRisk",sev:"warn",th:0.9,filter:"emQuota",expr:"quotaProgress > threshold",gran:"monthly",doc:"医院能源诊断规则模拟文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"D",k:"hd-rule-peak",n:"尖峰需量异常",s:"hd-site-primary",kpi:"hd-kpi-elec-area",kpiCode:"ELEC_AREA",code:"hd-rule-peak",cat:"demandRisk",sev:"critical",th:0.95,filter:"meter and emMedium==\"elec\"",expr:"demandRatio > threshold",gran:"hourly",doc:"医院能源诊断规则模拟文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"D",k:"hd-rule-water-leak",n:"连续小流量疑似泄漏",s:"hd-site-primary",kpi:"hd-kpi-water-area",kpiCode:"WATER_AREA",code:"hd-rule-water-leak",cat:"overConsume",sev:"warn",th:0.08,filter:"meter and emMedium==\"water\"",expr:"nightFlowRatio > threshold",gran:"hourly",doc:"医院能源诊断规则模拟文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"D",k:"hd-rule-hvac-drift",n:"空调能效漂移",s:"hd-site-primary",kpi:"hd-kpi-cool-area",kpiCode:"COOL_AREA",code:"hd-rule-hvac-drift",cat:"efficiency",sev:"warn",th:0.12,filter:"meter and (emMedium==\"cool\" or emMedium==\"elec\")",expr:"efficiencyDrift > threshold",gran:"daily",doc:"医院能源诊断规则模拟文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"D",k:"hd-rule-carbon",n:"碳强度偏离目标",s:"hd-site-primary",kpi:"hd-kpi-carbon-area",kpiCode:"CARBON_AREA",code:"hd-rule-carbon",cat:"carbonRisk",sev:"warn",th:0.1,filter:"emCarbonTarget",expr:"carbonDeviation > threshold",gran:"monthly",doc:"医院能源诊断规则模拟文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"D",k:"hd-rule-coverage",n:"采集完整率下降",s:"hd-site-primary",kpi:"hd-kpi-elec-area",kpiCode:"ELEC_AREA",code:"hd-rule-coverage",cat:"dataQuality",sev:"critical",th:0.9,filter:"meter",expr:"dataCompleteness < threshold",gran:"daily",doc:"医院能源诊断规则模拟文件｜演示模拟口径，非结算、合规申报或对外发布依据"}
+  ]
+  diagnosticResults:diagnostics.map(d=>do
+    existing:existingKey(d->k)
+    if(existing!=null) return {attempted:1,written:0,skipped:1,errors:0}
+    common:{emSynthetic,emDataProvenance:"hospitalDemo-20260909",emDemoKey:d->k,dis:d->n}
+    made:emAddDiagRule(must(d->s),d->code,d->n,d->cat,d->sev,d->th,common.merge({emKpiRef:resolveKpiCode(d->kpiCode),emSubjectFilter:d->filter,emExpr:d->expr,emGranularity:d->gran,emSourceDoc:d->doc}))
+    commit(diff(readById(made),common))
+    {attempted:1,written:1,skipped:0,errors:0}
+  end)
+  businessFactoryResults:regularFactoryResults.addAll(kpiResults).addAll(diagnosticResults)
+  businessDirect:[
+    {t:"C",k:"hd-carbon-target-1",n:"某医院（构建中）年度碳目标",s:"hd-site-primary",sub:"hd-site-primary",by:2025,ty:2030,bv:12800000,tv:10496000,tt:"absolute",unit:"kgCO2e",source:"医院碳减排目标演示文件",doc:"医院碳减排目标演示文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"C",k:"hd-carbon-target-2",n:"某医院东院区年度碳目标",s:"hd-site-east",sub:"hd-site-east",by:2025,ty:2030,bv:92.0,tv:78.2,tt:"intensity",unit:"kgCO2e/m²",source:"医院碳减排目标演示文件",doc:"医院碳减排目标演示文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"C",k:"hd-carbon-target-3",n:"某医院康复院区年度碳目标",s:"hd-site-rehab",sub:"hd-site-rehab",by:2025,ty:2030,bv:3800000,tv:3192000,tt:"absolute",unit:"kgCO2e",source:"医院碳减排目标演示文件",doc:"医院碳减排目标演示文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"G",k:"hd-green-cert-01",n:"绿色电力证书批次01",s:"hd-site-primary",sub:"hd-site-primary",ct:"gec",no:"GEC-2026-HD-0001",y:2026,val:800,unit:"MWh",ret:true,doc:"医院绿色电力证书演示台账｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"G",k:"hd-green-cert-02",n:"绿色电力证书批次02",s:"hd-site-primary",sub:"hd-site-primary",ct:"greenPower",no:"GP-2024-HD-0002",y:2024,val:600,unit:"MWh",ret:false,doc:"医院绿色电力证书演示台账｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"G",k:"hd-green-cert-03",n:"东院区绿色电力证书",s:"hd-site-east",sub:"hd-site-east",ct:"gec",no:"GEC-2026-HD-EAST-0001",y:2026,val:180,unit:"MWh",ret:true,doc:"医院绿色电力证书演示台账｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"G",k:"hd-green-cert-04",n:"康复院区绿色电力证书",s:"hd-site-rehab",sub:"hd-site-rehab",ct:"greenPower",no:"GP-2024-HD-REHAB-0001",y:2024,val:160,unit:"MWh",ret:false,doc:"医院绿色电力证书演示台账｜演示模拟口径，非结算、合规申报或对外发布依据"}
+  ]
+  businessDirectResults:businessDirect.map(d=>do
+    existing:existingKey(d->k)
+    if(existing!=null) return {attempted:1,written:0,skipped:1,errors:0}
+    if(d->t=="C" and not d->doc.contains(d->source)) throw("carbon target source/document mismatch")
+    common:{energyMatrix,emSynthetic,emDataProvenance:"hospitalDemo-20260909",emDemoKey:d->k,dis:d->n,siteRef:must(d->s),emSubjectRef:must(d->sub)}
+    rec:if(d->t=="C") common.merge({emCarbonTarget,emBaseYear:d->by,emTargetYear:d->ty,emBaseValue:d->bv,emTargetValue:d->tv,emTargetType:d->tt,unit:d->unit,emSourceDoc:d->doc})
+      else common.merge({emGreenCert,emCertType:d->ct,emCertNo:d->no,emVintage:d->y,emQty:d->val,unit:d->unit,emRetired:if(d->ret)marker() else null,emSourceDoc:d->doc})
+    commit(diff(null,rec,{add}))
+    {attempted:1,written:1,skipped:0,errors:0}
+  end)
+  siteKeys:["hd-site-east","hd-site-rehab"]
+  span:toSpan(today()-90day..today()-1day)
+  results:siteKeys.map(key=>do
+    site:must(key)
+    ledger:emLedgerBuild(site,span,"daily")
+    ledger.findAll(row=>row["status"]=="written").each(row=>do
+      entries:readAll(emLedger and emMeterRef==row->meterRef and emPeriod==row->emPeriod and not emReversalOf)
+      if(entries.size!=1) throw("ambiguous or missing ledger natural key")
+      entry:entries.first
+      meterKey:readById(row->meterRef)["emDemoKey"]
+      commit(diff(entry,demoTags.merge({emDemoKey:key+"-ledger-"+row->emPeriod+"-"+meterKey})))
+    end)
+    diagnostics:emDiagRun(site,span)
+    diagnostics.each(row=>do
+      ref:row["anomalyRef"]
+      if(ref!=null) do
+        anomaly:readById(ref)
+        ruleKey:readById(anomaly->emDiagRef)["emDemoKey"]
+        subjectKey:readById(anomaly->emSubjectRef)["emDemoKey"]
+        commit(diff(anomaly,demoTags.merge({emDemoKey:key+"-anomaly-"+ruleKey+"-"+subjectKey+"-"+anomaly->emPeriod})))
+      end
+    end)
+    errors:ledger.findAll(row=>row["status"]=="error").size
+    written:ledger.findAll(row=>row["status"]=="written").size
+    if(errors>0 or written==0) throw("ledger batch blocked")
+    {attempted:ledger.size,written:written,skipped:ledger.findAll(row=>row["status"]=="skipped").size,errors:errors}
+  end)
+  // Final scope audit is a hard gate for this generation.
+  newSites:readAll(energyMatrix and site and emDataProvenance==generation)
+  if(newSites.size==0 or not newSites.colNames.contains("id")) throw("scope audit blocked: missing site id column")
+  newSiteIds:newSites.colToList("id")
+  scopedRecords:readAll(energyMatrix).findAll(r=>newSiteIds.contains(r["id"]) or newSiteIds.contains(r["siteRef"]) or newSiteIds.contains(r["emSubjectRef"]))
+  keyedRecords:readAll(energyMatrix and emSynthetic and emDemoKey).findAll(r=>r["emDemoKey"].toStr.startsWith("hd-"))
+  keyedRecords.each(r=>byKey(r["emDemoKey"]))
+  missingSynthetic:scopedRecords.findAll(r=>r.missing("emSynthetic")).size+keyedRecords.findAll(r=>r.missing("emSynthetic")).size
+  missingProvenance:scopedRecords.findAll(r=>r["emDataProvenance"]!=generation).size+keyedRecords.findAll(r=>r["emDataProvenance"]!=generation).size
+  if(missingSynthetic>0 or missingProvenance>0) throw("scope audit blocked: missing required synthetic provenance markers")
+  {generation:generation,attempted:sumVals(results.map(r=>r->attempted))+businessFactoryResults.size+businessDirectResults.size,written:sumVals(results.map(r=>r->written))+sumVals(businessFactoryResults.map(r=>r->written))+sumVals(businessDirectResults.map(r=>r->written)),skipped:sumVals(results.map(r=>r->skipped))+sumVals(businessFactoryResults.map(r=>r->skipped))+sumVals(businessDirectResults.map(r=>r->skipped)),errors:sumVals(results.map(r=>r->errors))}
+end

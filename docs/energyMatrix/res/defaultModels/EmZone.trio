@@ -1,0 +1,30 @@
+//
+// EmZone.trio —— 计量分区（说明书 §3.2 表 3-1）
+//
+// 能耗核算的最小空间单元，**可跨楼层**（说明书 §6 待决事项 OI-04 的取舍）。
+// 因此挂 siteRef 而不是 floorRef —— 国内商业综合体按业态分区（餐饮区、
+// 主力店、公区）而不是按楼层分区是常态，强绑楼层会让分区建不出来。
+//
+// 与组织树正交：emTenantRef 把空间维度与组织维度关联起来。
+//
+
+---
+emZoneModelId:"_space:emZone"
+id:@_space:emZone
+energyMatrix
+space
+emZone
+siteRef:Arg("parentId")
+navName:Arg("entityDis:Zone")
+disMacro:"$siteRef $navName"
+tz:Arg("tz:Asia/Shanghai")
+// 分区面积 —— byArea 分摊与分区 EUI 的分母
+area:Arg("area:1000m²")
+// 业态类型，用于 EUI 对标与定额分配
+emUsageType:Arg("emUsageType:retail")
+// 在册人数 —— byHeadcount 分摊的权重
+emOccupancy:Arg("emOccupancy:N")
+// 归属租户（组织树），可为空（公区）
+emTenantRef:Arg("emTenantRef:N")
+// 可选：所属楼层。跨楼层分区留空
+floorRef:Arg("floorRef:N")

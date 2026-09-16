@@ -1,0 +1,111 @@
+
+===== Slide 1 =====
+FIN在市场上的比较
+开放性 | FIN | 其他
+直观和移动端友好的用户体验 |  |
+我们不会将您锁定在专有系统中 |  |
+现有自动化系统的标准用户界面 |  |
+原生支持Haystack 4 |  |
+简化多系统的集成 |  |
+基于浏览器的组态和调试 |  |
+优化了数据分析的快速数据库 |  |
+强大的数据库查询语言 |  |
+需要额外的费用
+易使用 | FIN | 其他
+上下文相关，方便的导航栏 – 减少不必要的点击 |  |
+自动生成的超链接 (Magic Bubbles)，减少工程时间 |  |
+仪表盘生成器可以定制化UI |  |
+集成的报警控制台 |  |
+语义标签模型改善了数据管理 |  |
+工作流工具提高了效率 |  |
+大量的向导简化了通用任务 |  |
+可变尺寸的2D和3D画面 |  |
+简化设备管理的模板 |  |
+通过标签让画面和逻辑也复用 |  |
+上下文相关的计划功能 |  |
+自动生成的点画面和摘要表 – 工程零工作量 |  |
+增值服务 | FIN | 其他
+Edge2Cloud技术可以在任何地方方便和安全的远程访问 |  |
+含标准的通讯驱动 |  |
+有
+没有
+需要额外的编程
+*
+*
+
+===== Slide 2 =====
+FIN & Competition
+Open | FIN | Competition
+Intuitive and mobile friendly user experience |  |
+We don’t lock you into a proprietary system– work with any system integrator |  |
+Standard UI over existing automation systems |  |
+Natively supports Haystack 4 |  |
+Simplifies multi-system integration |  |
+Browser-based configuration and commissioning |  |
+Analytics optimized fast database |  |
+Powerful database query language |  |
+Additional cost
+Ease of Use | FIN | Competition
+Context-sensitive, predictive navigation– eliminate clicks |  |
+Auto-generated hyperlinks (Magic Bubbles)saves engineering time |  |
+Dashboard builder app for customized UIs |  |
+Integrated alarm console |  |
+Semantic tagging model to improvedata management |  |
+Workflow tools to improve productivity |  |
+Extensive range of wizards to simplifycommon tasks |  |
+Resizable graphics in 2D and 3D |  |
+Templates to simplify device management |  |
+Reusability of graphics and logic with tagging |  |
+Scheduling functionality which is context-sensitive |  |
+Auto-generated point graphics and summary tables– zero engineering required |  |
+Value-Add Services | FIN Stack | Competition
+Edge2Cloud technology for easy andsecure remote access anywhere |  |
+Standard drivers included |  |
+Available
+Not Available
+Additional programming required
+*
+*
+
+===== Slide 3 =====
+FIN Framework & Tridium N4
+Global Programming
+Trending
+Alarm Management
+Scheduling
+User Management
+Weather Data
+Advanced Reporting
+Notes/Task Documentation
+Function Block Application
+Local trending, sync BACnet & Haystack
+Local alarm manager, sync BACnet & Haystack
+Local scheduling, sync BACnet & Haystack
+Custom profile based user, unlimited users
+Yes, data can be applied to programming
+Yes
+Yes (full reporting)
+Function Block (i.e. Wire Sheet)
+Local trending, sync BACnet & Haystack
+Local alarm manager, sync BACnet
+Local scheduling, sync BACnet
+Custom profile based user, unlimited users
+Yes, data can be applied to programming
+Yes
+Limited
+Native Tenant Billing
+Yes
+No
+Browser Based Management
+HTML5 - Full feature, any network client
+Yes, limited HTML5 functionality
+FIN Framework
+Tridium N4
+Remote Notification
+Yes w/ Escalation
+Yes w/ escalation
+Tridium Buster
+Tridium Buster
+Tridium Buster
+Tridium Buster
+Tridium Buster

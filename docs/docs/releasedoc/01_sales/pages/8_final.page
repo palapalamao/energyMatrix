@@ -1,0 +1,84 @@
+pageType: final
+background:
+  type: solid
+  color: "$ink"
+elements:
+  - elementId: topline
+    elementType: shape
+    bounds: [64, 66, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "#253039"}
+  - elementId: brand
+    elementType: text
+    bounds: [64, 38, 400, 18]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: ENERGYMATRIX · SIEMENS
+  - elementId: big1
+    elementType: text
+    bounds: [64, 170, 832, 64]
+    content:
+      fontSize: 46
+      bold: true
+      color: "#FFFFFF"
+      wrap: false
+      text: 让每一度电
+  - elementId: big2
+    elementType: text
+    bounds: [64, 240, 832, 64]
+    content:
+      fontSize: 46
+      bold: true
+      color: "$teal"
+      wrap: false
+      text: 都有账可查
+  - elementId: accentline
+    elementType: shape
+    bounds: [64, 330, 120, 3]
+    shapeName: rect
+    fill: {type: solid, color: "$amber"}
+  - elementId: sub
+    elementType: text
+    bounds: [64, 352, 720, 24]
+    content:
+      fontSize: 14
+      color: "#C7D0D8"
+      wrap: false
+      text: energyMatrix 建筑能源管理系统 软硬件一体化解决方案 V1.0
+  - elementId: bar1
+    elementType: shape
+    bounds: [820, 300, 10, 70]
+    shapeName: rect
+    fill: {type: solid, color: "#1B3A45"}
+  - elementId: bar2
+    elementType: shape
+    bounds: [840, 260, 10, 110]
+    shapeName: rect
+    fill: {type: solid, color: "$teal"}
+  - elementId: bar3
+    elementType: shape
+    bounds: [860, 285, 10, 85]
+    shapeName: rect
+    fill: {type: solid, color: "#1B3A45"}
+  - elementId: bar4
+    elementType: shape
+    bounds: [880, 235, 10, 135]
+    shapeName: rect
+    fill: {type: solid, color: "$amber"}
+  - elementId: company
+    elementType: text
+    bounds: [64, 462, 500, 20]
+    content:
+      fontSize: 13
+      color: "#FFFFFF"
+      wrap: false
+      text: 西门子（中国）有限公司
+  - elementId: note
+    elementType: text
+    bounds: [64, 486, 640, 16]
+    content:
+      fontSize: 10
+      color: "$mist"
+      wrap: false
+      text: 2026-09 · 本资料不含价格，商务报价另附 · 更多信息请联系方案团队

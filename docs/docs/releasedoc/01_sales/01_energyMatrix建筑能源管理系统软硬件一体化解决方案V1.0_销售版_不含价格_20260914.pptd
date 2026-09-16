@@ -1,0 +1,42 @@
+version: v2
+title: energyMatrix 建筑能源管理系统软硬件一体化解决方案 V1.0（销售版·不含价格）
+size: [960, 540]
+theme:
+  colors:
+    ink: "#0F1820"
+    ink2: "#1E2832"
+    paper: "#F7F9FA"
+    teal: "#138BAA"
+    tealDark: "#0B5F77"
+    amber: "#E8A33D"
+    steel: "#5C6B78"
+    mist: "#8A97A3"
+    line: "#D5DDE3"
+    softline: "#E3E9EE"
+  textStyles:
+    eyebrow:
+      fontSize: 11
+      color: "$teal"
+      bold: true
+      letterSpacing: 3
+    title:
+      fontSize: 30
+      color: "$ink"
+      bold: true
+    body:
+      fontSize: 12.5
+      color: "$steel"
+      lineHeight: 1.55
+    note:
+      fontSize: 10
+      color: "$mist"
+      lineHeight: 1.4
+pages:
+  - pages/1_cover.page
+  - pages/2_overview.page
+  - pages/3_deploy.page
+  - pages/4_governance.page
+  - pages/5_value.page
+  - pages/6_ai.page
+  - pages/7_scenes.page
+  - pages/8_final.page

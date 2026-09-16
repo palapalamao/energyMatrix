@@ -1,0 +1,86 @@
+//
+// EmWaterMeter.trio —— 水表（说明书 §3.3 表 3-2）
+//
+// 组合继承的子模板，叠加在 EmMeterBase.trio 之上。规则见 EmElecMeter.trio 头部。
+// emWaterType 细分水种：domestic | reclaimed | direct | fire | makeup | irrigation。
+//
+
+---
+// 水表本体
+emWaterMeterModelId:"_equip:emWaterMeter"
+emMeterModelId:"_equip:emMeter"
+id:@_equip:emWaterMeter
+energyMatrix
+equip
+meter
+water
+emMedium:"water"
+emWaterType:Arg("emWaterType:domestic")
+
+---
+// L1 累积水量
+emWaterMeterModelId:"_equip:emWaterMeter_point:l1Total"
+emMeterModelId:"_equip:emMeter_point:l1Total"
+id:@_equip:emWaterMeter_point:l1Total
+energyMatrix
+point
+sensor
+total
+emL1Point
+water
+volume
+equipRef:@_equip:emWaterMeter
+emMeterRef:@_equip:emWaterMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"累积水量"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"m³"
+his
+hisCollectInterval:15min
+hisInterpolate:"linear"
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// L2 区间水量增量
+emWaterMeterModelId:"_equip:emWaterMeter_point:l2Delta"
+emMeterModelId:"_equip:emMeter_point:l2Delta"
+id:@_equip:emWaterMeter_point:l2Delta
+energyMatrix
+point
+sensor
+emDelta
+water
+volume
+equipRef:@_equip:emWaterMeter
+emMeterRef:@_equip:emWaterMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"区间水量"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"m³"
+his
+hisInterpolate:"linear"
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// 瞬时流量
+emWaterMeterModelId:"_equip:emWaterMeter_point:flow"
+id:@_equip:emWaterMeter_point:flow
+energyMatrix
+point
+sensor
+water
+flow
+equipRef:@_equip:emWaterMeter
+emMeterRef:@_equip:emWaterMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"瞬时流量"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"m³/h"
+his
+tz:Arg("tz:Asia/Shanghai")

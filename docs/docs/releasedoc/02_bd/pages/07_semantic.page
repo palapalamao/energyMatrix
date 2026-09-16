@@ -1,0 +1,80 @@
+pageType: content
+background:
+  type: solid
+  color: "$paper"
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [64, 36, 500, 16]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: 03 · 产品方案介绍 —— 语义模型
+  - elementId: title
+    elementType: text
+    bounds: [64, 58, 832, 42]
+    content:
+      style: "$title"
+      wrap: false
+      text: 两层语义模型：对象层与业务层，以台账为唯一桥梁
+  - elementId: headrule
+    elementType: shape
+    bounds: [64, 110, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: l1band
+    elementType: shape
+    bounds: [64, 134, 832, 110]
+    shapeName: rect
+    fill: {type: solid, color: "#FFFFFF"}
+    border: {style: solid, width: 1.5, color: "$teal"}
+  - elementId: l1label
+    elementType: text
+    bounds: [80, 142, 300, 20]
+    content: {fontSize: 12, bold: true, color: "$teal", wrap: false, text: LAYER 1 · 对象与设备}
+  - elementId: l1items
+    elementType: text
+    bounds: [80, 168, 800, 66]
+    content:
+      fontSize: 11.5
+      color: "$steel"
+      lineHeight: 1.6
+      text: |
+        <p><strong>域 1 空间与组织</strong>（站点 / 楼层 / 分区 / 租户）　<strong>域 2 计量</strong>（关口表 / 总表 / 分项表 / 子表 / 考核表 / 虚表）</p>
+        <p><strong>域 3 供能产储</strong>（市政关口 / 变配电 / 光伏 / 储能 / 充电桩）　<strong>域 4 用能设备</strong>（挂载既有 equip + 用能设备组）</p>
+  - elementId: bridge
+    elementType: shape
+    bounds: [330, 252, 300, 40]
+    shapeName: rect
+    fill: {type: solid, color: "$amber"}
+  - elementId: bridget
+    elementType: text
+    bounds: [330, 252, 300, 40]
+    content: {fontSize: 13, bold: true, color: "#FFFFFF", align: [center, middle], wrap: false, text: 桥梁 · 能耗台账 EmLedgerEntry}
+  - elementId: l2band
+    elementType: shape
+    bounds: [64, 300, 832, 130]
+    shapeName: rect
+    fill: {type: solid, color: "$ink"}
+  - elementId: l2label
+    elementType: text
+    bounds: [80, 310, 300, 20]
+    content: {fontSize: 12, bold: true, color: "$teal", wrap: false, text: LAYER 2 · 业务对象}
+  - elementId: l2items
+    elementType: text
+    bounds: [80, 336, 800, 86]
+    content:
+      fontSize: 11.5
+      color: "#C7D0D8"
+      lineHeight: 1.7
+      text: |
+        <p><strong>域 5 台账</strong>（构建 / 关账 / 红冲 / 聚合）　<strong>域 6 分摊</strong>　<strong>域 7 费率账单</strong>　<strong>域 8 指标定额</strong></p>
+        <p><strong>域 9 基线核证</strong>　<strong>域 10 碳资产</strong>（Scope 1/2/3 · 绿证 · 碳目标）　<strong>域 11 诊断</strong>（规则 / 异常 / 工单）</p>
+  - elementId: note1
+    elementType: text
+    bounds: [64, 448, 832, 56]
+    content:
+      style: "$note"
+      text: |
+        <p>语义定义以 Xeto 库 em 为规格源真相（14 个 xeto 文件随 pod 打包），运行侧由 defs.trio（约 150 个标签 + 16 个枚举）在 FIN 5.3 生效；</p>
+        <p>14 个 ModelEntity 模板是实例化设备与表计的唯一入口 —— 模型可发现、可校验、可迁移。</p>

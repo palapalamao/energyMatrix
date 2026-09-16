@@ -1,0 +1,38 @@
+//
+// EmTenant.trio —— 租户 / 组织单元（说明书 §3.2 表 3-1 的 EmOrg / EmTenant）
+//
+// 组织树是与空间树**正交的第二棵树**：业主、物业、租户、成本中心。
+// EmTenant 继承自 EmOrg，所以两者共用一个模板 —— 带 emTenant 标记的是租户
+// （账单付费方），只带 emOrg 的是普通组织单元 / 成本中心。
+//
+// 说明书 §6 待决事项 OI-05（租户主数据进 Folio / 退化为外键同步 ERP）
+// 骨架取「进 Folio」：账单付费方与分摊目标都要能被 Ref 指向，
+// 外键方案会让 emTenantRef 失去引用完整性。
+//
+// 注意 parentRef 命名 —— xeto 原稿用 parentRef，本 pod 统一为 emParentRef
+// 以满足「所有自定义标签一律带 em 前缀」的强制约束（README 偏差 #4）。
+//
+
+---
+emTenantModelId:"_org:emTenant"
+id:@_org:emTenant
+energyMatrix
+emOrg
+emTenant
+dis:Arg("entityDis:Tenant")
+navName:Arg("entityDis:Tenant")
+// 上级组织，构成成本中心树；顶层组织留空。
+// 必须带默认值 N（null）：顶层组织建的时候 parentRef 传的是 null，
+// 而 Etc.makeDict 会把 null 值的键直接丢掉 —— 等于这个 Arg 根本没传进来。
+// 没有默认值的话，建顶层组织必然报 `Missing argument: Arg("parentId")`。
+emParentRef:Arg("parentId:N")
+// 租赁面积 —— byArea 分摊的权重
+area:Arg("area:N")
+// 在册人数 —— byHeadcount 分摊的权重
+emOccupancy:Arg("emOccupancy:N")
+// 业态类型
+emUsageType:Arg("emUsageType:retail")
+// 合同信息
+emContractNo:Arg("emContractNo:N")
+emLeaseStart:Arg("emLeaseStart:N")
+emLeaseEnd:Arg("emLeaseEnd:N")

@@ -1,0 +1,23 @@
+// res/defaultJobs/jobs.trio
+// energyMatrix 的定时作业。由 jobExt 加载（build.fan depends 里有 jobExt）。
+//
+// ★ Job 的身份是 'dis' —— 改名等于新建，旧的会留在库里继续执行。
+//
+// ★ 不要靠时间间隔保证 Job 之间的依赖顺序。
+//   台账链路「台账构建 → 分摊 → 缺口校核」有严格先后依赖，站点一多就会出现
+//   "分摊还没跑完缺口就算了"的竞态。所以这三步**没有**拆成三个 Job 靠时间错开，
+//   而是合并进 emNightlyPipeline 一个函数里串行执行。
+//
+// ★ 关账**不在**流水线里。
+//   关账是带审计语义的人工动作 —— 缺口率闸门（说明书 §5.2）是硬门槛，
+//   必须有人对"这个月的账平不平"负责，不能让定时任务替人做这个决定。
+//   关账入口在 UI 的「报表与关账」屏（emClosePeriod）。
+//
+// 修改本文件后必须 reload pod，Job 才会按新的 jobSchedule 重启。
+
+---
+dis:"energyMatrix nightly ledger pipeline"
+job
+jobExpr:"emNightlyPipeline()"
+jobSchedule:"at 01:00:00"
+---

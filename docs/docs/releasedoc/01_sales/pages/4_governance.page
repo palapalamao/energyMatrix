@@ -1,0 +1,133 @@
+pageType: content
+background:
+  type: solid
+  color: "$ink"
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [64, 36, 500, 16]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: DATA GOVERNANCE · 数据治理
+  - elementId: title
+    elementType: text
+    bounds: [64, 58, 720, 46]
+    content:
+      fontSize: 32
+      bold: true
+      color: "#FFFFFF"
+      wrap: false
+      text: 每一度电，都有账可查
+  - elementId: l1
+    elementType: shape
+    bounds: [64, 128, 240, 64]
+    shapeName: rect
+    fill: {type: solid, color: "$ink2"}
+    border: {style: solid, width: 1, color: "#3A4854"}
+  - elementId: l1t
+    elementType: text
+    bounds: [78, 136, 214, 48]
+    content:
+      fontSize: 11
+      color: "#C7D0D8"
+      lineHeight: 1.4
+      text: |
+        <p><span style="font-size:13px; color:#FFFFFF;"><strong>L1 raw 累积读数</strong></span></p>
+        <p>表底直采 · 禁止修改</p>
+  - elementId: ar1
+    elementType: shape
+    bounds: [312, 146, 28, 28]
+    shapeName: rightArrow
+    fill: {type: solid, color: "$teal"}
+  - elementId: l2
+    elementType: shape
+    bounds: [348, 128, 240, 64]
+    shapeName: rect
+    fill: {type: solid, color: "$ink2"}
+    border: {style: solid, width: 1, color: "#3A4854"}
+  - elementId: l2t
+    elementType: text
+    bounds: [362, 136, 214, 48]
+    content:
+      fontSize: 11
+      color: "#C7D0D8"
+      lineHeight: 1.4
+      text: |
+        <p><span style="font-size:13px; color:#FFFFFF;"><strong>L2 delta 区间增量</strong></span></p>
+        <p>含翻转 / 换表补偿</p>
+  - elementId: ar2
+    elementType: shape
+    bounds: [596, 146, 28, 28]
+    shapeName: rightArrow
+    fill: {type: solid, color: "$teal"}
+  - elementId: l3
+    elementType: shape
+    bounds: [632, 128, 240, 64]
+    shapeName: rect
+    fill: {type: solid, color: "$ink2"}
+    border: {style: solid, width: 1, color: "#3A4854"}
+  - elementId: l3t
+    elementType: text
+    bounds: [646, 136, 214, 48]
+    content:
+      fontSize: 11
+      color: "#C7D0D8"
+      lineHeight: 1.4
+      text: |
+        <p><span style="font-size:13px; color:#FFFFFF;"><strong>L3 index 归一化指标</strong></span></p>
+        <p>EUI / 定额 / 碳排业务层生成</p>
+  - elementId: rulesTitle
+    elementType: text
+    bounds: [64, 222, 560, 24]
+    content:
+      fontSize: 15
+      bold: true
+      color: "#FFFFFF"
+      wrap: false
+      text: 十条铁律 · 每一条都有代码强制点
+  - elementId: rulesL
+    elementType: text
+    bounds: [64, 254, 400, 220]
+    content:
+      fontSize: 11
+      color: "#C7D0D8"
+      lineHeight: 1.9
+      text: |
+        <p><span style="color:$teal;"><strong>1</strong></span>  一切能耗归属唯一 EmMeter，禁裸点入账</p>
+        <p><span style="color:$teal;"><strong>2</strong></span>  同介质计量 DAG，禁跨介质挂接</p>
+        <p><span style="color:$teal;"><strong>3</strong></span>  物理表与虚拟表同构，上层无感</p>
+        <p><span style="color:$teal;"><strong>4</strong></span>  每个数值必带 emDataSource 来源</p>
+        <p><span style="color:$teal;"><strong>5</strong></span>  不重复定义冷机 / 水泵 / AHU</p>
+  - elementId: rulesR
+    elementType: text
+    bounds: [480, 254, 416, 220]
+    content:
+      fontSize: 11
+      color: "#C7D0D8"
+      lineHeight: 1.9
+      text: |
+        <p><span style="color:$teal;"><strong>6</strong></span>  L2 只读台账，禁直读点位历史</p>
+        <p><span style="color:$teal;"><strong>7</strong></span>  关账不可变，修正一律走红冲</p>
+        <p><span style="color:$teal;"><strong>8</strong></span>  业务参数版本化 + 必填来源文件</p>
+        <p><span style="color:$teal;"><strong>9</strong></span>  账单 / 碳账 / 指标可无损重算</p>
+        <p><span style="color:$teal;"><strong>10</strong></span>  节能量默认 planned，核证后方可 verified</p>
+  - elementId: gapNum
+    elementType: text
+    bounds: [700, 420, 196, 60]
+    content:
+      fontSize: 48
+      bold: true
+      color: "$amber"
+      align: [right, top]
+      wrap: false
+      text: 5%
+  - elementId: gapNote
+    elementType: text
+    bounds: [560, 482, 336, 32]
+    content:
+      fontSize: 10.5
+      color: "$mist"
+      align: [right, top]
+      lineHeight: 1.4
+      text: 缺口率闸门：总表与分表之和偏差超阈值，自动阻断月度关账

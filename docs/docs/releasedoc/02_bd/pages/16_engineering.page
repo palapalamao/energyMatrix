@@ -1,0 +1,103 @@
+pageType: content
+background:
+  type: solid
+  color: "$paper"
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [64, 36, 500, 16]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: 04 · 工程项目组态
+  - elementId: title
+    elementType: text
+    bounds: [64, 58, 832, 42]
+    content:
+      style: "$title"
+      wrap: false
+      text: 工程项目组态示例
+  - elementId: headrule
+    elementType: shape
+    bounds: [64, 110, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: cmdTitle
+    elementType: text
+    bounds: [64, 126, 500, 22]
+    content: {fontSize: 13, bold: true, color: "$ink", wrap: false, text: 一条命令铺一份完整示范数据}
+  - elementId: cmdbox
+    elementType: shape
+    bounds: [64, 152, 832, 96]
+    shapeName: rect
+    fill: {type: solid, color: "$ink"}
+  - elementId: cmd
+    elementType: text
+    bounds: [84, 164, 792, 76]
+    content:
+      fontSize: 12
+      fontFamily: {latin: "JetBrains Mono", ea: "思源黑体"}
+      color: "#C7D0D8"
+      lineHeight: 1.7
+      text: |
+        <p><span style="color:#7AB5D7;">emDemoBuild</span>()                        <span style="color:#8A97A3;">// 完整模型 + 近期历史 + 台账 + 诊断</span></p>
+        <p><span style="color:#7AB5D7;">emDemoBuild</span>(<span style="color:#E8A33D;">"XX 广场"</span>, 30)           <span style="color:#8A97A3;">// 指定名称与天数，默认完成业务派生</span></p>
+        <p><span style="color:#7AB5D7;">emLedgerBuild</span>(site, span, <span style="color:#E8A33D;">"daily"</span>)      <span style="color:#8A97A3;">// 台账 → 总览 / 分析 / 定额 / 碳排</span></p>
+  - elementId: st1n
+    elementType: text
+    bounds: [64, 274, 44, 30]
+    content: {fontSize: 22, bold: true, color: "$teal", wrap: false, text: "1"}
+  - elementId: st1
+    elementType: text
+    bounds: [110, 274, 350, 60]
+    content:
+      style: "$body"
+      text: |
+        <p><strong>模板化建模</strong> —— 14 个 ModelEntity 模板实例化站点、楼层、分区、租户与五种介质表计，必选点位自动绑定</p>
+  - elementId: st2n
+    elementType: text
+    bounds: [500, 274, 44, 30]
+    content: {fontSize: 22, bold: true, color: "$teal", wrap: false, text: "2"}
+  - elementId: st2
+    elementType: text
+    bounds: [546, 274, 350, 60]
+    content:
+      style: "$body"
+      text: |
+        <p><strong>点表交底</strong> —— 实体详情页展示 L1/L2 点位与绑定状态，缺项给出修复建议，校验不过拒绝保存</p>
+  - elementId: st3n
+    elementType: text
+    bounds: [64, 344, 44, 30]
+    content: {fontSize: 22, bold: true, color: "$teal", wrap: false, text: "3"}
+  - elementId: st3
+    elementType: text
+    bounds: [110, 344, 350, 60]
+    content:
+      style: "$body"
+      text: |
+        <p><strong>台账与诊断派生</strong> —— 台账构建、缺口校核、诊断规则跑批由夜间流水线串行执行，也可手动触发</p>
+  - elementId: st4n
+    elementType: text
+    bounds: [500, 344, 44, 30]
+    content: {fontSize: 22, bold: true, color: "$teal", wrap: false, text: "4"}
+  - elementId: st4
+    elementType: text
+    bounds: [546, 344, 350, 60]
+    content:
+      style: "$body"
+      text: |
+        <p><strong>关账与上报</strong> —— 关账预检给出未平衡表计清单；通过后生成上报报表与租户账单，全程留痕</p>
+  - elementId: midrule
+    elementType: shape
+    bounds: [64, 420, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: demo
+    elementType: text
+    bounds: [64, 434, 832, 70]
+    content:
+      style: "$note"
+      lineHeight: 1.6
+      text: |
+        <p>示范数据规模：1 站点 / 5 楼层 / 6 分区 / 4 租户 / 三级电计量树（关口 → 12 个国标分项 → 每层子表 + 租户表）/ 水气冷三介质 / 3 块缺口表 / 1 块考核表 / 4 个设备组 / 2 份费率 + 3 个排放因子 / 5 条指标 / 3 条定额 / 5 条诊断规则 / 1 条基线 + 2 个节能项目 / 1 个碳目标 + 2 张绿证。</p>
+        <p>所有示范记录带 emSynthetic 标记与来源标注，不会与真实数据混淆；缺口故意留在 5% 闸门以下，便于演示平衡校核。</p>

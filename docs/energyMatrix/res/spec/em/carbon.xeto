@@ -1,0 +1,72 @@
+//
+// 域 10：碳资产
+// 原则：排放因子是随年份/区域变化的业务参数（Layer2），不是设备属性（Layer1）。
+//       碳账目由能耗台账 × 因子确定性推导，任一因子换版可全量重算。
+//
+
+EmEmissionFactor: Dict {
+  energyMatrix
+  emEmissionFactor
+  id:          Ref
+  dis:         Str
+  emMedium:  EmMedium
+  emScope:     EmScope
+  emRegion:    Str?    <doc:"电网区域：华东/华北/南方… 或 national">
+  emYear:      Number
+  emFactor:    Number  <doc:"排放因子">
+  emFactorUnit: Str    <doc:"tCO2e/MWh、tCO2e/m³ 等">
+  emCoalFactor: Number? <doc:"折标煤系数 kgce/单位，用于能耗总量控制口径">
+  emSourceDoc: Str  <doc:"依据文件：生态环境部公告文号 / GB/T 2589，必填以保证可追溯">
+}
+emEmissionFactor: Marker
+
+EmScope: Enum {
+  scope1 <doc:"直接排放：燃气/柴油/冷媒泄漏">
+  scope2 <doc:"间接排放：外购电力/热力/冷量">
+  scope3 <doc:"其他间接排放">
+}
+emScope: EmScope
+
+EmCarbonAccount: Dict {
+  energyMatrix
+  emCarbonAccount
+  id:          Ref
+  emSubjectRef:  Ref  <doc:"核算边界：site | org | tenant">
+  span:        Span
+  emScope1:    Number? <unit:"tCO2e">
+  emScope2:    Number? <unit:"tCO2e">
+  emScope3:    Number? <unit:"tCO2e">
+  emTotal:     Number  <unit:"tCO2e">
+  emOffset:    Number? <unit:"tCO2e", doc:"绿电/绿证/CCER 抵消量">
+  emNet:       Number? <unit:"tCO2e">
+  emFactorRefs: List? <of:Ref, doc:"本期使用的因子版本，锁定后不随因子换版漂移">
+  emDataSource: EmDataSource
+}
+emCarbonAccount: Marker
+
+EmCarbonTarget: Dict {
+  energyMatrix
+  emCarbonTarget
+  id:          Ref
+  emSubjectRef:  Ref
+  emBaseYear:  Number
+  emTargetYear: Number
+  emBaseValue: Number <unit:"tCO2e">
+  emTargetValue: Number <unit:"tCO2e">
+  emTargetType: Str <doc:"absolute（总量）| intensity（强度）">
+}
+emCarbonTarget: Marker
+
+// 绿电 / 绿证
+EmGreenCert: Dict {
+  energyMatrix
+  emGreenCert
+  id:         Ref
+  emSubjectRef: Ref
+  emCertType: Str <doc:"greenPower | gec | ccer">
+  emCertNo:   Str?
+  emQty:      Number <unit:"MWh">
+  emVintage:  Number <doc:"归属年份">
+  emRetired:  Marker? <doc:"已注销核销，方可用于抵消">
+}
+emGreenCert: Marker

@@ -1,0 +1,182 @@
+// 01 model and governed parameters
+// Generated locally from manifest.py. Review, stage, confirm, then execute once.
+do
+  generation:"hospitalDemo-20260909"
+  demoTags:{emSynthetic,emDataProvenance:"hospitalDemo-20260909"}
+  sumVals:vals=>vals.reduce(0,(acc,val)=>acc+val)
+  byKey:key=>do
+    keyMatches:readAll(energyMatrix and emDemoKey==key)
+    if(keyMatches.size>1) throw("duplicate emDemoKey: "+key)
+    if(keyMatches.size==0) return null
+    keyMatches.first
+  end
+  existingKey:key=>do
+    rec:byKey(key)
+    if(rec!=null and rec["emDataProvenance"]!=generation) throw("emDemoKey generation collision: "+key)
+    rec
+  end
+  must:key=>do
+    rec:existingKey(key)
+    if(rec==null) throw("missing exact emDemoKey: "+key)
+    rec->id
+  end
+  // Model effect: ensure 44 topology and 24 parameter records; meters are in 02/03/04.
+  models:[
+    {t:"S",k:"hd-site-primary",n:"某医院（构建中）",a:105600,ca:82400,o:4250,u:"hospital",cz:"hotSummerColdWinter",by:2025,g:0.05,reg:"华北电网",tz:"Asia/Shanghai",ledger:true,kpi:true,carbon:true},
+    {t:"S",k:"hd-site-east",n:"某医院东院区",a:34800,ca:26700,o:1380,u:"hospital",cz:"hotSummerColdWinter",by:2025,g:0.05,reg:"华北电网",tz:"Asia/Shanghai",ledger:true,kpi:true,carbon:true},
+    {t:"S",k:"hd-site-rehab",n:"某医院康复院区",a:28600,ca:21900,o:920,u:"hospital",cz:"hotSummerColdWinter",by:2025,g:0.05,reg:"华北电网",tz:"Asia/Shanghai",ledger:true,kpi:true,carbon:true},
+    {t:"F",k:"hd-floor-primary--2",n:"地下2层",s:"hd-site-primary",l:-2,a:7600,u:"parking",o:80},
+    {t:"F",k:"hd-floor-primary--1",n:"地下1层",s:"hd-site-primary",l:-1,a:7600,u:"common",o:80},
+    {t:"F",k:"hd-floor-primary-01",n:"1层",s:"hd-site-primary",l:1,a:8800,u:"hospital",o:620},
+    {t:"F",k:"hd-floor-primary-02",n:"2层",s:"hd-site-primary",l:2,a:8800,u:"hospital",o:620},
+    {t:"F",k:"hd-floor-primary-03",n:"3层",s:"hd-site-primary",l:3,a:8800,u:"hospital",o:620},
+    {t:"F",k:"hd-floor-primary-04",n:"4层",s:"hd-site-primary",l:4,a:8800,u:"hospital",o:620},
+    {t:"F",k:"hd-floor-primary-05",n:"5层",s:"hd-site-primary",l:5,a:8800,u:"hospital",o:620},
+    {t:"F",k:"hd-floor-primary-06",n:"6层",s:"hd-site-primary",l:6,a:8800,u:"hospital",o:620},
+    {t:"F",k:"hd-floor-primary-07",n:"7层",s:"hd-site-primary",l:7,a:8800,u:"hospital",o:620},
+    {t:"F",k:"hd-floor-primary-08",n:"8层",s:"hd-site-primary",l:8,a:8800,u:"hospital",o:620},
+    {t:"F",k:"hd-floor-primary-09",n:"9层",s:"hd-site-primary",l:9,a:8800,u:"hospital",o:620},
+    {t:"F",k:"hd-floor-primary-10",n:"10层",s:"hd-site-primary",l:10,a:8800,u:"hospital",o:620},
+    {t:"F",k:"hd-floor-east-01",n:"东院区综合楼",s:"hd-site-east",l:1,a:12600,u:"hospital",o:880},
+    {t:"F",k:"hd-floor-rehab-01",n:"康复院区综合楼",s:"hd-site-rehab",l:1,a:10800,u:"hospital",o:520},
+    {t:"Z",k:"hd-zone-outpatient",n:"门诊区",s:"hd-site-primary",f:"hd-floor-primary-01",a:5200,u:"hospital",o:1800},
+    {t:"Z",k:"hd-zone-emergency",n:"急诊区",s:"hd-site-primary",f:"hd-floor-primary-01",a:1600,u:"hospital",o:320},
+    {t:"Z",k:"hd-zone-imaging",n:"影像中心",s:"hd-site-primary",f:"hd-floor-primary-02",a:1450,u:"hospital",o:180},
+    {t:"Z",k:"hd-zone-lab",n:"检验中心",s:"hd-site-primary",f:"hd-floor-primary-02",a:1200,u:"hospital",o:150},
+    {t:"Z",k:"hd-zone-operating",n:"手术部",s:"hd-site-primary",f:"hd-floor-primary-03",a:2100,u:"hospital",o:140},
+    {t:"Z",k:"hd-zone-icu",n:"重症医学科",s:"hd-site-primary",f:"hd-floor-primary-04",a:1350,u:"hospital",o:110},
+    {t:"Z",k:"hd-zone-ward-a",n:"住院A区",s:"hd-site-primary",f:"hd-floor-primary-05",a:4600,u:"hospital",o:520},
+    {t:"Z",k:"hd-zone-ward-b",n:"住院B区",s:"hd-site-primary",f:"hd-floor-primary-06",a:4400,u:"hospital",o:500},
+    {t:"Z",k:"hd-zone-sterilization",n:"消毒供应中心",s:"hd-site-primary",f:"hd-floor-primary-01",a:900,u:"industrial",o:90},
+    {t:"Z",k:"hd-zone-pharmacy",n:"药学部",s:"hd-site-primary",f:"hd-floor-primary-01",a:780,u:"hospital",o:85},
+    {t:"Z",k:"hd-zone-kitchen",n:"营养食堂",s:"hd-site-primary",f:"hd-floor-primary-01",a:1050,u:"common",o:180},
+    {t:"Z",k:"hd-zone-laundry",n:"洗衣房",s:"hd-site-primary",f:"hd-floor-primary--1",a:820,u:"industrial",o:55},
+    {t:"Z",k:"hd-zone-plant",n:"能源站",s:"hd-site-primary",f:"hd-floor-primary--1",a:1500,u:"industrial",o:45},
+    {t:"Z",k:"hd-zone-parking",n:"地下停车区",s:"hd-site-primary",f:"hd-floor-primary--1",a:6900,u:"parking",o:120},
+    {t:"Z",k:"hd-zone-information",n:"信息机房",s:"hd-site-primary",f:"hd-floor-primary-02",a:620,u:"datacenter",o:35},
+    {t:"Z",k:"hd-zone-east-campus",n:"东院区综合用能区",s:"hd-site-east",f:"hd-floor-east-01",a:12600,u:"hospital",o:880},
+    {t:"Z",k:"hd-zone-rehab-campus",n:"康复院区综合用能区",s:"hd-site-rehab",f:"hd-floor-rehab-01",a:10800,u:"hospital",o:520},
+    {t:"O",k:"hd-org-outpatient",n:"门诊部",s:"hd-site-primary",a:5200,u:"hospital",o:1800},
+    {t:"O",k:"hd-org-emergency",n:"急诊医学科",s:"hd-site-primary",a:1600,u:"hospital",o:320},
+    {t:"O",k:"hd-org-inpatient",n:"住院部",s:"hd-site-primary",a:9000,u:"hospital",o:1020},
+    {t:"O",k:"hd-org-critical",n:"重症与手术中心",s:"hd-site-primary",a:3450,u:"hospital",o:250},
+    {t:"O",k:"hd-org-medtech",n:"医技部",s:"hd-site-primary",a:2650,u:"hospital",o:330},
+    {t:"O",k:"hd-org-pharmacy",n:"药学部",s:"hd-site-primary",a:780,u:"hospital",o:85},
+    {t:"O",k:"hd-org-logistics",n:"后勤保障部",s:"hd-site-primary",a:11170,u:"common",o:490},
+    {t:"O",k:"hd-org-information",n:"信息中心",s:"hd-site-primary",a:620,u:"datacenter",o:35},
+    {t:"O",k:"hd-org-east-logistics",n:"东院区综合运营组织",s:"hd-site-east",a:12600,u:"hospital",o:880},
+    {t:"O",k:"hd-org-rehab-logistics",n:"康复院区综合运营组织",s:"hd-site-rehab",a:10800,u:"hospital",o:520}
+  ]
+  createModel:d=>do
+    common:{emSynthetic,emDataProvenance:"hospitalDemo-20260909",emDemoKey:d->k}
+    if(d->t=="S") do
+      if(not d->ledger or not d->kpi or not d->carbon) throw("site derivation coverage disabled")
+      return emAddSite(d->n,common.merge({area:d->a,emCoolArea:d->ca,emOccupancy:d->o,emUsageType:d->u,emClimateZone:d->cz,emBaseYear:d->by,emGapThreshold:d->g,emRegion:d->reg,tz:d->tz}))
+    end
+    if(d->t=="F") return emAddFloor(must(d->s),d->n,common.merge({floorNum:d->l,area:d->a,emUsageType:d->u,emOccupancy:d->o}))
+    if(d->t=="Z") return emAddZone(must(d->s),d->n,common.merge({floorRef:must(d->f),area:d->a,emUsageType:d->u,emOccupancy:d->o}))
+    if(d->t=="O") return emAddTenant(null,d->n,common.merge({siteRef:must(d->s),area:d->a,emUsageType:d->u,emOccupancy:d->o}))
+    if(d->t=="M") do
+      args:common.merge({emMeterRole:d->r,submeterOf:if(d["p"]==null)null else must(d->p),emSpaceRef:must(d->z),emTenantRef:must(d->o),emDataSource:d->ds,emMeterScope:d->sc+"; loadCategory="+d->lc})
+      return emAddMeter(must(d->s),d->m,d->n,args.merge(if(d->r=="gateway"){emSettlement} else {}))
+    end
+    if(d->t=="G") return emAddGapMeter(must(d->s),must(d->src),d->n,common)
+    throw("unsupported model row "+d->t)
+  end
+  modelResults:models.map(d=>do
+    existing:existingKey(d->k)
+    if(existing!=null) return {attempted:1,written:0,skipped:1,errors:0}
+    made:createModel(d)
+    commit(diff(readById(made),demoTags.merge({emDemoKey:d->k}).merge(if(d->t=="F"){emOccupancy:d->o} else {}).merge(if(d->t=="O"){siteRef:must(d->s)} else {})))
+    readAll(point and equipRef==made).each(p=>commit(diff(p,demoTags.merge({emDemoKey:d->k+"-point-"+p["navName"]}))))
+    {attempted:1,written:1,skipped:0,errors:0}
+  end)
+  params:[
+    {t:"T",k:"hd-tariff-elec-previous",n:"elec previous tariff",s:"hd-site-primary",m:"elec",pm:"tou",cur:"CNY",ver:"previous",eff:toSpan(2025-01-01..2025-12-31),val:0.82,rates:[{emTouPeriod:"valley",emHours:[0,7],emPrice:0.34},{emTouPeriod:"flat",emHours:[7,10],emPrice:0.72},{emTouPeriod:"peak",emHours:[10,12],emPrice:1.12},{emTouPeriod:"flat",emHours:[12,15],emPrice:0.72},{emTouPeriod:"peak",emHours:[15,21],emPrice:1.12},{emTouPeriod:"flat",emHours:[21,23],emPrice:0.72},{emTouPeriod:"valley",emHours:[23,24],emPrice:0.34}],doc:"医院能源价格参数演示文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"T",k:"hd-tariff-elec-current",n:"elec current tariff",s:"hd-site-primary",m:"elec",pm:"tou",cur:"CNY",ver:"current",eff:toSpan(2026-01-01..2026-12-31),val:0.86,rates:[{emTouPeriod:"valley",emHours:[0,7],emPrice:0.36},{emTouPeriod:"flat",emHours:[7,10],emPrice:0.76},{emTouPeriod:"peak",emHours:[10,12],emPrice:1.18},{emTouPeriod:"flat",emHours:[12,15],emPrice:0.76},{emTouPeriod:"peak",emHours:[15,21],emPrice:1.18},{emTouPeriod:"flat",emHours:[21,23],emPrice:0.76},{emTouPeriod:"valley",emHours:[23,24],emPrice:0.36}],doc:"医院能源价格参数演示文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"T",k:"hd-tariff-water-previous",n:"water previous tariff",s:"hd-site-primary",m:"water",pm:"flat",cur:"CNY",ver:"previous",eff:toSpan(2025-01-01..2025-12-31),val:4.15,rates:[],doc:"医院能源价格参数演示文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"T",k:"hd-tariff-water-current",n:"water current tariff",s:"hd-site-primary",m:"water",pm:"flat",cur:"CNY",ver:"current",eff:toSpan(2026-01-01..2026-12-31),val:4.3,rates:[],doc:"医院能源价格参数演示文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"T",k:"hd-tariff-gas-previous",n:"gas previous tariff",s:"hd-site-primary",m:"gas",pm:"contract",cur:"CNY",ver:"previous",eff:toSpan(2025-01-01..2025-12-31),val:3.18,rates:[],doc:"医院能源价格参数演示文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"T",k:"hd-tariff-gas-current",n:"gas current tariff",s:"hd-site-primary",m:"gas",pm:"contract",cur:"CNY",ver:"current",eff:toSpan(2026-01-01..2026-12-31),val:3.35,rates:[],doc:"医院能源价格参数演示文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"T",k:"hd-tariff-steam-previous",n:"steam previous tariff",s:"hd-site-primary",m:"steam",pm:"contract",cur:"CNY",ver:"previous",eff:toSpan(2025-01-01..2025-12-31),val:238.0,rates:[],doc:"医院能源价格参数演示文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"T",k:"hd-tariff-steam-current",n:"steam current tariff",s:"hd-site-primary",m:"steam",pm:"contract",cur:"CNY",ver:"current",eff:toSpan(2026-01-01..2026-12-31),val:246.0,rates:[],doc:"医院能源价格参数演示文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"T",k:"hd-tariff-heat-previous",n:"heat previous tariff",s:"hd-site-primary",m:"heat",pm:"flat",cur:"CNY",ver:"previous",eff:toSpan(2025-01-01..2025-12-31),val:0.31,rates:[],doc:"医院能源价格参数演示文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"T",k:"hd-tariff-heat-current",n:"heat current tariff",s:"hd-site-primary",m:"heat",pm:"flat",cur:"CNY",ver:"current",eff:toSpan(2026-01-01..2026-12-31),val:0.33,rates:[],doc:"医院能源价格参数演示文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"T",k:"hd-tariff-cool-previous",n:"cool previous tariff",s:"hd-site-primary",m:"cool",pm:"flat",cur:"CNY",ver:"previous",eff:toSpan(2025-01-01..2025-12-31),val:0.36,rates:[],doc:"医院能源价格参数演示文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"T",k:"hd-tariff-cool-current",n:"cool current tariff",s:"hd-site-primary",m:"cool",pm:"flat",cur:"CNY",ver:"current",eff:toSpan(2026-01-01..2026-12-31),val:0.38,rates:[],doc:"医院能源价格参数演示文件｜演示模拟口径，非结算、合规申报或对外发布依据"}
+  ]
+  paramResults:params.map(d=>do
+    if(not (["previous","current"].contains(d->ver))) throw("unsupported tariff version")
+    existing:existingKey(d->k)
+    if(existing!=null) return {attempted:1,written:0,skipped:1,errors:0}
+    common:{energyMatrix,emSynthetic,emDataProvenance:"hospitalDemo-20260909",emDemoKey:d->k,dis:d->n}
+    rec:common.merge({emTariff,siteRef:must(d->s),emMedium:d->m,emPricingModel:d->pm,emCurrency:d->cur,emEffective:d->eff,val:d->val,emRates:d->rates,emSourceDoc:d->doc})
+    commit(diff(null,rec,{add}))
+    {attempted:1,written:1,skipped:0,errors:0}
+  end)
+  normalizeRegion:region=>do
+    if(region==null) return "national"
+    normalized:lower(trim(region.toStr))
+    if(normalized=="") return "national"
+    normalized
+  end
+  factorRecord:d=>{energyMatrix,emEmissionFactor,emSynthetic,emDataProvenance:"hospitalDemo-20260909",emDemoKey:d->k,dis:d->n,emMedium:d->m,emYear:d->y,emScope:d->sc,emFactor:d->fac,emFactorUnit:d->fu,emRegion:d->reg,emCoalFactor:d["coal"],emSourceDoc:d->doc}
+  factors:[
+    {t:"E",k:"hd-emission-elec-previous",n:"elec previous emission factor",s:"hd-site-primary",m:"elec",ver:"previous",y:2025,sc:"scope2",fac:0.5703,fu:"kgCO2e/kWh",reg:"华北电网",coal:0.1229,doc:"医院碳排放因子模拟参数文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"E",k:"hd-emission-elec-current",n:"elec current emission factor",s:"hd-site-primary",m:"elec",ver:"current",y:2026,sc:"scope2",fac:0.5366,fu:"kgCO2e/kWh",reg:"华北电网",coal:0.1229,doc:"医院碳排放因子模拟参数文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"E",k:"hd-emission-water-previous",n:"water previous emission factor",s:"hd-site-primary",m:"water",ver:"previous",y:2025,sc:"scope2",fac:0.168,fu:"kgCO2e/m³",reg:"national",coal:null,doc:"医院碳排放因子模拟参数文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"E",k:"hd-emission-water-current",n:"water current emission factor",s:"hd-site-primary",m:"water",ver:"current",y:2026,sc:"scope2",fac:0.165,fu:"kgCO2e/m³",reg:"national",coal:null,doc:"医院碳排放因子模拟参数文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"E",k:"hd-emission-gas-previous",n:"gas previous emission factor",s:"hd-site-primary",m:"gas",ver:"previous",y:2025,sc:"scope1",fac:2.162,fu:"kgCO2e/m³",reg:"national",coal:1.33,doc:"医院碳排放因子模拟参数文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"E",k:"hd-emission-gas-current",n:"gas current emission factor",s:"hd-site-primary",m:"gas",ver:"current",y:2026,sc:"scope1",fac:2.162,fu:"kgCO2e/m³",reg:"national",coal:1.33,doc:"医院碳排放因子模拟参数文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"E",k:"hd-emission-steam-previous",n:"steam previous emission factor",s:"hd-site-primary",m:"steam",ver:"previous",y:2025,sc:"scope2",fac:0.11,fu:"kgCO2e/kg",reg:"national",coal:0.1286,doc:"医院碳排放因子模拟参数文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"E",k:"hd-emission-steam-current",n:"steam current emission factor",s:"hd-site-primary",m:"steam",ver:"current",y:2026,sc:"scope2",fac:0.108,fu:"kgCO2e/kg",reg:"national",coal:0.1286,doc:"医院碳排放因子模拟参数文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"E",k:"hd-emission-heat-previous",n:"heat previous emission factor",s:"hd-site-primary",m:"heat",ver:"previous",y:2025,sc:"scope2",fac:0.112,fu:"kgCO2e/kWh",reg:"national",coal:0.1229,doc:"医院碳排放因子模拟参数文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"E",k:"hd-emission-heat-current",n:"heat current emission factor",s:"hd-site-primary",m:"heat",ver:"current",y:2026,sc:"scope2",fac:0.108,fu:"kgCO2e/kWh",reg:"national",coal:0.1229,doc:"医院碳排放因子模拟参数文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"E",k:"hd-emission-cool-previous",n:"cool previous emission factor",s:"hd-site-primary",m:"cool",ver:"previous",y:2025,sc:"scope2",fac:0.095,fu:"kgCO2e/kWh",reg:"national",coal:0.1229,doc:"医院碳排放因子模拟参数文件｜演示模拟口径，非结算、合规申报或对外发布依据"},
+    {t:"E",k:"hd-emission-cool-current",n:"cool current emission factor",s:"hd-site-primary",m:"cool",ver:"current",y:2026,sc:"scope2",fac:0.091,fu:"kgCO2e/kWh",reg:"national",coal:0.1229,doc:"医院碳排放因子模拟参数文件｜演示模拟口径，非结算、合规申报或对外发布依据"}
+  ]
+  factorResults:factors.map(d=>do
+    sourceSite:must(d->s)
+    if(not (["previous","current"].contains(d->ver))) throw("unsupported emission factor version")
+    factorMatches:readAll(emEmissionFactor and emMedium==d->m and emYear==d->y).findAll(r=>normalizeRegion(r["emRegion"])==normalizeRegion(d->reg))
+    if(factorMatches.size>1) throw("ambiguous emission factor natural key")
+    if(factorMatches.size==0) do
+      keyed:byKey(d->k)
+      if(keyed!=null) throw("emDemoKey does not match emission factor natural key: "+d->k)
+      commit(diff(null,factorRecord(d),{add}))
+      return {attempted:1,written:1,skipped:0,errors:0}
+    end
+    match:factorMatches.first
+    keyed:byKey(d->k)
+    if(keyed!=null and keyed->id!=match->id) throw("emDemoKey does not match emission factor natural key: "+d->k)
+    if(match.missing("emSynthetic")) return {attempted:1,written:0,skipped:1,errors:0}
+    if(match["emDataProvenance"]=="emDemoBuild") do
+      adopted:factorRecord(d)
+      commit(diff(match,adopted))
+      return {attempted:1,written:1,skipped:0,errors:0}
+    end
+    if(match["emDataProvenance"]==generation) do
+      if(keyed==null) do
+        commit(diff(match,factorRecord(d)))
+        return {attempted:1,written:1,skipped:0,errors:0}
+      end
+      return {attempted:1,written:0,skipped:1,errors:0}
+    end
+    throw("unsupported synthetic emission factor provenance")
+  end)
+  factories:[]
+  // Later governed batches use emAddQuota( emAddKpi( emAddDiagRule( and emAddSavingsProject(.
+  factoryResults:[]
+  allResults:modelResults.addAll(paramResults).addAll(factorResults).addAll(factoryResults)
+  // Final scope audit is a hard gate for this generation.
+  newSites:readAll(energyMatrix and site and emDataProvenance==generation)
+  if(newSites.size==0 or not newSites.colNames.contains("id")) throw("scope audit blocked: missing site id column")
+  newSiteIds:newSites.colToList("id")
+  scopedRecords:readAll(energyMatrix).findAll(r=>newSiteIds.contains(r["id"]) or newSiteIds.contains(r["siteRef"]) or newSiteIds.contains(r["emSubjectRef"]))
+  keyedRecords:readAll(energyMatrix and emSynthetic and emDemoKey).findAll(r=>r["emDemoKey"].toStr.startsWith("hd-"))
+  keyedRecords.each(r=>byKey(r["emDemoKey"]))
+  missingSynthetic:scopedRecords.findAll(r=>r.missing("emSynthetic")).size+keyedRecords.findAll(r=>r.missing("emSynthetic")).size
+  missingProvenance:scopedRecords.findAll(r=>r["emDataProvenance"]!=generation).size+keyedRecords.findAll(r=>r["emDataProvenance"]!=generation).size
+  if(missingSynthetic>0 or missingProvenance>0) throw("scope audit blocked: missing required synthetic provenance markers")
+  {generation:generation,attempted:allResults.size,written:sumVals(allResults.map(r=>r->written)),skipped:sumVals(allResults.map(r=>r->skipped)),errors:sumVals(allResults.map(r=>r->errors))}
+end

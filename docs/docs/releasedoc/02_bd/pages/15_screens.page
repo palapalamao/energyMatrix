@@ -1,0 +1,89 @@
+pageType: content
+background:
+  type: solid
+  color: "$paper"
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [64, 36, 500, 16]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: 03 · 产品方案介绍 —— 产品界面
+  - elementId: title
+    elementType: text
+    bounds: [64, 58, 832, 42]
+    content:
+      style: "$title"
+      wrap: false
+      text: 13 个业务屏，全部接真数据
+  - elementId: headrule
+    elementType: shape
+    bounds: [64, 110, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: g1t
+    elementType: text
+    bounds: [64, 126, 260, 20]
+    content: {fontSize: 12, bold: true, color: "$teal", wrap: false, text: 监测运行}
+  - elementId: g1
+    elementType: text
+    bounds: [64, 150, 260, 150]
+    content:
+      style: "$body"
+      lineHeight: 1.8
+      text: |
+        <p><strong>能源总览</strong> —— 折标煤头卡 + 各介质环比 / 同比 / 定额 + 分项堆叠趋势</p>
+        <p><strong>实时监测与告警</strong> —— 24 小时负荷曲线、异常事件流</p>
+        <p><strong>工单管理</strong> —— 看板流转、SLA、处置留痕</p>
+  - elementId: g2t
+    elementType: text
+    bounds: [348, 126, 260, 20]
+    content: {fontSize: 12, bold: true, color: "$teal", wrap: false, text: 分析优化}
+  - elementId: g2
+    elementType: text
+    bounds: [348, 150, 260, 170]
+    content:
+      style: "$body"
+      lineHeight: 1.8
+      text: |
+        <p><strong>能耗分析</strong> —— 同比 / 环比、7×24 强度热力、分时电价</p>
+        <p><strong>定额与对标</strong> —— EUI 国标对标、定额进度</p>
+        <p><strong>节能诊断与核证</strong> —— 规则库、基线验收、项目闭环</p>
+        <p><strong>碳排与双碳目标</strong> —— 因子版本、绿证、目标进度</p>
+  - elementId: g3t
+    elementType: text
+    bounds: [632, 126, 264, 20]
+    content: {fontSize: 12, bold: true, color: "$teal", wrap: false, text: 资产建模 · 集团上报}
+  - elementId: g3
+    elementType: text
+    bounds: [632, 150, 264, 190]
+    content:
+      style: "$body"
+      lineHeight: 1.8
+      text: |
+        <p><strong>分项计量树</strong> —— DAG 可视化、平衡校核</p>
+        <p><strong>数据模型配置</strong> —— 资产树、铁律校验、Xeto 规格只读</p>
+        <p><strong>表具与采集器</strong> —— 台账、通信状态、数据完好率</p>
+        <p><strong>多项目总览</strong> —— 跨项目 EUI 排名、集团汇总</p>
+        <p><strong>报表与关账</strong> —— 关账批次、上报模板、租户账单</p>
+        <p><strong>移动端速览</strong> —— 关键指标随身掌握</p>
+  - elementId: midrule
+    elementType: shape
+    bounds: [64, 360, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: notetitle
+    elementType: text
+    bounds: [64, 378, 300, 22]
+    content: {fontSize: 13, bold: true, color: "$ink", wrap: false, text: 界面设计原则}
+  - elementId: notes
+    elementType: text
+    bounds: [64, 404, 832, 90]
+    content:
+      style: "$body"
+      lineHeight: 1.7
+      text: |
+        <p>· 每个数值标注来源口径（measured / derived / allocated / estimated / manual），可结算口径一目了然</p>
+        <p>· “未计入：水（无折标煤系数）”这类提示必须出现 —— 分不清“本来不计入”和“参数漏录”的界面是失败的</p>
+        <p>· 诊断规则未实现的判据显示在告警屏顶部提示条，不谎报规则在工作</p>

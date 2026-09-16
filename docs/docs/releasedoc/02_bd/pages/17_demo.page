@@ -1,0 +1,77 @@
+pageType: content
+background:
+  type: solid
+  color: "$paper"
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [64, 36, 500, 16]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: 04 · 工程项目组态 —— 示范与验证
+  - elementId: title
+    elementType: text
+    bounds: [64, 58, 832, 42]
+    content:
+      style: "$title"
+      wrap: false
+      text: 交付前，每一条纪律都被验证过
+  - elementId: headrule
+    elementType: shape
+    bounds: [64, 110, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: kn1
+    elementType: text
+    bounds: [64, 136, 150, 48]
+    content: {fontSize: 38, bold: true, color: "$teal", wrap: false, text: "87"}
+  - elementId: kd1
+    elementType: text
+    bounds: [64, 190, 220, 44]
+    content: {fontSize: 11.5, color: "$steel", lineHeight: 1.45, text: 单元测试用例，十条铁律逐条钉死（含源码扫描守卫）}
+  - elementId: kn2
+    elementType: text
+    bounds: [320, 136, 150, 48]
+    content: {fontSize: 38, bold: true, color: "$teal", wrap: false, text: "13"}
+  - elementId: kd2
+    elementType: text
+    bounds: [320, 190, 220, 44]
+    content: {fontSize: 11.5, color: "$steel", lineHeight: 1.45, text: 业务屏全部接真数据，取数端点零占位}
+  - elementId: kn3
+    elementType: text
+    bounds: [576, 136, 150, 48]
+    content: {fontSize: 38, bold: true, color: "$teal", wrap: false, text: "10"}
+  - elementId: kd3
+    elementType: text
+    bounds: [576, 190, 220, 44]
+    content: {fontSize: 11.5, color: "$steel", lineHeight: 1.45, text: 步人工运行期验证清单，端到端一次跑通}
+  - elementId: midrule
+    elementType: shape
+    bounds: [64, 252, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: vtitle
+    elementType: text
+    bounds: [64, 270, 400, 22]
+    content: {fontSize: 13, bold: true, color: "$ink", wrap: false, text: 验证清单节选}
+  - elementId: vlist
+    elementType: text
+    bounds: [64, 298, 832, 190]
+    content:
+      style: "$body"
+      lineHeight: 1.75
+      text: |
+        <p>· 缺口率调到 5% 以上再跑关账预检 → 状态必须为 blocked，并列出未平衡表计清单</p>
+        <p>· 连点两次“跑一次诊断” → 第二次新建异常数必须为 0（幂等）</p>
+        <p>· 关账后执行红冲 → 修正链返回三条记录，关账数据本身不动</p>
+        <p>· 把排放因子单位改成 tCO₂e/MWh → 页面必须报“分母对不上”，而不是悄悄算错 1000 倍</p>
+        <p>· 未注销绿证不计入抵消；未核证节能量一律 planned</p>
+        <p>· 示范数据含 3.2% 电缺口 / 1.1% 水缺口 —— 故意留的，用来演示平衡校核看得见非零的数</p>
+  - elementId: footnote
+    elementType: text
+    bounds: [64, 500, 832, 16]
+    content:
+      style: "$note"
+      wrap: false
+      text: 另有医院全院分项计量示范（hospital demo）：建模 → 业务参数 → 台账 → 关账 → 验收五步脚本化复现

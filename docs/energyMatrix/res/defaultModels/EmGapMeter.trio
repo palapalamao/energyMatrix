@@ -1,0 +1,58 @@
+//
+// EmGapMeter.trio —— 缺口表（说明书 §3.3.3）
+//
+// 独立模板（不叠加 EmMeterBase.trio），结构同虚拟表，多一个 emGap 标记。
+//
+// 设计取舍（说明书原文）：总表减各分表之和的差值必须显式建模为一个带 emGap
+// 标记的虚拟表，而不是让它在报表中被平摊或悄悄消失。缺口率是判断计量方案
+// 是否合格的第一指标，也是关账闸门的判据。
+//
+// emFormula 由 EmEntityCrud.addGapMeter 按源表自动生成：
+//   "emMeterRead(@源表) - emSubMeterSum(@源表)"
+// submeterOf 指向源表 —— 缺口表挂在它所校核的那块表下面，这样计量树里
+// 一眼能看出"这块总表下还有多少不明用能"。
+//
+
+---
+// 缺口表本体
+emGapMeterModelId:"_equip:emGapMeter"
+id:@_equip:emGapMeter
+energyMatrix
+equip
+meter
+emVirtual
+emGap
+siteRef:Arg("parentId")
+floorRef:Arg("floorRef:N")
+navName:Arg("entityDis:Gap")
+disMacro:"$siteRef $navName"
+tz:Arg("tz:Asia/Shanghai")
+emMeterRole:"virtual"
+emDataSource:"derived"
+emMedium:Arg("emMedium:elec")
+emFormula:Arg("emFormula:0")
+// 指向被校核的源表（总表 / 关口表）
+submeterOf:Arg("submeterOf:N")
+emMeterScope:Arg("emMeterScope:N")
+
+---
+// 缺口量的时序留档 —— 缺口率的历史曲线是计量方案质量的长期指标
+emGapMeterModelId:"_equip:emGapMeter_point:l2Delta"
+id:@_equip:emGapMeter_point:l2Delta
+energyMatrix
+point
+sensor
+emDelta
+emVirtual
+emGap
+equipRef:@_equip:emGapMeter
+emMeterRef:@_equip:emGapMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"区间缺口量"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:Arg("unit:N")
+his
+hisInterpolate:"linear"
+tz:Arg("tz:Asia/Shanghai")

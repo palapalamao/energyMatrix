@@ -1,0 +1,55 @@
+@startuml
+!include style.iuml
+title 图 6-1  台账生成与关账时序
+autonumber "<b>[0]"
+
+actor "能源经理" as U
+participant "EmRestMod" as API
+participant "EmScheduler" as SCH
+participant "EmCloseTx" as TX
+participant "EmLedgerEngine" as LE
+participant "EmAllocEngine" as AE
+participant "EmRepo" as REPO
+database "Folio" as F
+
+U -> API : POST /api/em/ledger/close\n{span, granularity}
+API -> API : auth() + require("em:close")
+API -> SCH : submit(EmCalcCtx)
+SCH -> SCH : dedupe(idempotencyKey)
+SCH -> TX : execute()
+
+group 步骤 1  冻结
+  TX -> REPO : freezeDelta(span)
+  REPO -> F : commit(frozen marker)
+end
+
+group 步骤 2  生成实测条目
+  TX -> LE : run(ctx)
+  LE -> REPO : readMeters(role != virtual)
+  LE -> F : hisRead(L1 total)
+  LE -> LE : deltaOf() + 溢出补偿 + 换表补偿
+  LE -> LE : qualityOf() 完好率
+  LE -> REPO : commitLedger(measured[])
+end
+
+group 步骤 3  执行分摊
+  TX -> AE : run(ctx)
+  AE -> REPO : readRules(span) 按 priority 升序
+  AE -> AE : byRemainder / byArea / byRatedRuntime
+  AE -> REPO : commitLedger(allocated[], ruleRef)
+end
+
+group 步骤 4  平衡校核
+  TX -> REPO : readLedger(span)
+  TX -> TX : gapRatio = (总表 - 分表合计) / 总表
+  alt gapRatio >= 5%
+    TX --> API : EmError(EM-3002, 未平衡表计清单)
+    API --> U : 409 关账阻断
+  else gapRatio < 5%
+    TX -> REPO : seal() 打 emClosed
+    TX -> F : commit(EmClosePeriod)
+    TX --> API : EmClosePeriod{gapRatio, entryCount}
+    API --> U : 200 关账完成
+  end
+end
+@enduml

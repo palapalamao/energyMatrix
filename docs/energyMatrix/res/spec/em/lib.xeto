@@ -1,0 +1,26 @@
+//
+// ⚠ 本目录是说明书 xeto 原稿的**修正版**，随 energyMatrix pod 一起打包
+//   （res/spec/em/），作为语义模型的源真相供人阅读，并在未来迁移到
+//   Haxall 4.x / Haystack 5 时直接使用。
+//   FIN 5.3 (haystack 3.1.5.1) 不解析 xeto —— 运行时生效的等价定义在
+//   pod 的 lib/defs.trio。逐条差异见 README「与说明书的偏差」。
+//
+// ai4building energyMatrix (em)
+// 建筑能源管理系统 — Digital Twin 语义模型库
+// Layer 1: 对象与设备数据模型
+//
+
+pragma: Lib <
+  doc: "建筑能源管理数字孪生语义模型：空间/组织域、计量域、用能域、供能域、能流拓扑域"
+  version: "0.1.0"
+  depends: {
+    { lib: "sys" }
+    { lib: "ph" }
+    { lib: "ph.points" }
+    { lib: "ph.equips" }
+  }
+  org: {
+    dis: "ai4building"
+    uri: "https://www.ai4building.cn"
+  }
+>

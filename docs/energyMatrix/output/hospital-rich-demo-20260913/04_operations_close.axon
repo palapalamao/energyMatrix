@@ -1,0 +1,100 @@
+// energyMatrix hospital rich demo data
+// generation: hospital-rich-demo-20260913
+// batch: 04_operations_close
+// Default is preview-only. Change preview to false only after FIN Expert stages the unchanged request and the user confirms it.
+do
+  preview: true
+  generation: "hospital-rich-demo-20260913"
+  demoTags: {emSynthetic, emDataProvenance: generation}
+  if (preview) return {batch: "04_operations_close", generation: generation, preview, summary: "anomalies, work orders, baselines, savings projects and one completed prior-month close"}
+
+  site_hospital: read(energyMatrix and site and emDemoKey=="site-hospital-main", true)->id
+  curSpan: toSpan(2026-09-01..2026-09-13)
+  priorSpan: toSpan(2026-08-01..2026-08-31)
+
+  meter_h_elec_gw: read(energyMatrix and meter and emDemoKey=="meter-h-elec-gw", true)->id
+  meter_h_lighting_main: read(energyMatrix and meter and emDemoKey=="meter-h-lighting-main", true)->id
+  meter_h_lighting_emergency: read(energyMatrix and meter and emDemoKey=="meter-h-lighting-emergency", true)->id
+  meter_h_landscape: read(energyMatrix and meter and emDemoKey=="meter-h-landscape", true)->id
+  meter_h_chiller_plant: read(energyMatrix and meter and emDemoKey=="meter-h-chiller-plant", true)->id
+  meter_h_hvac_terminal: read(energyMatrix and meter and emDemoKey=="meter-h-hvac-terminal", true)->id
+  meter_h_elevator: read(energyMatrix and meter and emDemoKey=="meter-h-elevator", true)->id
+  meter_h_pumps: read(energyMatrix and meter and emDemoKey=="meter-h-pumps", true)->id
+  meter_h_ventilation: read(energyMatrix and meter and emDemoKey=="meter-h-ventilation", true)->id
+  meter_h_data_center: read(energyMatrix and meter and emDemoKey=="meter-h-data-center", true)->id
+  meter_h_kitchen_elec: read(energyMatrix and meter and emDemoKey=="meter-h-kitchen-elec", true)->id
+  meter_h_laundry: read(energyMatrix and meter and emDemoKey=="meter-h-laundry", true)->id
+  meter_h_medical_other: read(energyMatrix and meter and emDemoKey=="meter-h-medical-other", true)->id
+  meter_h_imaging_elec: read(energyMatrix and meter and emDemoKey=="meter-h-imaging-elec", true)->id
+  meter_h_or_elec: read(energyMatrix and meter and emDemoKey=="meter-h-or-elec", true)->id
+  meter_h_water_gw: read(energyMatrix and meter and emDemoKey=="meter-h-water-gw", true)->id
+  meter_h_water_domestic: read(energyMatrix and meter and emDemoKey=="meter-h-water-domestic", true)->id
+  meter_h_water_medical: read(energyMatrix and meter and emDemoKey=="meter-h-water-medical", true)->id
+  meter_h_water_cooling: read(energyMatrix and meter and emDemoKey=="meter-h-water-cooling", true)->id
+  meter_h_water_kitchen: read(energyMatrix and meter and emDemoKey=="meter-h-water-kitchen", true)->id
+  meter_h_gas_gw: read(energyMatrix and meter and emDemoKey=="meter-h-gas-gw", true)->id
+  meter_h_gas_kitchen: read(energyMatrix and meter and emDemoKey=="meter-h-gas-kitchen", true)->id
+  meter_h_gas_boiler: read(energyMatrix and meter and emDemoKey=="meter-h-gas-boiler", true)->id
+  meter_h_steam_gw: read(energyMatrix and meter and emDemoKey=="meter-h-steam-gw", true)->id
+  meter_h_steam_sterile: read(energyMatrix and meter and emDemoKey=="meter-h-steam-sterile", true)->id
+  meter_h_steam_laundry: read(energyMatrix and meter and emDemoKey=="meter-h-steam-laundry", true)->id
+  meter_h_heat_gw: read(energyMatrix and meter and emDemoKey=="meter-h-heat-gw", true)->id
+  meter_h_heat_inpatient: read(energyMatrix and meter and emDemoKey=="meter-h-heat-inpatient", true)->id
+  meter_h_heat_outpatient: read(energyMatrix and meter and emDemoKey=="meter-h-heat-outpatient", true)->id
+  meter_h_cool_gw: read(energyMatrix and meter and emDemoKey=="meter-h-cool-gw", true)->id
+  meter_h_cool_or: read(energyMatrix and meter and emDemoKey=="meter-h-cool-or", true)->id
+  meter_h_cool_ward: read(energyMatrix and meter and emDemoKey=="meter-h-cool-ward", true)->id
+  meter_h_cool_outpatient: read(energyMatrix and meter and emDemoKey=="meter-h-cool-outpatient", true)->id
+  meter_h_elec_gap: read(energyMatrix and meter and emDemoKey=="meter-h-elec-gap", true)->id
+  meter_h_water_gap: read(energyMatrix and meter and emDemoKey=="meter-h-water-gap", true)->id
+  meter_h_gas_gap: read(energyMatrix and meter and emDemoKey=="meter-h-gas-gap", true)->id
+  meter_h_steam_gap: read(energyMatrix and meter and emDemoKey=="meter-h-steam-gap", true)->id
+  meter_h_heat_gap: read(energyMatrix and meter and emDemoKey=="meter-h-heat-gap", true)->id
+  meter_h_cool_gap: read(energyMatrix and meter and emDemoKey=="meter-h-cool-gap", true)->id
+  rule_hospital_dq: read(emDiagnostic and emDemoKey=="diag-hospital-dq", true)->id
+  rule_hospital_balance: read(emDiagnostic and emDemoKey=="diag-hospital-balance", true)->id
+  rule_hospital_hvac: read(emDiagnostic and emDemoKey=="diag-hospital-hvac", true)->id
+  rule_hospital_carbon: read(emDiagnostic and emDemoKey=="diag-hospital-carbon", true)->id
+
+  anomaly_anomaly_hospital_qualityOld: read(emAnomaly and emDemoKey=="anomaly-hospital-quality", false)
+  anomaly_anomaly_hospital_quality: if (anomaly_anomaly_hospital_qualityOld != null) anomaly_anomaly_hospital_qualityOld->id else commit(diff(null, {energyMatrix, emAnomaly, emSynthetic, emDataProvenance: generation, emDemoKey: "anomaly-hospital-quality", siteRef: site_hospital, emDiagRef: rule_hospital_dq, emSubjectRef: meter_h_chiller_plant, dis: "冷站总表本期完好率偏低", emCategory: "dataQuality", emSeverity: "warn", emPeriod: "2026-09", span: curSpan, ts: now(), emVal: 0.84, emExpected: 0.9, emDeviation: -0.0667, emAnomalyStatus: "open"}, {add}))->id
+
+  anomaly_anomaly_hospital_balanceOld: read(emAnomaly and emDemoKey=="anomaly-hospital-balance", false)
+  anomaly_anomaly_hospital_balance: if (anomaly_anomaly_hospital_balanceOld != null) anomaly_anomaly_hospital_balanceOld->id else commit(diff(null, {energyMatrix, emAnomaly, emSynthetic, emDataProvenance: generation, emDemoKey: "anomaly-hospital-balance", siteRef: site_hospital, emDiagRef: rule_hospital_balance, emSubjectRef: meter_h_elec_gw, dis: "主进线与分项平衡偏差待复核", emCategory: "balance", emSeverity: "critical", emPeriod: "2026-09", span: curSpan, ts: now(), emVal: 0.061, emExpected: 0.05, emDeviation: 0.22, emAnomalyStatus: "open"}, {add}))->id
+
+  anomaly_anomaly_hospital_waterOld: read(emAnomaly and emDemoKey=="anomaly-hospital-water", false)
+  anomaly_anomaly_hospital_water: if (anomaly_anomaly_hospital_waterOld != null) anomaly_anomaly_hospital_waterOld->id else commit(diff(null, {energyMatrix, emAnomaly, emSynthetic, emDataProvenance: generation, emDemoKey: "anomaly-hospital-water", siteRef: site_hospital, emDiagRef: rule_hospital_dq, emSubjectRef: meter_h_water_gw, dis: "市政进水总表存在补录时段", emCategory: "dataQuality", emSeverity: "warn", emPeriod: "2026-09", span: curSpan, ts: now(), emVal: 0.87, emExpected: 0.9, emDeviation: -0.0333, emAnomalyStatus: "acked"}, {add}))->id
+
+  anomaly_anomaly_hospital_carbonOld: read(emAnomaly and emDemoKey=="anomaly-hospital-carbon", false)
+  anomaly_anomaly_hospital_carbon: if (anomaly_anomaly_hospital_carbonOld != null) anomaly_anomaly_hospital_carbonOld->id else commit(diff(null, {energyMatrix, emAnomaly, emSynthetic, emDataProvenance: generation, emDemoKey: "anomaly-hospital-carbon", siteRef: site_hospital, emDiagRef: rule_hospital_carbon, emSubjectRef: meter_h_gas_boiler, dis: "锅炉天然气导致碳强度偏高", emCategory: "carbonRisk", emSeverity: "info", emPeriod: "2026-09", span: curSpan, ts: now(), emVal: 0.092, emExpected: 0.08, emDeviation: 0.15, emAnomalyStatus: "dispatched"}, {add}))->id
+
+  if (read(emWorkOrder and emDemoKey=="wo-hospital-quality", false) == null) commit(diff(null, {energyMatrix, emWorkOrder, emSynthetic, emDataProvenance: generation, emDemoKey: "wo-hospital-quality", siteRef: site_hospital, emSubjectRef: meter_h_chiller_plant, emAnomalyRefs: [anomaly_anomaly_hospital_quality], dis: "冷站总表数据链路复核", emOrderNo: "W-RICH-001", emAssignee: "能源管理员", emDueDate: 2026-09-20, emWorkOrderStatus: "assigned", emCategory: "dataQuality", emSeverity: "warn", ts: now()}, {add}))
+
+  if (read(emWorkOrder and emDemoKey=="wo-hospital-balance", false) == null) commit(diff(null, {energyMatrix, emWorkOrder, emSynthetic, emDataProvenance: generation, emDemoKey: "wo-hospital-balance", siteRef: site_hospital, emSubjectRef: meter_h_elec_gw, emAnomalyRefs: [anomaly_anomaly_hospital_balance], dis: "主进线分项平衡核查", emOrderNo: "W-RICH-002", emAssignee: "能源管理员", emDueDate: 2026-09-20, emWorkOrderStatus: "inProgress", emCategory: "balance", emSeverity: "critical", ts: now()}, {add}))
+
+  if (read(emWorkOrder and emDemoKey=="wo-hospital-carbon", false) == null) commit(diff(null, {energyMatrix, emWorkOrder, emSynthetic, emDataProvenance: generation, emDemoKey: "wo-hospital-carbon", siteRef: site_hospital, emSubjectRef: meter_h_gas_boiler, emAnomalyRefs: [anomaly_anomaly_hospital_carbon], dis: "锅炉燃气高碳排运行复盘", emOrderNo: "W-RICH-003", emAssignee: "能源管理员", emDueDate: 2026-09-20, emWorkOrderStatus: "done", emCategory: "carbonRisk", emSeverity: "info", ts: now()}, {add}))
+
+  baseline_baseline_hospital_elec_2025Old: read(emBaseline and emDemoKey=="baseline-hospital-elec-2025", false)
+  baseline_baseline_hospital_elec_2025: if (baseline_baseline_hospital_elec_2025Old != null) baseline_baseline_hospital_elec_2025Old->id else commit(diff(null, {energyMatrix, emBaseline, emSynthetic, emDataProvenance: generation, emDemoKey: "baseline-hospital-elec-2025", siteRef: site_hospital, emSubjectRef: site_hospital, dis: "某医院电耗基线 2025", emMedium: "elec", emIpmvpOption: "optionC", emModelType: "multiVarRegression", emGranularity: "monthly", emBaselineSpan: toSpan(2025-01-01..2025-12-31), emIndepVars: ["cdd", "hdd", "opHours"], emR2: 0.93, emCvRmse: 0.1, emNmbe: 0.01, emValid: true}, {add}))->id
+
+  projectOld_savings_hospital_chiller: read(emSavingsProject and emDemoKey=="savings-hospital-chiller", false)
+  if (projectOld_savings_hospital_chiller == null) do
+    project_savings_hospital_chiller: emAddSavingsProject("某医院冷站群控优化", site_hospital, 286400)
+    commit(diff(readById(project_savings_hospital_chiller), {emSynthetic, emDataProvenance: generation, emDemoKey: "savings-hospital-chiller", emBaselineRef: baseline_baseline_hospital_elec_2025, emEcmType: "control", emInvest: 680000, emReportSpan: curSpan, emSavingsMeasured: 182600, emVerifyStatus: "monitoring"}))
+  end
+
+  projectOld_savings_hospital_lighting: read(emSavingsProject and emDemoKey=="savings-hospital-lighting", false)
+  if (projectOld_savings_hospital_lighting == null) do
+    project_savings_hospital_lighting: emAddSavingsProject("某医院公共照明 LED 改造", site_hospital, 168000)
+    commit(diff(readById(project_savings_hospital_lighting), {emSynthetic, emDataProvenance: generation, emDemoKey: "savings-hospital-lighting", emBaselineRef: baseline_baseline_hospital_elec_2025, emEcmType: "control", emInvest: 420000, emReportSpan: curSpan, emSavingsMeasured: 82100, emVerifyStatus: "verified"}))
+  end
+
+  legacySiteOld: read(site and emDemoKey=="site-hospital-legacy-emDemoBuild", false)
+  legacySite: if (legacySiteOld != null) legacySiteOld->id else commit(diff(null, {site, dis: "某医院（旧 emDemoBuild 隔离）", emSynthetic, emDataProvenance: "emDemoBuild-isolated-20260914", emDemoKey: "site-hospital-legacy-emDemoBuild", tz: "Asia/Shanghai"}, {add}))->id
+  readAll(energyMatrix and meter and siteRef==site_hospital and emDataProvenance=="emDemoBuild").each(m => commit(diff(m, {siteRef: legacySite, emLegacySiteRef: site_hospital, emIsolationReason: "isolated from canonical hospital rich demo close scope", emIsolatedAt: now()})))
+  emInvalidateMeterTree(site_hospital)
+
+  closeResult: emClosePeriod(site_hospital, priorSpan, "daily", null, false)
+  readAll(energyMatrix and emDataProvenance==generation).each(rec => commit(diff(rec, demoTags)))
+  {batch: "04_operations_close", generation: generation, anomalies: 4, workOrders: 3, baselines: 1, savingsProjects: 2, closeStatus: closeResult.meta->status}
+end

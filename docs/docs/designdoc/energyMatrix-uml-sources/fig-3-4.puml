@@ -1,0 +1,75 @@
+@startuml
+!include style.iuml
+title 图 3-4  服务接口层类图
+hide empty members
+
+class EmRestMod <<WebMod>> {
+  +onService(): Void
+  -route(path: Str[]): EmHandler
+  -auth(req): EmPrincipal
+  -json(obj: Obj): Void
+  -err(e: EmError): Void
+}
+abstract class EmHandler {
+  #principal: EmPrincipal
+  +{abstract} onGet(req): Obj
+  +{abstract} onPost(req): Obj
+  #require(perm: Str): Void
+  #page(g: Grid, req): Grid
+}
+class EmMeterHandler
+class EmLedgerHandler
+class EmBillHandler
+class EmKpiHandler
+class EmMvHandler
+class EmCarbonHandler
+class EmDiagHandler
+class EmPrincipal {
+  +user: Str
+  +roles: Str[]
+  +siteScope: Ref[]
+  +can(perm: Str): Bool
+}
+class EmError {
+  +code: Str
+  +msg: Str
+  +detail: Dict?
+  +httpStatus: Int
+}
+class EmAudit {
+  +write(actor, op, target, before, after): Void
+  +query(span, actor): Grid
+}
+class EmExportSvc {
+  +pushBills(span): EmCalcResult
+  +pushCarbon(span): EmCalcResult
+  -sign(body: Str): Str
+  -retry(n: Int): Void
+}
+class EmAxonFuncs {
+  +{static} emLedgerBuild(span, opts): Grid
+  +{static} emAllocRun(span, opts): Grid
+  +{static} emClosePeriod(span): Dict
+  +{static} emBillGen(payer, span): Dict
+  +{static} emBaselineFit(id): Dict
+  +{static} emCarbonCalc(subj, span): Dict
+}
+
+EmRestMod --> EmHandler
+EmHandler <|-- EmMeterHandler
+EmHandler <|-- EmLedgerHandler
+EmHandler <|-- EmBillHandler
+EmHandler <|-- EmKpiHandler
+EmHandler <|-- EmMvHandler
+EmHandler <|-- EmCarbonHandler
+EmHandler <|-- EmDiagHandler
+EmHandler --> EmPrincipal
+EmHandler ..> EmError
+EmHandler ..> EmAudit
+EmExportSvc ..> EmAudit
+EmAxonFuncs ..> EmError
+EmMeterHandler -[hidden]down- EmKpiHandler
+EmLedgerHandler -[hidden]down- EmMvHandler
+EmBillHandler -[hidden]down- EmCarbonHandler
+EmKpiHandler -[hidden]down- EmDiagHandler
+@enduml

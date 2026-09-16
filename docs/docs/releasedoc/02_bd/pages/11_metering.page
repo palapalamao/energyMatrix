@@ -1,0 +1,75 @@
+pageType: content
+background:
+  type: solid
+  color: "$paper"
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [64, 36, 500, 16]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: 核心能力 1 · 分项计量与台账
+  - elementId: title
+    elementType: text
+    bounds: [64, 58, 832, 42]
+    content:
+      style: "$title"
+      wrap: false
+      text: 计量树 + 台账：把“不明用能”压到 5% 以内
+  - elementId: headrule
+    elementType: shape
+    bounds: [64, 110, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: left
+    elementType: text
+    bounds: [64, 130, 420, 330]
+    content:
+      style: "$body"
+      lineHeight: 1.65
+      text: |
+        <p><strong>计量树 DAG</strong> —— 关口表 → 分项表 → 楼层 / 租户子表，同介质有向无环；环检测就地剪断，跨介质挂接直接拒绝。</p>
+        <p style="margin-top:10px"><strong>读数差分</strong> —— L1 表底读数自动差分为 L2 区间增量，表底翻转与换表自动补偿，CT/PT 倍率集中管理。</p>
+        <p style="margin-top:10px"><strong>虚拟表同构</strong> —— 虚表由 Axon 公式求值（8 层深度守卫），与物理表同构，上层业务永远不需要区分。</p>
+        <p style="margin-top:10px"><strong>缺口量显性化</strong> —— 总表 − Σ分表 归入 emGap 缺口虚表，不计入汇总、单独呈现；超 5% 闸门阻断关账。</p>
+        <p style="margin-top:10px"><strong>关账与红冲</strong> —— 关账后台账不可变，修正走红冲并保留完整修正链，任何一版账都可回溯。</p>
+  - elementId: vrail
+    elementType: shape
+    bounds: [516, 132, 1, 330]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: treeTitle
+    elementType: text
+    bounds: [548, 130, 348, 20]
+    content: {fontSize: 12, bold: true, color: "$tealDark", wrap: false, text: 计量树示意（电介质）}
+  - elementId: tr0
+    elementType: text
+    bounds: [548, 158, 348, 260]
+    content:
+      fontSize: 11
+      fontFamily: {latin: "JetBrains Mono", ea: "思源黑体"}
+      color: "$steel"
+      lineHeight: 1.7
+      text: |
+        <p>关口表 gateway ── 结算计量</p>
+        <p>├─ B1 冷热站 branch</p>
+        <p>├─ A1 照明插座 branch</p>
+        <p>│　 ├─ 3F 子表 sub</p>
+        <p>│　 └─ 租户表 sub</p>
+        <p>├─ C1 电梯 branch</p>
+        <p>├─ 考核表 check（不参与汇总）</p>
+        <p>└─ 缺口表 emGap（不参与汇总）</p>
+  - elementId: treeNote
+    elementType: text
+    bounds: [548, 420, 348, 48]
+    content:
+      style: "$note"
+      text: 考核表与缺口表不参与汇总 —— 前者防止重复计量，后者防止校核失效；两条语义都在代码里强制。
+  - elementId: footnote
+    elementType: text
+    bounds: [64, 496, 832, 16]
+    content:
+      style: "$note"
+      wrap: false
+      text: 对应产品屏：分项计量树 · 表具与采集器 · 报表与关账（关账批次、红冲链、上报模板）

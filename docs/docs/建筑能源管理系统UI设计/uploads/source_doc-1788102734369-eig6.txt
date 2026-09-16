@@ -1,0 +1,111 @@
+//
+// 域 2：计量域（本模型的核心）
+// 原则：
+//   1. 一切能耗数值必须归属唯一 EmMeter，禁止"裸点"直接进能耗账
+//   2. 表计层级用 ph::submeterOf 构造有向无环图，禁止跨介质挂接
+//   3. 物理表与虚拟表同构，业务层不关心其实现方式
+//
+
+EmMeter: Meter {
+  energyMatrix
+  emMeterRole
+  emDataSource
+  emServesRef:  Ref? <doc:"计量服务对象：space | equip | tenant">
+  emSpaceRef:   Ref?
+  emTenantRef:  Ref?
+  submeterOf:   Ref? <of:EmMeter, doc:"父表，构成计量树">
+  emMeterFactor: Number?
+  emMaxReading:  Number?
+  emInstallDate: Date?
+  emSettlement:  Marker?
+  emVirtual:     Marker?
+  emFormula:     Str?
+  meterScope:    Str? <doc:"计量范围文字描述，用于点表交底">
+}
+
+// --- 电 -------------------------------------------------------------------
+
+EmElecMeter: EmMeter {
+  elec
+  elecMeter
+  emSubItem
+  emCtRatio: Number?
+  emPtRatio: Number?
+  emPhaseType: Str? <doc:"single | three">
+  points: {
+    energyTotal:   EmElecEnergyTotal
+    powerActive:   EmElecPowerActive?
+    powerReactive: EmElecPowerReactive?
+    powerFactor:   EmPowerFactor?
+    voltAvg:       EmVolt?
+    currentAvg:    EmCurrent?
+    freq:          EmFreq?
+    energyPeak:    EmElecEnergyTou?    // 尖
+    energyHigh:    EmElecEnergyTou?    // 峰
+    energyFlat:    EmElecEnergyTou?    // 平
+    energyValley:  EmElecEnergyTou?    // 谷
+    demandMax:     EmElecDemand?
+  }
+}
+
+// --- 水 -------------------------------------------------------------------
+
+EmWaterMeter: EmMeter {
+  water
+  waterMeter
+  emWaterType: Str? <doc:"domestic | reclaimed | direct | fire | makeup | irrigation">
+  points: {
+    volumeTotal: EmWaterVolumeTotal
+    flow:        EmWaterFlow?
+  }
+}
+
+// --- 燃气 -----------------------------------------------------------------
+
+EmGasMeter: EmMeter {
+  naturalGas
+  gasMeter
+  points: {
+    volumeTotal: EmGasVolumeTotal
+    flow:        EmGasFlow?
+    tempComp:    EmGasTempComp?
+  }
+}
+
+// --- 蒸汽 -----------------------------------------------------------------
+
+EmSteamMeter: EmMeter {
+  steam
+  steamMeter
+  points: {
+    massTotal:   EmSteamMassTotal
+    energyTotal: EmThermalEnergyTotal?
+    flow:        EmSteamFlow?
+    temp:        EmSteamTemp?
+    pressure:    EmSteamPressure?
+  }
+}
+
+// --- 冷/热量 --------------------------------------------------------------
+
+EmThermalMeter: EmMeter {
+  points: {
+    energyTotal:  EmThermalEnergyTotal
+    powerThermal: EmThermalPower?
+    volumeTotal:  EmWaterVolumeTotal?
+    flow:         EmWaterFlow?
+    entering:     EmEnteringTemp?
+    leaving:      EmLeavingTemp?
+    deltaTemp:    EmDeltaTemp?
+  }
+}
+
+EmCoolMeter: EmThermalMeter {
+  chilled
+  chilledWaterMeter
+}
+
+EmHeatMeter: EmThermalMeter {
+  hot
+  hotWaterMeter
+}

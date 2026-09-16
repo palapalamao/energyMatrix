@@ -1,0 +1,121 @@
+pageType: content
+background:
+  type: solid
+  color: "$paper"
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [64, 36, 500, 16]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: 03 · 产品方案介绍 —— 方案总览
+  - elementId: title
+    elementType: text
+    bounds: [64, 58, 800, 42]
+    content:
+      style: "$title"
+      wrap: false
+      text: 软硬件一体化 · 五个差异化能力
+  - elementId: headrule
+    elementType: shape
+    bounds: [64, 110, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: n1
+    elementType: text
+    bounds: [64, 126, 44, 30]
+    content: {fontSize: 24, bold: true, color: "$teal", wrap: false, text: "01"}
+  - elementId: t1
+    elementType: text
+    bounds: [122, 126, 200, 24]
+    content: {fontSize: 16, bold: true, color: "$ink", wrap: false, text: 分项计量树}
+  - elementId: d1
+    elementType: text
+    bounds: [122, 152, 774, 34]
+    content:
+      style: "$body"
+      text: 依据分项能耗导则 A/B/C/D 四类 14 个分项建账；同介质 DAG + 环检测 + 跨介质校验，平衡校核自动完成。
+  - elementId: rr1
+    elementType: shape
+    bounds: [64, 194, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$softline"}
+  - elementId: n2
+    elementType: text
+    bounds: [64, 202, 44, 30]
+    content: {fontSize: 24, bold: true, color: "$teal", wrap: false, text: "02"}
+  - elementId: t2
+    elementType: text
+    bounds: [122, 202, 200, 24]
+    content: {fontSize: 16, bold: true, color: "$ink", wrap: false, text: 能耗台账}
+  - elementId: d2
+    elementType: text
+    bounds: [122, 228, 774, 34]
+    content:
+      style: "$body"
+      text: 三层点位约定；关账不可变、修正走红冲；缺口率超 5% 阻断关账 —— 台账可信度由系统纪律保证。
+  - elementId: rr2
+    elementType: shape
+    bounds: [64, 270, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$softline"}
+  - elementId: n3
+    elementType: text
+    bounds: [64, 278, 44, 30]
+    content: {fontSize: 24, bold: true, color: "$teal", wrap: false, text: "03"}
+  - elementId: t3
+    elementType: text
+    bounds: [122, 278, 260, 24]
+    content: {fontSize: 16, bold: true, color: "$ink", wrap: false, text: 指标定额与双碳核算}
+  - elementId: d3
+    elementType: text
+    bounds: [122, 304, 774, 34]
+    content:
+      style: "$body"
+      text: EUI 对标国标约束值 / 引导值；排放因子版本化，Scope 1/2/3 归集、绿证核销、折标煤合计。
+  - elementId: rr3
+    elementType: shape
+    bounds: [64, 346, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$softline"}
+  - elementId: n4
+    elementType: text
+    bounds: [64, 354, 44, 30]
+    content: {fontSize: 24, bold: true, color: "$teal", wrap: false, text: "04"}
+  - elementId: t4
+    elementType: text
+    bounds: [122, 354, 200, 24]
+    content: {fontSize: 16, bold: true, color: "$ink", wrap: false, text: 诊断闭环}
+  - elementId: d4
+    elementType: text
+    bounds: [122, 380, 774, 34]
+    content:
+      style: "$body"
+      text: 规则引擎 → 异常 → 确认 → 工单 → 节能项目 → ASHRAE G14 核证；未核证节能量禁以 verified 对外。
+  - elementId: rr4
+    elementType: shape
+    bounds: [64, 422, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$softline"}
+  - elementId: n5
+    elementType: text
+    bounds: [64, 430, 44, 30]
+    content: {fontSize: 24, bold: true, color: "$teal", wrap: false, text: "05"}
+  - elementId: t5
+    elementType: text
+    bounds: [122, 430, 200, 24]
+    content: {fontSize: 16, bold: true, color: "$ink", wrap: false, text: 边缘引擎}
+  - elementId: d5
+    elementType: text
+    bounds: [122, 456, 774, 34]
+    content:
+      style: "$body"
+      text: FIN Framework 内嵌 F200 / NEXIO 边缘控制器；BACnet、Modbus、KNX、MQTT、M-Bus 多协议接入。
+  - elementId: footnote
+    elementType: text
+    bounds: [64, 508, 832, 16]
+    content:
+      style: "$note"
+      wrap: false
+      text: 软件：energyMatrix（FIN Pod · Fantom 后端 + React 前端）｜硬件：F200 / NEXIO 边缘控制器 + 多功能表计与采集器

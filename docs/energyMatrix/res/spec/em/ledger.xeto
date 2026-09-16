@@ -1,0 +1,56 @@
+//
+// 域 5：能耗台账（Layer1 计量域 与 Layer2 业务域 的唯一桥梁）
+// 原则：
+//   L2 delta 点是"读数"，台账是"账目"。所有业务对象（账单/指标/基线/碳）
+//   一律读台账，禁止直接读点位——否则数据修正无法回溯，账目不可审计。
+//   台账条目一经关账（emClosed）即不可变；修正必须新增红冲条目。
+//
+
+EmLedgerEntry: Dict {
+  energyMatrix
+  emLedger
+  id:          Ref
+  emMeterRef:    Ref  <of:EmMeter, doc:"来源表（物理或虚拟）">
+  emMedium:  EmMedium <doc:"介质。偏差 #5：原稿为 emMediumId: Str 自由文本">
+  emSubItem:   EmSubItem?
+  span:        Span <doc:"账期区间，左闭右开">
+  // 增补（README 偏差 #10）：span 无法用 Haystack filter 做等值查询，而
+  // "同一块表 + 同一账期只能有一条有效条目"是幂等重建与红冲链的前提。
+  // span 仍是语义权威，emPeriod 是它的可索引投影，由 EmLedgerPeriod 保证一致。
+  emPeriod:    Str <doc:"账期键：2026-07-15 / 2026-07 / 2026-07-15T13 / 2026">
+  emGranularity: EmGranularity
+  val:         Number <doc:"用量，单位随介质">
+  emDataSource: EmDataSource
+  emQuality:   Number? <doc:"数据完好率 0~1：有效采样数/应采样数">
+  emSpaceRef:  Ref?
+  emTenantRef: Ref?
+  emOrgRef:    Ref?
+  emClosed:    Marker? <doc:"已关账，不可修改">
+  emReversalOf: Ref? <of:EmLedgerEntry, doc:"红冲指向被冲销条目">
+  emCorrects:   Ref? <of:EmLedgerEntry, doc:"重录指向被修正的原条目（增补，构成完整修正链）">
+  emRuleRef:   Ref? <of:EmAllocRule, doc:"若为分摊产生，指向分摊规则">
+  emNote:      Str?
+}
+emLedger: Marker <doc:"能耗台账条目">
+
+EmGranularity: Enum {
+  hourly
+  daily
+  monthly
+  yearly
+}
+emGranularity: EmGranularity
+
+// 关账批次：一次月结/日结的操作记录，支撑审计与重算
+EmClosePeriod: Dict {
+  energyMatrix
+  emClosePeriod
+  id:        Ref
+  span:      Span
+  emGranularity: EmGranularity
+  emClosedBy: Str?
+  emClosedAt: DateTime?
+  emGapRatio: Number? <doc:"本期总表-分表缺口率，超阈值应阻断关账">
+  emEntryCount: Number?
+}
+emClosePeriod: Marker

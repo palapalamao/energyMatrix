@@ -1,0 +1,125 @@
+// 04-east-history
+// Generated locally from manifest.py. Review, stage, confirm, then execute once.
+do
+  generation:"hospitalDemo-20260909"
+  demoTags:{emSynthetic,emDataProvenance:"hospitalDemo-20260909"}
+  sumVals:vals=>vals.reduce(0,(acc,val)=>acc+val)
+  byKey:key=>do
+    keyMatches:readAll(energyMatrix and emDemoKey==key)
+    if(keyMatches.size>1) throw("duplicate emDemoKey: "+key)
+    if(keyMatches.size==0) return null
+    keyMatches.first
+  end
+  existingKey:key=>do
+    rec:byKey(key)
+    if(rec!=null and rec["emDataProvenance"]!=generation) throw("emDemoKey generation collision: "+key)
+    rec
+  end
+  must:key=>do
+    rec:existingKey(key)
+    if(rec==null) throw("missing exact emDemoKey: "+key)
+    rec->id
+  end
+  site:must("hd-site-east")
+  // recent 90 days plus matching prior-year MTD
+  // Model effect: ensure 11 meter records; history attempts 10 meters.
+  // Exact-key write scope: must("hd-meter-east-elec-gateway") must("hd-meter-east-elec-clinical") must("hd-meter-east-elec-logistics") must("hd-meter-east-water-gateway") must("hd-meter-east-water-clinical") must("hd-meter-east-water-logistics") must("hd-meter-east-gas-gateway") must("hd-meter-east-gas-boiler") must("hd-meter-east-heat-gateway") must("hd-meter-east-heat-campus")
+  modelRows:[
+    {t:"M",k:"hd-meter-east-elec-gateway",n:"东院区elec总表",s:"hd-site-east",m:"elec",r:"gateway",p:null,z:"hd-zone-east-campus",o:"hd-org-east-logistics",lc:null,sub:null,ds:"measured",sc:"settlement",unit:"kWh",note:"医院能源管理演示数据（固定种子模拟）",critical:true,settle:true,cls:"physical",src:null},
+    {t:"M",k:"hd-meter-east-elec-clinical",n:"东院区临床综合用电",s:"hd-site-east",m:"elec",r:"branch",p:"hd-meter-east-elec-gateway",z:"hd-zone-east-campus",o:"hd-org-east-logistics",lc:null,sub:null,ds:"measured",sc:"non-settlement",unit:"kWh",note:"医院能源管理演示数据（固定种子模拟）",critical:false,settle:false,cls:"physical",src:null},
+    {t:"M",k:"hd-meter-east-elec-logistics",n:"东院区后勤综合用电",s:"hd-site-east",m:"elec",r:"branch",p:"hd-meter-east-elec-gateway",z:"hd-zone-east-campus",o:"hd-org-east-logistics",lc:"hvac_terminals",sub:"b2",ds:"measured",sc:"non-settlement",unit:"kWh",note:"医院能源管理演示数据（固定种子模拟）",critical:false,settle:false,cls:"physical",src:null},
+    {t:"M",k:"hd-meter-east-water-gateway",n:"东院区water总表",s:"hd-site-east",m:"water",r:"gateway",p:null,z:"hd-zone-east-campus",o:"hd-org-east-logistics",lc:null,sub:null,ds:"measured",sc:"settlement",unit:"m³",note:"医院能源管理演示数据（固定种子模拟）",critical:true,settle:true,cls:"physical",src:null},
+    {t:"M",k:"hd-meter-east-water-clinical",n:"东院区临床综合用水",s:"hd-site-east",m:"water",r:"branch",p:"hd-meter-east-water-gateway",z:"hd-zone-east-campus",o:"hd-org-east-logistics",lc:null,sub:null,ds:"measured",sc:"non-settlement",unit:"m³",note:"医院能源管理演示数据（固定种子模拟）",critical:false,settle:false,cls:"physical",src:null},
+    {t:"M",k:"hd-meter-east-water-logistics",n:"东院区后勤综合用水",s:"hd-site-east",m:"water",r:"branch",p:"hd-meter-east-water-gateway",z:"hd-zone-east-campus",o:"hd-org-east-logistics",lc:null,sub:null,ds:"measured",sc:"non-settlement",unit:"m³",note:"医院能源管理演示数据（固定种子模拟）",critical:false,settle:false,cls:"physical",src:null},
+    {t:"M",k:"hd-meter-east-gas-gateway",n:"东院区gas总表",s:"hd-site-east",m:"gas",r:"gateway",p:null,z:"hd-zone-east-campus",o:"hd-org-east-logistics",lc:null,sub:null,ds:"measured",sc:"settlement",unit:"m³",note:"医院能源管理演示数据（固定种子模拟）",critical:true,settle:true,cls:"physical",src:null},
+    {t:"M",k:"hd-meter-east-gas-boiler",n:"东院区锅炉燃气",s:"hd-site-east",m:"gas",r:"branch",p:"hd-meter-east-gas-gateway",z:"hd-zone-east-campus",o:"hd-org-east-logistics",lc:null,sub:null,ds:"measured",sc:"non-settlement",unit:"m³",note:"医院能源管理演示数据（固定种子模拟）",critical:false,settle:false,cls:"physical",src:null},
+    {t:"M",k:"hd-meter-east-heat-gateway",n:"东院区heat总表",s:"hd-site-east",m:"heat",r:"gateway",p:null,z:"hd-zone-east-campus",o:"hd-org-east-logistics",lc:null,sub:null,ds:"measured",sc:"settlement",unit:"kWh",note:"医院能源管理演示数据（固定种子模拟）",critical:true,settle:true,cls:"physical",src:null},
+    {t:"M",k:"hd-meter-east-heat-campus",n:"东院区院区供热",s:"hd-site-east",m:"heat",r:"branch",p:"hd-meter-east-heat-gateway",z:"hd-zone-east-campus",o:"hd-org-east-logistics",lc:null,sub:null,ds:"measured",sc:"non-settlement",unit:"kWh",note:"医院能源管理演示数据（固定种子模拟）",critical:false,settle:false,cls:"physical",src:null},
+    {t:"G",k:"hd-meter-east-elec-gap",n:"东院区电力通讯支路",s:"hd-site-east",m:"elec",r:"virtual",p:"hd-meter-east-elec-gateway",z:"hd-zone-east-campus",o:"hd-org-east-logistics",lc:null,sub:null,ds:"derived",sc:"non-settlement",unit:"kWh",note:"医院能源管理演示数据（固定种子模拟）",critical:false,settle:false,cls:"gap",src:"hd-meter-east-elec-gateway"}
+  ]
+  ensureMeter:d=>do
+    existing:existingKey(d->k)
+    if(existing!=null) return {attempted:1,written:0,skipped:1,errors:0}
+    if((d->t=="G")!=(d->cls=="gap")) throw("meter classification/factory mismatch")
+    if(d->critical!=d->settle) throw("critical meter must match settlement governance")
+    common:{emSynthetic,emDataProvenance:"hospitalDemo-20260909",emDemoKey:d->k}
+    categoryNote:if(d["lc"]==null)d->sc else d->sc+"; loadCategory="+d->lc
+    meterTags:common.merge({unit:d->unit,emSourceDoc:d->note,emMeterScope:categoryNote}).merge(if(d["sub"]==null){} else {emSubItem:d->sub}).merge(if(d->settle){emSettlement} else {})
+    made:if(d->t=="G") emAddGapMeter(must(d->s),must(d->src),d->n,meterTags)
+      else emAddMeter(must(d->s),d->m,d->n,meterTags.merge({emMeterRole:d->r,submeterOf:if(d["p"]==null)null else must(d->p),emSpaceRef:must(d->z),emTenantRef:must(d->o),emDataSource:d->ds}))
+    commit(diff(readById(made),demoTags.merge({emDemoKey:d->k}).merge(meterTags)))
+    readAll(point and equipRef==made).each(p=>commit(diff(p,demoTags.merge({emDemoKey:d->k+"-point-"+p["navName"]}))))
+    {attempted:1,written:1,skipped:0,errors:0}
+  end
+  modelResults:modelRows.map(d=>ensureMeter(d))
+  // Server-local deterministic cumulative hourly generator.
+  hours:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
+  profile:kind=>do
+    supportedProfiles:["continuous","hvac","imaging","laundry","meal","night","surgery","weekday"]
+    if(not supportedProfiles.contains(kind)) throw("unsupported history profile: "+kind)
+    if(["hvac","cooling","heat"].contains(kind)) return [0.005,0.01,0.015,0.02,0.025,0.03,0.035,0.04,0.06,0.10,0.16,0.23,0.31,0.40,0.495,0.59,0.68,0.76,0.83,0.89,0.94,0.98,0.99,1]
+    if(["surgery","imaging","weekday","outpatient","lab","laundry"].contains(kind)) return [0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.11,0.16,0.225,0.29,0.355,0.42,0.485,0.55,0.615,0.68,0.745,0.81,0.875,0.94,0.98,1]
+    if(kind=="meal") return [0.005,0.01,0.015,0.02,0.025,0.03,0.035,0.04,0.045,0.05,0.09,0.21,0.345,0.44,0.48,0.51,0.56,0.67,0.8,0.905,0.965,0.99,0.997,1]
+    if(kind=="night") return [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.17,0.34,0.5,0.67,0.84,1]
+    return [0.0417,0.0833,0.125,0.1667,0.2083,0.25,0.2917,0.3333,0.375,0.4167,0.4583,0.5,0.5417,0.5833,0.625,0.6667,0.7083,0.75,0.7917,0.8333,0.875,0.9167,0.9583,1]
+  end
+  weekdayFactor:kind=>if(["weekday","outpatient","lab","surgery","imaging","laundry"].contains(kind))1.08 else 1
+  weekendFactor:kind=>if(["weekday","outpatient","lab","surgery","imaging","laundry"].contains(kind))0.72 else 0.96
+  variationIndex:dateVal=>do
+    day:dateVal.day
+    if(day>28) return day-29
+    if(day>21) return day-22
+    if(day>14) return day-15
+    if(day>7) return day-8
+    day-1
+  end
+  dayVariation:dateVal=>[0.97,1.01,0.99,1.03,1,0.98,1.02][variationIndex(dateVal)]
+  fixedDayIndex:dateVal=>(dateVal-date(2025,1,1))/1day
+  makeDays:(cum,daily,kind,complete,startDt,index,days,base)=>do
+    if(index>=days) return []
+    dateDt:startDt+index*1day
+    dateVal:dateDt.date
+    isWeekend:weekday(dateVal)==0 or weekday(dateVal)==6
+    factor:(if(isWeekend)weekendFactor(kind) else weekdayFactor(kind))*dayVariation(dateVal)
+    deterministicGap:h=>complete or variationIndex(dateVal)!=2 or h!=3
+    normalizedProgress:h=>(cum[h]*factor)/(1+(factor-1)*cum[h])
+    dayBase:base+daily*fixedDayIndex(dateVal)
+    rows:hours.findAll(h=>deterministicGap(h)).map(h=>{ts:dateDt+(h+1)*1hr,val:dayBase+daily*normalizedProgress(h)})
+    rows.addAll(makeDays(cum,daily,kind,complete,startDt,index+1,days,base))
+  end
+  writeWindow:(meterKey,daily,kind,complete,startDate,days,base)=>do
+    meter:must(meterKey)
+    points:readAll(point and emL1Point and equipRef==meter)
+    if(points.size!=1) throw("expected exactly one L1 point for "+meterKey)
+    point:points.first
+    commit(diff(point,{emSynthetic,emDataProvenance:"hospitalDemo-20260909",hisCollectInterval:1hr}))
+    startDt:dateTime(startDate,00:00:00,"Asia/Shanghai")
+    values:[{ts:startDt,val:base+daily*(fixedDayIndex(startDate-1day)+1)}].addAll(makeDays(profile(kind),daily,kind,complete,startDt,0,days,base))
+    hisWrite(values.toGrid,point)
+    values.size
+  end
+  meters:[
+    {k:"hd-meter-east-elec-gateway",daily:2340.206,kind:"continuous",complete:true},
+    {k:"hd-meter-east-elec-clinical",daily:1650.0,kind:"continuous",complete:true},
+    {k:"hd-meter-east-elec-logistics",daily:620.0,kind:"hvac",complete:true},
+    {k:"hd-meter-east-water-gateway",daily:479.381,kind:"continuous",complete:true},
+    {k:"hd-meter-east-water-clinical",daily:310.0,kind:"continuous",complete:true},
+    {k:"hd-meter-east-water-logistics",daily:155.0,kind:"continuous",complete:true},
+    {k:"hd-meter-east-gas-gateway",daily:288.66,kind:"continuous",complete:true},
+    {k:"hd-meter-east-gas-boiler",daily:280.0,kind:"continuous",complete:true},
+    {k:"hd-meter-east-heat-gateway",daily:917.526,kind:"continuous",complete:true},
+    {k:"hd-meter-east-heat-campus",daily:890.0,kind:"hvac",complete:true}
+  ]
+  results:meters.map(d=>{attempted:1,written:(writeWindow(d->k,d->daily,d->kind,d->complete,today()-90day,90,100000)+writeWindow(d->k,d->daily*0.96,d->kind,d->complete,date(today().year-1,today().month,1),today().day-1,50000)),skipped:0,errors:0})
+  // Final scope audit is a hard gate for this generation.
+  newSites:readAll(energyMatrix and site and emDataProvenance==generation)
+  if(newSites.size==0 or not newSites.colNames.contains("id")) throw("scope audit blocked: missing site id column")
+  newSiteIds:newSites.colToList("id")
+  scopedRecords:readAll(energyMatrix).findAll(r=>newSiteIds.contains(r["id"]) or newSiteIds.contains(r["siteRef"]) or newSiteIds.contains(r["emSubjectRef"]))
+  keyedRecords:readAll(energyMatrix and emSynthetic and emDemoKey).findAll(r=>r["emDemoKey"].toStr.startsWith("hd-"))
+  keyedRecords.each(r=>byKey(r["emDemoKey"]))
+  missingSynthetic:scopedRecords.findAll(r=>r.missing("emSynthetic")).size+keyedRecords.findAll(r=>r.missing("emSynthetic")).size
+  missingProvenance:scopedRecords.findAll(r=>r["emDataProvenance"]!=generation).size+keyedRecords.findAll(r=>r["emDataProvenance"]!=generation).size
+  if(missingSynthetic>0 or missingProvenance>0) throw("scope audit blocked: missing required synthetic provenance markers")
+  {generation:generation,attempted:results.size+modelResults.size,written:sumVals(results.map(r=>r->written))+sumVals(modelResults.map(r=>r->written)),skipped:sumVals(modelResults.map(r=>r->skipped)),errors:sumVals(results.map(r=>r->errors))}
+end

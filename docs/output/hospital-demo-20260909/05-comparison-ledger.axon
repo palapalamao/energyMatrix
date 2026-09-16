@@ -1,0 +1,63 @@
+// 05-comparison-ledger
+// Generated locally from manifest.py. Review, stage, confirm, then execute once.
+do
+  generation:"hospitalDemo-20260909"
+  demoTags:{emSynthetic,emDataProvenance:"hospitalDemo-20260909"}
+  sumVals:vals=>vals.reduce(0,(acc,val)=>acc+val)
+  byKey:key=>do
+    keyMatches:readAll(energyMatrix and emDemoKey==key)
+    if(keyMatches.size>1) throw("duplicate emDemoKey: "+key)
+    if(keyMatches.size==0) return null
+    keyMatches.first
+  end
+  existingKey:key=>do
+    rec:byKey(key)
+    if(rec!=null and rec["emDataProvenance"]!=generation) throw("emDemoKey generation collision: "+key)
+    rec
+  end
+  must:key=>do
+    rec:existingKey(key)
+    if(rec==null) throw("missing exact emDemoKey: "+key)
+    rec->id
+  end
+  businessFactoryResults:[]
+  businessDirectResults:[]
+  siteKeys:["hd-site-primary"]
+  span:toSpan(date(today().year-1,today().month,1)..date(today().year-1,today().month,today().day)-1day)
+  results:siteKeys.map(key=>do
+    site:must(key)
+    ledger:emLedgerBuild(site,span,"daily")
+    ledger.findAll(row=>row["status"]=="written").each(row=>do
+      entries:readAll(emLedger and emMeterRef==row->meterRef and emPeriod==row->emPeriod and not emReversalOf)
+      if(entries.size!=1) throw("ambiguous or missing ledger natural key")
+      entry:entries.first
+      meterKey:readById(row->meterRef)["emDemoKey"]
+      commit(diff(entry,demoTags.merge({emDemoKey:key+"-ledger-"+row->emPeriod+"-"+meterKey})))
+    end)
+    diagnostics:[]
+    diagnostics.each(row=>do
+      ref:row["anomalyRef"]
+      if(ref!=null) do
+        anomaly:readById(ref)
+        ruleKey:readById(anomaly->emDiagRef)["emDemoKey"]
+        subjectKey:readById(anomaly->emSubjectRef)["emDemoKey"]
+        commit(diff(anomaly,demoTags.merge({emDemoKey:key+"-anomaly-"+ruleKey+"-"+subjectKey+"-"+anomaly->emPeriod})))
+      end
+    end)
+    errors:ledger.findAll(row=>row["status"]=="error").size
+    written:ledger.findAll(row=>row["status"]=="written").size
+    if(errors>0 or written==0) throw("ledger batch blocked")
+    {attempted:ledger.size,written:written,skipped:ledger.findAll(row=>row["status"]=="skipped").size,errors:errors}
+  end)
+  // Final scope audit is a hard gate for this generation.
+  newSites:readAll(energyMatrix and site and emDataProvenance==generation)
+  if(newSites.size==0 or not newSites.colNames.contains("id")) throw("scope audit blocked: missing site id column")
+  newSiteIds:newSites.colToList("id")
+  scopedRecords:readAll(energyMatrix).findAll(r=>newSiteIds.contains(r["id"]) or newSiteIds.contains(r["siteRef"]) or newSiteIds.contains(r["emSubjectRef"]))
+  keyedRecords:readAll(energyMatrix and emSynthetic and emDemoKey).findAll(r=>r["emDemoKey"].toStr.startsWith("hd-"))
+  keyedRecords.each(r=>byKey(r["emDemoKey"]))
+  missingSynthetic:scopedRecords.findAll(r=>r.missing("emSynthetic")).size+keyedRecords.findAll(r=>r.missing("emSynthetic")).size
+  missingProvenance:scopedRecords.findAll(r=>r["emDataProvenance"]!=generation).size+keyedRecords.findAll(r=>r["emDataProvenance"]!=generation).size
+  if(missingSynthetic>0 or missingProvenance>0) throw("scope audit blocked: missing required synthetic provenance markers")
+  {generation:generation,attempted:sumVals(results.map(r=>r->attempted)),written:sumVals(results.map(r=>r->written)),skipped:sumVals(results.map(r=>r->skipped)),errors:sumVals(results.map(r=>r->errors))}
+end

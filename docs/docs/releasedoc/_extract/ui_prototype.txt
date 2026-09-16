@@ -1,0 +1,487 @@
+energyMatrix
+Hetan EMS · em
+{{ g.label }}
+{{ it.svg }}
+{{ it.label }}
+{{ it.count }}
+Ledger
+{{ closeState }}
+2026-07 已关账 · 缺口率 {{ gapRatio }}
+2026-08 台账采集中 · {{ entryCount }} 条
+{{ siteName }}
+28,400 m²
+·
+办公 / 体育
+·
+夏热冬冷
+搜索表计 / 点位 / 空间
+{{ openAlarms }}
+张
+张工
+能源经理
+{{ scrEyebrow }}
+{{ scrCode }}
+{{ scrTitle }}
+{{ scrDesc }}
+{{ r.label }}
+导出
+版式方案
+{{ l.label }}
+{{ layoutNote }}
+{{ k.k }}
+{{ k.v }}
+{{ k.u }}
+{{ k.d }}
+{{ k.note }}
+分项能耗拆解
+依据《分项能耗数据采集技术导则》A/B/C/D 四类 · 电介质
+台账投影
+{{ s.code }}
+{{ s.label }}
+{{ s.val }}
+{{ s.share }}
+数据可信度
+emDataSource · 每条台账数值均可追溯
+{{ s.code }}
+{{ s.label }}
+{{ s.pct }}%
+缺口量
+3.1%
+归入 emGap 虚表，未分摊至租户。超 5% 将阻断月度关账。
+近 30 日用电（分项堆叠）
+EmLedgerEntry · granularity=daily · kWh
+{{ s.label }}
+07-31
+08-07
+08-14
+08-21
+08-29
+实时负荷 / 需量
+LIVE
+{{ liveKw }}
+kW
+本月最大需量 / 申报值
+2,860 / 3,200 kW
+89.4% · 逼近申报值，超出部分按 2 倍计费
+待处置异常
+全部 →
+{{ a.dis }}
+{{ a.code }} · {{ a.subject }}
+{{ a.dev }}
+本月综合能耗（折标煤）
+1,284.6
+tce
+-8.2%
+较 2024 基准年同期
+{{ b.k }}
+{{ b.v }}
+{{ b.note }}
+能流结构 · 供能 → 转换 → 用能
+emServesRef 能流下游边
+{{ f.label }}
+{{ f.code }}
+{{ f.val }}
+{{ f.label }}
+{{ f.eff }}
+{{ f.note }}
+{{ f.label }}
+{{ f.code }}
+{{ f.val }}
+{{ c.title }}
+{{ c.spec }}
+{{ c.v }}
+{{ c.u }}
+{{ r.k }}
+{{ r.v }}
+南京奥体中心 · 能源运行监控中心
+值班中 · 王工
+2026-08-30 09:42:18
+采集正常 428/432
+{{ b.k }}
+{{ b.v }}
+{{ b.u }}
+{{ b.note }}
+24 小时负荷曲线 · 分时电价着色
+{{ t.label }}
+00:00
+06:00
+12:00
+18:00
+24:00
+异常事件流
+{{ openAlarms }} 待处置
+{{ a.dis }}
+{{ a.ts }} · {{ a.code }}
+{{ a.dev }}
+计量树 · 电
+{{ m.label }}
+{{ m.role }}
+{{ m.dis }}
+{{ m.id }}
+虚表
+{{ m.val }}
+{{ meter.dis }}
+{{ meter.spec }}
+结算计量
+{{ meter.id }} · submeterOf {{ meter.parent }}
+点表交底
+编辑建模
+{{ a.k }}
+{{ a.v }}
+点位 · 三层约定
+L1 raw 累积读数（禁止修改） → L2 delta 区间增量（含翻转/换表补偿） → L3 归一化指标
+his + hisInterpolate:"linear" · tz 继承 site
+{{ c }}
+{{ p.layer }}
+{{ p.dis }}
+{{ p.spec }}
+{{ p.unit }}
+{{ p.val }}
+{{ p.q }}
+平衡校核 · 总表 vs 分表之和
+缺口量归入 emGap 虚表，超阈值阻断关账
+缺口率 3.1% · 阈值 2.0%
+{{ b.label }}
+{{ b.pctLabel }}
+{{ b.val }}
+{{ a.v }}
+{{ a.k }}
+诊断分类
+{{ c.code }}
+{{ c.label }}
+{{ c.n }}
+{{ c }}
+{{ a.sevLabel }}
+{{ a.dis }}
+{{ a.code }} · {{ a.cat }} · {{ a.ts }}
+{{ a.subject }}
+{{ a.val }}
+期望 {{ a.exp }}
+{{ a.impact }}
+{{ a.stLabel }}
+{{ a.ackLabel }}
+{{ a.dispLabel }}
+诊断规则仅产生
+EmAnomaly
+，不直写控制点。异常经值班确认（emAckBy / emAckAt）后才可升级为
+EmWorkOrder
+；形成长期措施的工单须挂到 EmSavingsProject 走核证闭环。
+分析维度
+{{ d.label }}
+emDimension: site|floor|zone|tenant|org|subItem|equip
+{{ dimTitle }} · 同比 / 环比
+台账聚合 · 2026-08 vs 2025-08 / 2026-07
+{{ c }}
+{{ r.label }}
+{{ r.val }}
+{{ r.yoy }}
+{{ r.mom }}
+{{ r.eui }}
+7 × 24 用能强度
+granularity=hourly · 单位面积功率密度 W/m²
+低
+高
+{{ row.day }}
+00
+04
+08
+12
+16
+20
+23
+周六 22:00–06:00 强度较其他夜间高
+42%
+—— 命中
+scheduleWaste
+规则，已生成异常 SW-011。
+典型日负荷曲线 · 分时电价时段
+EmElecEnergyTou 尖 / 峰 / 平 / 谷 · 用于负荷转移与储能策略验证
+{{ t.label }}
+{{ t.price }} · {{ t.share }}
+00:00
+06:00
+12:00
+18:00
+24:00
+单位面积能耗 EUI 对标
+emStandardRef: GB 55015-2021 约束值 · GB/T 51161-2016 引导值 · 夏热冬冷 / 体育建筑
+{{ m.label }}
+本项目 45.2
+{{ c.k }}
+{{ c.v }}
+kWh/m²·a
+{{ c.note }}
+定额执行进度
+EmQuota · 考核期 2026Q3 · 期望进度 74%（时间过半线性）
+{{ q.label }}
+{{ q.source }}
+{{ q.pct }}%
+{{ q.used }} / 限额 {{ q.limit }}
+{{ q.action }}
+指标定义 · EmKpi
+定义与时序实例分离：EmKpi 可版本化并复用到任意对象，EmKpiPoint 为可 his 的归一化点
+{{ c }}
+{{ k.code }}
+{{ k.dis }}
+{{ k.formula }}
+{{ k.unit }}
+{{ k.dir }}
+{{ k.std }}
+碳排放核算 · 2026 年至今
+因子版本已锁定
+486.2
+tCO₂e 净排放
+{{ s.k }}
+{{ s.v }}
+{{ s.note }}
+2030 目标进度（强度 -18%，基准年 2024）
+68.9%
+已实现 -12.4% · 距目标 5.6pp · EmCarbonTarget · intensity
+排放因子版本
+emSourceDoc 必填 · 因子换版可全量重算，历史账目不漂移
+{{ f.scope }}
+{{ f.dis }}
+{{ f.doc }}
+{{ f.val }}
+{{ f.unit }}
+绿电 / 绿证抵消
+EmGreenCert · 仅 emRetired（已注销核销）方可用于抵消
+{{ c.dis }}
+{{ c.no }}
+{{ c.qty }}
+{{ c.status }}
+月度碳排趋势
+EmCarbonAccount = 台账 × 因子 · 可无损重算
+1月
+4月
+8月
+12月
+{{ s.k }}
+{{ s.v }}
+{{ s.u }}
+{{ s.tag }}
+节能项目 · 诊断 → 措施 → 核证闭环
+EmSavingsProject · 未通过基线核证的节能量一律 planned，禁止以 verified 对外
+{{ p.dis }}
+{{ p.ecm }} · IPMVP {{ p.opt }} · 来源异常 {{ p.from }}
+{{ p.status }}
+{{ m.k }}
+{{ m.v }}
+基线模型统计验收
+EmBaseline · ASHRAE Guideline 14 月度判据
+{{ b.k }}
+{{ b.crit }}
+{{ b.v }}
+{{ b.ok }}
+Option C 整体计量回归通过验收（自变量 CDD26 + 开馆场次），冷站群控项目可转
+verified
+。
+诊断规则库
+EmDiagnostic · 命中数 / 近 30 日
+{{ r.code }}
+{{ r.dis }}
+{{ r.sev }}
+{{ r.n }}
+交互方案
+{{ v.label }}
+{{ modelNote }}
+资产与空间树
+新建实体
+按名称 / spec / 点位筛选
+{{ f.label }}
+{{ f.n }}
+{{ n.chevron }}
+{{ n.dis }}
+{{ n.badge }}
+{{ n.spec }}
+17 个实体 · 432 只表计 · 1,864 个点位
+2 项待修复
+{{ node.dis }}
+{{ node.spec }} · extends {{ node.base }}
+重新校验
+保存
+{{ t.label }}
+{{ f.k }}
+必填
+{{ f.doc }}
+{{ f.v }}
+{{ f.type }}
+points 字典中
+6
+个必选点已绑定，
+2
+个可选点未绑定
+批量绑定 →
+{{ c }}
+{{ b.slot }}
+{{ b.spec }}
+{{ b.addr }}
+{{ b.live }}
+{{ b.status }}
+{{ c.n }}
+{{ c.title }}
+{{ c.tag }}
+{{ c.detail }}
+{{ c.fix }}
+{{ node.file }}
+当前实体的 Xeto 规格定义 · 只读
+XETO SPEC
+{{ node.src }}
+语义模型图谱 · lib em
+{{ l.label }}
+点选任一 spec 高亮其关系边
+{{ f.label }}
+{{ l.text }}
+{{ n.spec }}
+{{ n.dis }}
+{{ n.domain }}
+LAYER 1 · 对象与设备
+桥梁 · 台账
+LAYER 2 · 业务对象
+{{ node.spec }}
+{{ node.dis }} · {{ node.file }}
+{{ f.k }}
+{{ f.type }}
+关系边
+{{ r.dir }}
+{{ r.tag }}
+{{ r.target }}
+铁律校验
+{{ r.n }}
+{{ r.text }}
+{{ d.k }}
+{{ d.v }}
+{{ d.u }}
+{{ c }}
+{{ d.dis }}
+{{ d.id }}
+{{ d.medium }}
+{{ d.role }}
+{{ d.gw }}
+{{ d.factor }}
+{{ d.quality }}
+{{ d.status }}
+{{ d.install }}
+项目 EUI 排名 · 同业态对标
+26 个在管项目 · 50+ 城市 · 归一化至标准气象年（CDD/HDD 修正）
+{{ c }}
+{{ p.rank }}
+{{ p.dis }}
+{{ p.city }} · {{ p.area }}
+{{ p.usage }}
+{{ p.eui }}
+{{ p.yoy }}
+{{ p.status }}
+集团汇总
+{{ p.k }}
+{{ p.v }}
+{{ p.u }}
+业态基准分布
+箱体为集团四分位，竖线为 GB 引导值
+{{ u.label }}
+{{ u.medVal }}
+关账批次 · EmClosePeriod
+关账后台账不可变，修正一律走红冲 emReversalOf
+发起 8 月关账
+{{ c }}
+{{ p.span }}
+{{ p.status }}
+{{ p.by }}
+{{ p.entries }}
+{{ p.gap }}
+{{ p.action }}
+上报与报表模板
+台账的确定性投影 · 可无损重算
+{{ r.ext }}
+{{ r.dis }}
+{{ r.note }}
+生成 →
+租户账单 · EmBill = 台账 × EmTariff
+每个账单项逐笔指向来源台账条目（ledgerRefs），可追溯到表计与点位
+2026-08 · 两部制 twoPart + TOU
+{{ c }}
+{{ b.payer }}
+{{ b.no }}
+{{ b.qty }}
+{{ b.demand }}
+{{ b.src }}
+{{ b.amount }}
+{{ b.status }}
+追溯台账
+9:41
+{{ p.eyebrow }}
+{{ p.title }}
+{{ c.title }}
+{{ c.tag }}
+{{ c.big }}
+{{ c.bigU }}
+{{ r.k }}
+{{ r.v }}
+{{ c.btn }}
+{{ t.label }}
+{{ p.caption }}
+{{ w.k }}
+{{ w.v }}
+{{ w.u }}
+{{ w.note }}
+{{ v.label }}
+来源
+{{ f.label }}
+{{ f.n }}
+emStatus: new → assigned → inProgress → done → closed
+{{ col.label }}
+{{ col.code }}
+{{ col.n }}
+{{ w.no }}
+{{ w.overdue }}
+{{ w.dis }}
+{{ w.cat }}
+节能项目
+{{ w.initial }}
+{{ w.assignee }}
+{{ w.due }}
+暂无工单
+{{ c }}
+{{ w.no }}
+{{ w.dis }}
+来源 {{ w.from }} · {{ w.cat }}
+{{ w.subject }}
+{{ w.assignee }}
+{{ w.due }}
+{{ w.status }}
+{{ w.impact }}
+查看 →
+{{ wo.no }}
+{{ wo.status }}
+{{ wo.sevLabel }}
+{{ wo.dis }}
+subjectRef {{ wo.subject }} · emAnomalyRefs [{{ wo.from }}]
+退回
+{{ wo.nextLabel }}
+{{ st.label }}
+{{ st.at }}
+{{ f.k }}
+{{ f.v }}
+处置记录
+每次状态流转均留痕，工单闭环后写回异常
+emStatus
+= resolved
+{{ t.title }}
+{{ t.ts }}
+{{ t.by }}
+{{ t.body }}
+{{ t.attach }}
+关联异常 · emAnomalyRefs
+一张工单可合并多条同源异常，闭环后一并置为 resolved
+{{ a.dis }}
+{{ a.code }} · {{ a.ts }}
+{{ a.dev }}
+闭环去向
+一次性修复直接闭环；形成长期措施须挂节能项目走核证
+{{ o.title }}
+{{ o.detail }}
+{{ o.link }}
+SLA 与升级
+{{ r.sev }}
+响应 {{ r.respond }} · 完成 {{ r.resolve }}
+{{ r.rate }}

@@ -1,0 +1,77 @@
+pageType: content
+background:
+  type: solid
+  color: "$paper"
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [64, 36, 500, 16]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: 附件四 · 平台选型依据 —— 与主流平台逐项对比
+  - elementId: title
+    elementType: text
+    bounds: [64, 58, 832, 42]
+    content:
+      style: "$title"
+      wrap: false
+      text: FIN Framework 与 Tridium N4 功能对比
+  - elementId: headrule
+    elementType: shape
+    bounds: [64, 110, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: n4Table
+    elementType: table
+    bounds: [64, 128, 832, 330]
+    columnWidths: [0.26, 0.37, 0.37]
+    rowHeights: [0.082, 0.0916, 0.0916, 0.0916, 0.0916, 0.0916, 0.0916, 0.0916, 0.0916, 0.0916, 0.0916, 0.0916]
+    style:
+      cellStyle: {fontSize: 10, color: "$steel", align: [left, middle], border: [null, null, {style: solid, width: 1, color: "#E3E9EE"}, null]}
+      firstRowStyle: {bold: true, color: "#FFFFFF", fontSize: 11, fill: {type: solid, color: "$tealDark"}}
+      firstColumnStyle: {bold: true, color: "$tealDark"}
+    rows:
+      - - text: 功能
+        - text: FIN Framework
+        - text: Tridium N4
+      - - text: 全局编程
+        - text: Function Block（Wire Sheet）可视化编程
+        - text: Function Block（Wire Sheet）可视化编程
+      - - text: 趋势记录
+        - text: 本地趋势，同步 BACnet 与 Haystack
+        - text: 本地趋势，同步 BACnet 与 Haystack
+      - - text: 报警管理
+        - text: 本地报警管理器，同步 BACnet 与 Haystack
+        - text: 本地报警管理器，仅同步 BACnet
+      - - text: 计划调度
+        - text: 本地计划，同步 BACnet 与 Haystack
+        - text: 本地计划，仅同步 BACnet
+      - - text: 用户管理
+        - text: 自定义角色，用户数量不限
+        - text: 自定义角色，用户数量不限
+      - - text: 气象数据
+        - text: 有，数据可直接参与编程运算
+        - text: 有，数据可直接参与编程运算
+      - - text: 高级报表
+        - text: 有（完整报表能力）
+        - text: 有
+      - - text: 备注 / 任务文档
+        - text: 有
+        - {text: 受限, color: "$amber"}
+      - - text: 原生租户计费
+        - {text: 有, color: "$teal", bold: true}
+        - {text: 无, color: "$amber", bold: true}
+      - - text: 浏览器管理
+        - {text: HTML5 全功能，任意网络客户端, color: "$teal"}
+        - text: 有，HTML5 功能受限
+      - - text: 远程通知
+        - text: 有，支持升级（Escalation）
+        - text: 有，支持升级（Escalation）
+  - elementId: verdict
+    elementType: text
+    bounds: [64, 474, 832, 44]
+    content:
+      style: "$body"
+      text: |
+        <p><strong>结论：</strong>两者同为成熟的楼宇集成平台，差异在数据语义与开放度 —— FIN 原生 Haystack 4 同步、原生租户计费、HTML5 全功能浏览器管理，这正是 energyMatrix 选择 FIN 作为数据底座的原因。</p>

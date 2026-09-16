@@ -1,0 +1,128 @@
+//
+// EmHeatMeter.trio —— 热量表（说明书 §3.3 表 3-2）
+//
+// 组合继承的子模板，结构与 EmCoolMeter.trio 一致，只是标记为 hot。
+// 规则见 EmElecMeter.trio 头部。
+//
+
+---
+// 热量表本体
+emHeatMeterModelId:"_equip:emHeatMeter"
+emMeterModelId:"_equip:emMeter"
+id:@_equip:emHeatMeter
+energyMatrix
+equip
+meter
+hot
+water
+emMedium:"heat"
+
+---
+// L1 累积热量
+emHeatMeterModelId:"_equip:emHeatMeter_point:l1Total"
+emMeterModelId:"_equip:emMeter_point:l1Total"
+id:@_equip:emHeatMeter_point:l1Total
+energyMatrix
+point
+sensor
+total
+emL1Point
+hot
+energy
+equipRef:@_equip:emHeatMeter
+emMeterRef:@_equip:emHeatMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"累积热量"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"kWh"
+his
+hisCollectInterval:15min
+hisInterpolate:"linear"
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// L2 区间热量增量
+emHeatMeterModelId:"_equip:emHeatMeter_point:l2Delta"
+emMeterModelId:"_equip:emMeter_point:l2Delta"
+id:@_equip:emHeatMeter_point:l2Delta
+energyMatrix
+point
+sensor
+emDelta
+hot
+energy
+equipRef:@_equip:emHeatMeter
+emMeterRef:@_equip:emHeatMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"区间热量"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"kWh"
+his
+hisInterpolate:"linear"
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// 瞬时热功率
+emHeatMeterModelId:"_equip:emHeatMeter_point:powerThermal"
+id:@_equip:emHeatMeter_point:powerThermal
+energyMatrix
+point
+sensor
+hot
+power
+equipRef:@_equip:emHeatMeter
+emMeterRef:@_equip:emHeatMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"瞬时热功率"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"kW"
+his
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// 供水温度
+emHeatMeterModelId:"_equip:emHeatMeter_point:entering"
+id:@_equip:emHeatMeter_point:entering
+energyMatrix
+point
+sensor
+water
+temp
+entering
+equipRef:@_equip:emHeatMeter
+emMeterRef:@_equip:emHeatMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"供水温度"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"°C"
+his
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// 回水温度
+emHeatMeterModelId:"_equip:emHeatMeter_point:leaving"
+id:@_equip:emHeatMeter_point:leaving
+energyMatrix
+point
+sensor
+water
+temp
+leaving
+equipRef:@_equip:emHeatMeter
+emMeterRef:@_equip:emHeatMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"回水温度"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"°C"
+his
+tz:Arg("tz:Asia/Shanghai")

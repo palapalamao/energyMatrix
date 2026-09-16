@@ -1,0 +1,47 @@
+@startuml
+!include style.iuml
+title 图 6-3  账单生成时序
+autonumber "<b>[0]"
+
+participant "EmScheduler" as SCH
+participant "EmBillEngine" as BE
+participant "EmRepo" as REPO
+participant "EmExportSvc" as EXP
+database "Folio" as F
+participant "ERP / 收费系统" as ERP
+
+SCH -> BE : run(ctx) 月结 cron 0 30 2 1 * *
+BE -> REPO : readLedger(payer, span, closed = true)
+alt 账期未关账
+  BE --> SCH : EmError(EM-4001 账期未关账)
+end
+BE -> REPO : readTariff(medium, span.start)
+alt 费率缺 emSourceDoc
+  BE --> SCH : EmError(EM-4003 费率无依据文件)
+end
+
+group 计价
+  alt pricingModel = tou
+    BE -> BE : priceTou() 按尖峰平谷分段
+  else tiered
+    BE -> BE : priceTiered() 按阶梯区间
+  else twoPart
+    BE -> BE : priceTou() + demandCharge()
+  end
+  BE -> BE : 逐项写 ledgerRefs 建立追溯
+end
+
+BE -> REPO : commit(EmBill + EmBillItem[])
+REPO -> F : commit
+BE --> SCH : EmCalcResult{billCount, amount}
+
+SCH -> EXP : pushBills(span)
+EXP -> EXP : sign(body) HMAC-SHA256
+EXP -> ERP : POST /bills  (幂等键 = billNo)
+alt 失败
+  EXP -> EXP : retry(3) 指数退避 5s/25s/125s
+  EXP --> SCH : 记录待重推队列
+else 成功
+  EXP -> REPO : 标记 emStatus = issued
+end
+@enduml

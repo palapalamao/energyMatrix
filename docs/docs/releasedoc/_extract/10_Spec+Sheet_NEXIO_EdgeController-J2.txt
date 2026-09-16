@@ -1,0 +1,108 @@
+
+===== Page 1 =====
+Specification Sheet
+SS SheetUsnstallation
+Manual
+
+===== Page 2 =====
+Edge controller NEXIO
+Warnings
+The following instructions must be read and understood before installation, commissioning and
+maintenance of the controller.
+ATTENTION!
+YOUR SAFETY IS INVOLVED. FAILURE TO FOLLOW THESE
+INSTRUCTIONS MAY CAUSE DANGER
+The electronic device must be installed by qualified personnel in
+accordance with national regulations and/or related local requirements.
+If the electronic device is not installed, commissioned and maintained
+correctly according to the instructions contained in this manual, then it
+may not work properly and may endanger the user.
+ATTENTION!
+DISCONNECT POWER SUPPLY BEFORE PERFORMING
+INTERVENTIONS.
+FAILURE TO OBSERVE THESE INDICATIONS MAY CAUSE INJURY
+TO PEOPLE OR DAMAGE TO PROPERTY
+The following instructions must be read and understood before disposal of the device:
+The crossed-out wheeled bin symbol on the device or on its packaging
+indicates that the product - at the end of its life cycle - must be
+collected separately from other waste to enable it to be properly
+treated and recycled.
+The user must therefore return the end-of-life equipment free of
+charge to the appropriate local electrical and electronic waste
+collection centres, or return it to the retailer.
+Adequate separate collection for the subsequent recycling, treatment
+and environmentally compatible disposal of the decommissioned
+device helps to avoid any negative effects on the environment and health and promotes the
+reuse and/or recycling of the materials making up the equipment. Unauthorised disposal of the
+product by the user will result in the application of the sanctions provided for by current
+legislation.
+Information pursuant to art. 26 of Italian Legislative Decree no. 49 of 14 March 2014 “Implementation of Directive 2012/19/EU on waste
+electrical and electronic equipment (WEEE)”.
+2
+
+===== Page 3 =====
+Edge controller NEXIO
+The NEXIO is an edge controller with the FIN Framework platform on board that allows the
+integration of different protocols and application logics. It allows any type of data and alarms to
+be displayed in a simple and intuitive way for secure and complete remote management.
+Advanced gateway functionality, the possibility of exposing all connected devices on the IP
+network in Modbus and BACnet. Two RS 485 ports freely configurable in Modbus and BACnet
+protocols Maximum 5 M-bus devices connected directly to the M-Bus port without any additional
+power supply. Internal data logger for data logging of monitoring devices
+Dual RJ45 ports for daisy-chain and fault-bypass LAN connection (physical connection in case
+of power failure). Temporary Wi-Fi hotspot enabling via a button for device configuration and/or
+connection to supervisor (after 5min of inactivity, it switches off)
+Configuration via internal web server that can also be reached from the Wi-Fi port, which can be
+activated by means of a button present and accessible from outside the case.
+The following tables show all the specifications for the NEXIO
+Hardware Specifications
+No. DESCRIPTION
+2 RS-485 ports
+1 M-Bus port
+1 C-BUS port – not in use
+2 Ethernet ports
+1 USB port – not in use
+10 Signalling LED
+1 Wi-Fi activation button
+Processor Quad-core Cortex-A72 (ARM v8) 64-bit 1.5GHz
+Ram 4 GB LPDDR4
+On-board Flash storage 16GB 8-bit eMMC
+Mechanical Specifications
+Operating temperature 0…+60 °C
+Storage temperature -10…+80 °C
+Weight 185 g
+6 DIN modules
+Dimension
+90 x 105 x 71 mm (h x l x p)
+Electrical Specifications
+Power supply 12 ÷ 24 V AC/DC
+Maximum power consumption 10 W
+Front protection degree IP 20
+Rear protection degree IP 20
+3
+
+===== Page 4 =====
+Edge controller NEXIO
+Electrical connections and LEDs
+Each LED signals a precise activity/status of the device. Below is a summary image. The RUN
+LED lights up if the device is powered and flashes during device start-up. The serial port LEDs
+indicate activity on the serial ports (in both Modbus and BACnet configurations) by flashing.
+There is also an indication for Wi-Fi activation, which turns off when Wi-Fi is no longer available.
+Finally, the LEDs on the Ethernet ports are the standard Activity & Link LEDs on any RJ45 port.
+It is good practice for the installer to check the cross-section and type of cable used for the
+connection, so that the national and local regulations in force are complied with. If a cable is
+damaged, it must be replaced by the manufacturer, the service department or any similarly
+qualified person in order to avoid possible damage.
+ATTENTION: A specific RS-485 cable (e.g. Belden 9842 or equivalent) must be used for
+connection to field devices via the RS-485 bus.
+Reference Directives and Technical standards
+ï EMC Directive and subsequent amendments: 2014/30/EU EMC
+ï General Product Safety Directive: 2001/95/EU
+ï Directive on the restriction of the use of certain hazardous substances in electrical and
+electronic equipment (RoHS): 2011/65/EU
+ï Technical standards
+ï EN 61326-6-1:2013
+ï EN 61010-1:2010+A1:2019
+J2 Innovations is the owner of this document and reserves the right to make changes without notice.
+Registration in the Register of Producers of Electrical and Electronic Equipment with number IT17030000009747.
+4

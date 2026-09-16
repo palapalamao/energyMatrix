@@ -1,0 +1,84 @@
+// energyMatrix hospital minimal demo data
+// generation: hospital-demo-minimal-20260913
+// batch: 02_business_params
+// Default is preview-only. Change preview to false only after FIN Expert stages the unchanged request and the user confirms it.
+do
+  preview: true
+  generation: "hospital-demo-minimal-20260913"
+  demoTags: {emSynthetic, emDataProvenance: generation}
+  if (preview) return {batch: "02_business_params", generation: generation, preview, summary: "2 KPIs, 2 quotas, 2 diagnosis rules, 6 factors, 1 target, 2 certificates"}
+
+  site_east: read(energyMatrix and site and emDemoKey=="site-east", true)->id
+  qSpan: toSpan(2026-09-01..2026-09-13)
+
+  if (read(emKpi and emKpiCode=="EUI_TOTAL", false) == null) emAddKpi("EUI_TOTAL", "综合能耗强度", "emLedgerTotal(emSelf->id, emSpan) / emSelf->area", {emSynthetic, emDataProvenance: generation, unit: "kWh/m²", emGranularity: "monthly", emHigherIsBetter: false})
+  if (read(emKpi and emKpiCode=="EUI_ELEC", false) == null) emAddKpi("EUI_ELEC", "单位面积电耗", "emLedgerTotal(emSelf->id, emSpan, \"elec\") / emSelf->area", {emSynthetic, emDataProvenance: generation, unit: "kWh/m²", emGranularity: "monthly", emHigherIsBetter: false})
+
+  if (read(emQuota and emDemoKey=="quota-east-quota-elec", false) == null) do
+    quota_east_quota_elec: emAddQuota(site_east, 610000, "standard", qSpan, {dis: "东院区月度电耗上限", emMedium: "elec", emWarnRatio: 0.9, emOverAction: "notify"})
+    commit(diff(readById(quota_east_quota_elec), {emSynthetic, emDataProvenance: generation, emDemoKey: "quota-east-quota-elec"}))
+  end
+
+  if (read(emQuota and emDemoKey=="quota-east-quota-water", false) == null) do
+    quota_east_quota_water: emAddQuota(site_east, 8500, "historical", qSpan, {dis: "东院区月度水耗上限", emMedium: "water", emWarnRatio: 0.9, emOverAction: "notify"})
+    commit(diff(readById(quota_east_quota_water), {emSynthetic, emDataProvenance: generation, emDemoKey: "quota-east-quota-water"}))
+  end
+
+  if (read(emDiagnostic and emDemoKey=="diag-east-dq", false) == null) do
+    rule_east_dq: emAddDiagRule(site_east, "DQ-01", "数据完好率低于 90%", "dataQuality", "warn", 0.9)
+    commit(diff(readById(rule_east_dq), {emSynthetic, emDataProvenance: generation, emDemoKey: "diag-east-dq"}))
+  end
+
+  if (read(emDiagnostic and emDemoKey=="diag-east-balance", false) == null) do
+    rule_east_balance: emAddDiagRule(site_east, "BAL-01", "缺口率超过 5%", "balance", "critical", 0.05)
+    commit(diff(readById(rule_east_balance), {emSynthetic, emDataProvenance: generation, emDemoKey: "diag-east-balance"}))
+  end
+
+  if (read(emEmissionFactor and emDemoKey=="factor-elec-2026", false) == null) commit(diff(null, {
+    energyMatrix, emEmissionFactor, emSynthetic, emDataProvenance: generation, emDemoKey: "factor-elec-2026",
+    dis: "华东电网排放因子 2026", emMedium: "elec", emScope: "scope2", emRegion: "华东",
+    emYear: 2026, emFactor: 0.5568, emFactorUnit: "kgCO2e/kWh", emCoalFactor: 0.1229,
+    emSourceDoc: "hospital-demo-minimal synthetic factor set"
+  }, {add}))
+
+  if (read(emEmissionFactor and emDemoKey=="factor-elec-2025", false) == null) commit(diff(null, {
+    energyMatrix, emEmissionFactor, emSynthetic, emDataProvenance: generation, emDemoKey: "factor-elec-2025",
+    dis: "华东电网排放因子 2025", emMedium: "elec", emScope: "scope2", emRegion: "华东",
+    emYear: 2025, emFactor: 0.5703, emFactorUnit: "kgCO2e/kWh", emCoalFactor: 0.1229,
+    emSourceDoc: "hospital-demo-minimal synthetic factor set"
+  }, {add}))
+
+  if (read(emEmissionFactor and emDemoKey=="factor-gas-2026", false) == null) commit(diff(null, {
+    energyMatrix, emEmissionFactor, emSynthetic, emDataProvenance: generation, emDemoKey: "factor-gas-2026",
+    dis: "天然气排放因子 2026", emMedium: "gas", emScope: "scope1", emRegion: "华东",
+    emYear: 2026, emFactor: 2.19, emFactorUnit: "kgCO2e/m³", emCoalFactor: 1.33,
+    emSourceDoc: "hospital-demo-minimal synthetic factor set"
+  }, {add}))
+
+  if (read(emEmissionFactor and emDemoKey=="factor-gas-2025", false) == null) commit(diff(null, {
+    energyMatrix, emEmissionFactor, emSynthetic, emDataProvenance: generation, emDemoKey: "factor-gas-2025",
+    dis: "天然气排放因子 2025", emMedium: "gas", emScope: "scope1", emRegion: "华东",
+    emYear: 2025, emFactor: 2.16, emFactorUnit: "kgCO2e/m³", emCoalFactor: 1.33,
+    emSourceDoc: "hospital-demo-minimal synthetic factor set"
+  }, {add}))
+
+  if (read(emEmissionFactor and emDemoKey=="factor-steam-2026", false) == null) commit(diff(null, {
+    energyMatrix, emEmissionFactor, emSynthetic, emDataProvenance: generation, emDemoKey: "factor-steam-2026",
+    dis: "外购蒸汽排放因子 2026", emMedium: "steam", emScope: "scope2", emRegion: "华东",
+    emYear: 2026, emFactor: 0.11, emFactorUnit: "kgCO2e/kWh", emCoalFactor: 0.1286,
+    emSourceDoc: "hospital-demo-minimal synthetic factor set"
+  }, {add}))
+
+  if (read(emEmissionFactor and emDemoKey=="factor-water-2026", false) == null) commit(diff(null, {
+    energyMatrix, emEmissionFactor, emSynthetic, emDataProvenance: generation, emDemoKey: "factor-water-2026",
+    dis: "自来水供应排放因子 2026", emMedium: "water", emScope: "scope3", emRegion: "华东",
+    emYear: 2026, emFactor: 0.168, emFactorUnit: "kgCO2e/m³", emCoalFactor: null,
+    emSourceDoc: "hospital-demo-minimal synthetic factor set"
+  }, {add}))
+
+  if (read(emCarbonTarget and emDemoKey=="carbon-target-east-2030", false) == null) commit(diff(null, {energyMatrix, emCarbonTarget, emSynthetic, emDataProvenance: generation, emDemoKey: "carbon-target-east-2030", siteRef: site_east, emSubjectRef: site_east, dis: "东院区 2030 单位面积碳排下降目标", emTargetType: "intensity", emTargetYear: 2030, emBaseValue: 63.0, emTargetValue: 50.0, emSourceDoc: "医院绿色低碳运营行动方案"}, {add}))
+  if (read(emGreenCert and emDemoKey=="green-cert-east-retired", false) == null) commit(diff(null, {energyMatrix, emGreenCert, emRetired, emSynthetic, emDataProvenance: generation, emDemoKey: "green-cert-east-retired", siteRef: site_east, emSubjectRef: site_east, dis: "东院区 2026 已注销绿证", emCertType: "gec", emCertNo: "GEC-2026-HOSP-0001", emVintage: 2026, val: 180000}, {add}))
+  if (read(emGreenCert and emDemoKey=="green-cert-east-open", false) == null) commit(diff(null, {energyMatrix, emGreenCert, emSynthetic, emDataProvenance: generation, emDemoKey: "green-cert-east-open", siteRef: site_east, emSubjectRef: site_east, dis: "东院区 2026 绿电交易未注销", emCertType: "greenPower", emCertNo: "GP-2026-HOSP-0002", emVintage: 2026, val: 120000}, {add}))
+  readAll(energyMatrix and emDataProvenance==generation).each(rec => commit(diff(rec, demoTags)))
+  {batch: "02_business_params", generation: generation, kpis: 2, quotas: 2, diagRules: 2, factors: 6, greenCerts: 2}
+end

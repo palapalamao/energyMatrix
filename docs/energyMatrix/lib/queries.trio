@@ -1,0 +1,144 @@
+//
+// energyMatrix —— 纯 Axon 查询函数
+//
+// 这些函数是资源文件（trio），不参与 Fantom 编译，改完 reload pod 即生效。
+// 有 Fantom 实现的函数一律写在 EnergyMatrixLib（@Axon），不要在这里重复。
+//
+// 这里只放两类：
+//   1. 前端页面的取数快捷方式（组合几个 @Axon 的结果）
+//   2. 建模期的巡检查询（找出不符合铁律的记录）
+//
+// 注意 Axon 的几个坑：
+//   * 顶部注释只能 // ，不能 /* */
+//   * today..today 是 0 时长，要写 today..(today + 1day)，且 +1day 必须加括号
+//   * 空 Grid 上 colToList 会抛 UnknownNameErr，先判 isEmpty
+//   * 没有 % 取模；这个安装里连 mod() 都没有（floor() 在 hxMath，要单独启用
+//     那个库）。要取整除 / 取余，改用嵌套循环，只依赖加乘 —— 见 lib/demo.trio
+//
+
+---
+name: emSites
+func
+doc: "本项目的全部 energyMatrix 站点。列：id, dis, area, emUsageType, emClimateZone。"
+src:
+  () => readAll(energyMatrix and site)
+
+---
+name: emTodaySpan
+func
+doc:
+  当天账期。
+  注意 toSpan 的第二个参数是**时区**不是结束日期 —— 要传一个日期区间。
+  Axon 的日期区间是闭区间，toSpan 会把它转成左闭右开的 Span，
+  所以 today()..today() 得到的正是"今天一整天"，不是 0 时长。
+src:
+  () => toSpan(today()..today())
+
+---
+name: emYesterdaySpan
+func
+doc: "昨天账期（左闭右开）—— 夜间流水线处理的就是它。"
+src:
+  () => toSpan(today() - 1day..today() - 1day)
+
+---
+name: emThisMonthSpan
+func
+doc: "本月账期（左闭右开）。"
+src:
+  () => toSpan(date(today().year, today().month, 1)..today())
+
+---
+name: emOverviewCards
+func
+doc:
+  能源总览驾驶舱的 KPI 卡数据。返回 Grid，每介质一行。
+  列：emMedium, val, emEntryCount, emQualityMin, emSources。
+  只读台账（铁律 6）。
+src:
+  (siteRef, span) => emLedgerAggregate(siteRef, span, "medium")
+
+---
+name: emOverviewTrend
+func
+doc:
+  总览驾驶舱的分项堆叠趋势：账期 × 分项。
+  列名就是分项编码（a1/b1/…），合计在 val，列顺序在 meta.emCols（按合计降序）。
+  缺格是 null 不是 0 —— 那天没记账和那天记了 0 是两回事。
+src:
+  (siteRef, span) => emLedgerCrosstab(siteRef, span, "period", "subItem", "elec")
+
+---
+name: emOverviewCoal
+func
+doc:
+  总览驾驶舱的综合能耗头卡：折标煤（tce）。
+  逐介质明细在 rows，合计在 meta.val；meta.emMissing 是没有折标煤系数、
+  因而未计入的介质（水本来就不计入，但"参数没录"也长这样，所以要显示）。
+src:
+  (siteRef, span) => emCoalEquivalent(siteRef, span)
+
+---
+name: emSubItemBreakdown
+func
+doc:
+  分项能耗拆解（UI 总览屏的 A/B/C/D 四组 + 明细）。
+  列：subItem, val, emEntryCount, emQualityMin, emSources。仅电介质有值。
+src:
+  (siteRef, span) => emLedgerAggregate(siteRef, span, "subItem", "elec")
+
+---
+name: emUnbalancedMeters
+func
+doc:
+  巡检：缺口率超过站点阈值的表计清单。关账前先跑这个，比被闸门挡下来再查快。
+  列同 emSiteGaps。
+src:
+  (siteRef, span) => do
+    limit: read(id == siteRef)->emGapThreshold
+    emSiteGaps(siteRef, span).findAll(r => r->emGapRatio != null and r->emGapRatio.abs > limit)
+  end
+
+---
+name: emMetersMissingDataSource
+func
+doc:
+  巡检（铁律 4）：缺少 emDataSource 的表计。任何能耗数值必须可标注来源，
+  缺了它的表算出来的账不可审计。
+src:
+  () => readAll(energyMatrix and meter and not emDataSource)
+
+---
+name: emMetersMissingMedium
+func
+doc:
+  巡检：判定不出介质的表计。emMedium 缺失时汇总算法无法分组，
+  跨介质挂接校验也失效。
+src:
+  () => readAll(energyMatrix and meter and not emMedium)
+
+---
+name: emVirtualMetersMissingFormula
+func
+doc: "巡检：标了 emVirtual 却没有 emFormula 的虚表 —— 它们永远算不出用量。"
+src:
+  () => readAll(energyMatrix and meter and emVirtual and not emFormula)
+
+---
+name: emParamsMissingSourceDoc
+func
+doc:
+  巡检（铁律 8）：缺少 emSourceDoc 依据文件号的业务参数（费率 / 排放因子）。
+  这些参数不允许生效 —— 账单和碳账都是台账 × 参数的投影，参数没有出处，
+  投影就没有出处。
+src:
+  () => readAll((emTariff or emEmissionFactor) and not emSourceDoc)
+
+---
+name: emUnverifiedSavings
+func
+doc:
+  巡检（铁律 10）：尚未核证的节能项目。这些项目的节能量只能以「规划目标」
+  口径引用，禁止出现在对外材料里。
+src:
+  () => readAll(emSavingsProject and emVerifyStatus != "verified")

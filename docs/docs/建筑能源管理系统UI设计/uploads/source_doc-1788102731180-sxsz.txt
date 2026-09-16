@@ -1,0 +1,39 @@
+//
+// 域 4：用能设备域（负荷侧）
+// 原则：
+//   本库不重复定义冷机/水泵/AHU —— 那是 CoolMatrix / heatMatrix / ph.equips 的职责。
+//   energyMatrix 只负责把既有 equip 挂上"能耗身份"：分项归类 + 计量归属 + 额定值。
+//   通过 EmLoadProfile 混入（mixin），任何 ph::Equip 都可以成为可核算的用能对象。
+//
+
+EmLoad: Equip {
+  energyMatrix
+  emLoad
+  emSubItem
+  emMeterRef:    Ref? <of:EmMeter, doc:"该设备的直接计量表；无表则依赖分摊">
+  emSpaceRef:    Ref?
+  emTenantRef:   Ref?
+  emRatedPower:  Number? <quantity:"power", unit:"kW">
+  emRatedFlow:   Number?
+  emQty:         Number? <doc:"同型设备数量（灯具/末端等批量对象）">
+  emAllocWeight: Number? <doc:"无表设备的分摊权重（默认按额定功率×运行时长）">
+}
+emLoad: Marker <doc:"纳入能耗核算的用能设备">
+
+// 设备组：把一批无独立计量的设备聚合到一个分项/一块表下
+EmLoadGroup: EmLoad {
+  emLoadGroup
+  emMemberRefs: List? <of:Ref, doc:"成员设备">
+}
+emLoadGroup: Marker <doc:"用能设备组">
+
+// 典型负荷子类型（仅用于分项自动归类与默认标签）
+EmLightingLoad:  EmLoad { lighting }
+EmHvacLoad:      EmLoad { hvac }
+EmElevatorLoad:  EmLoad { elevator }
+EmPumpLoad:      EmLoad { pump }
+EmFanLoad:       EmLoad { fan }
+EmItLoad:        EmLoad { emItLoad }
+EmProcessLoad:   EmLoad { emProcessLoad }
+emItLoad:      Marker <doc:"信息机房用能">
+emProcessLoad: Marker <doc:"工艺用能">

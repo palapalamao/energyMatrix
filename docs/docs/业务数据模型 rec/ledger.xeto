@@ -1,0 +1,51 @@
+//
+// 域 5：能耗台账（Layer1 计量域 与 Layer2 业务域 的唯一桥梁）
+// 原则：
+//   L2 delta 点是"读数"，台账是"账目"。所有业务对象（账单/指标/基线/碳）
+//   一律读台账，禁止直接读点位——否则数据修正无法回溯，账目不可审计。
+//   台账条目一经关账（emClosed）即不可变；修正必须新增红冲条目。
+//
+
+EmLedgerEntry: Dict {
+  energyMatrix
+  emLedger
+  id:          Ref
+  meterRef:    Ref  <of:EmMeter, doc:"来源表（物理或虚拟）">
+  emMediumId:  Str  <doc:"介质：elec|water|gas|steam|heat|cool">
+  emSubItem:   EmSubItem?
+  span:        Span <doc:"账期区间，左闭右开">
+  emGranularity: EmGranularity
+  val:         Number <doc:"用量，单位随介质">
+  emDataSource: EmDataSource
+  emQuality:   Number? <doc:"数据完好率 0~1：有效采样数/应采样数">
+  emSpaceRef:  Ref?
+  emTenantRef: Ref?
+  emOrgRef:    Ref?
+  emClosed:    Marker? <doc:"已关账，不可修改">
+  emReversalOf: Ref? <of:EmLedgerEntry, doc:"红冲指向被冲销条目">
+  emRuleRef:   Ref? <of:EmAllocRule, doc:"若为分摊产生，指向分摊规则">
+  emNote:      Str?
+}
+emLedger: Marker <doc:"能耗台账条目">
+
+EmGranularity: Enum {
+  hourly
+  daily
+  monthly
+  yearly
+}
+emGranularity: EmGranularity
+
+// 关账批次：一次月结/日结的操作记录，支撑审计与重算
+EmClosePeriod: Dict {
+  energyMatrix
+  emClosePeriod
+  id:        Ref
+  span:      Span
+  emGranularity: EmGranularity
+  emClosedBy: Str?
+  emClosedAt: DateTime?
+  emGapRatio: Number? <doc:"本期总表-分表缺口率，超阈值应阻断关账">
+  emEntryCount: Number?
+}
+emClosePeriod: Marker

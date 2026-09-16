@@ -1,0 +1,91 @@
+pageType: content
+background:
+  type: solid
+  color: "$paper"
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [64, 36, 500, 16]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: 核心能力 3 · 双碳核算
+  - elementId: title
+    elementType: text
+    bounds: [64, 58, 832, 42]
+    content:
+      style: "$title"
+      wrap: false
+      text: 碳排放核算：因子版本化，账目永不漂移
+  - elementId: headrule
+    elementType: shape
+    bounds: [64, 110, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: bign
+    elementType: text
+    bounds: [64, 132, 260, 60]
+    content:
+      fontSize: 44
+      bold: true
+      color: "$teal"
+      wrap: false
+      text: "486.2"
+  - elementId: bignu
+    elementType: text
+    bounds: [64, 196, 260, 22]
+    content: {fontSize: 13, color: "$steel", wrap: false, text: tCO₂e 净排放（2026 年至今 · 示例）}
+  - elementId: target
+    elementType: text
+    bounds: [64, 236, 260, 60]
+    content:
+      fontSize: 12
+      color: "$steel"
+      lineHeight: 1.55
+      text: |
+        <p><strong>2030 目标进度 68.9%</strong></p>
+        <p>强度 -18%（基准年 2024），已实现 -12.4%，距目标 5.6pp（示例）</p>
+  - elementId: vrail
+    elementType: shape
+    bounds: [356, 132, 1, 300]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: f1t
+    elementType: text
+    bounds: [388, 130, 508, 22]
+    content: {fontSize: 14, bold: true, color: "$ink", wrap: false, text: 碳账怎么算}
+  - elementId: f1
+    elementType: text
+    bounds: [388, 158, 508, 90]
+    content:
+      style: "$body"
+      text: |
+        <p>EmCarbonAccount = 台账 × 排放因子，可无损重算；</p>
+        <p>Scope 1（直接燃烧）/ Scope 2（外购电热）/ Scope 3（显式标注因子）分别归集；折标煤合计一屏呈现，未配置系数的介质明示“未计入”而不是静默丢弃。</p>
+  - elementId: f2t
+    elementType: text
+    bounds: [388, 252, 508, 22]
+    content: {fontSize: 14, bold: true, color: "$ink", wrap: false, text: 因子版本化}
+  - elementId: f2
+    elementType: text
+    bounds: [388, 280, 508, 70]
+    content:
+      style: "$body"
+      text: 每条排放因子必填来源文件 emSourceDoc；因子换版即锁定旧版快照，历史账目不漂移、全量可重算；因子单位分母与台账单位不一致时直接报错，拒绝“悄悄错 1000 倍”。
+  - elementId: f3t
+    elementType: text
+    bounds: [388, 354, 508, 22]
+    content: {fontSize: 14, bold: true, color: "$ink", wrap: false, text: 绿电 / 绿证抵消}
+  - elementId: f3
+    elementType: text
+    bounds: [388, 382, 508, 50]
+    content:
+      style: "$body"
+      text: EmGreenCert 仅“已注销核销（emRetired）”的绿证方可计入抵消，未注销证书自动排除，防止重复计算环境权益。
+  - elementId: footnote
+    elementType: text
+    bounds: [64, 496, 832, 16]
+    content:
+      style: "$note"
+      wrap: false
+      text: 对应产品屏：碳排与双碳目标（因子版本表 · 绿证核销 · 月度碳排趋势 · 碳目标进度）

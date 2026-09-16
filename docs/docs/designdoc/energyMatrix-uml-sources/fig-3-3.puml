@@ -1,0 +1,51 @@
+@startuml
+!include style.iuml
+title 图 3-3  计费、指标、核证、碳与诊断引擎
+hide empty members
+
+abstract class EmEngine
+class EmBillEngine {
+  +run(ctx): EmCalcResult
+  -priceTou(es, t: EmTariff): EmBillItem[]
+  -priceTiered(es, t): EmBillItem[]
+  -demandCharge(es, t): EmBillItem
+}
+class EmKpiEngine {
+  +run(ctx): EmCalcResult
+  -evalFormula(k: EmKpiDef, ctx): Number
+  -writeHis(p: Ref, ts, v): Void
+  -checkQuota(q: EmQuota): EmAnomaly?
+}
+class EmBaselineEngine {
+  +fit(def: EmBaselineDef): EmBaselineDef
+  +adjust(p: EmSavingsProject): Number
+  +verify(p: EmSavingsProject): EmVerifyStatus
+  -stats(y, yHat): Dict
+}
+class EmCarbonEngine {
+  +run(ctx): EmCalcResult
+  -lockFactors(span): EmFactor[]
+}
+class EmDiagEngine {
+  +run(ctx): EmCalcResult
+  -match(d: EmDiagnostic, subj: Dict): Bool
+  -raise(d, subj, v): EmAnomaly
+}
+class EmScheduler <<Actor>> {
+  -queue: EmCalcCtx[]
+  +schedule(cron: Str, job: Str): Void
+  +submit(ctx: EmCalcCtx): Future
+  +receive(msg: Obj): Obj
+  -dedupe(key: Str): Bool
+}
+
+EmEngine <|-- EmBillEngine
+EmEngine <|-- EmKpiEngine
+EmEngine <|-- EmCarbonEngine
+EmEngine <|-- EmDiagEngine
+EmScheduler --> EmEngine : 派发
+EmBaselineEngine ..> EmKpiEngine : 取自变量
+EmDiagEngine ..> EmKpiEngine : 取指标值
+EmBillEngine -[hidden]right- EmKpiEngine
+EmCarbonEngine -[hidden]right- EmDiagEngine
+@enduml

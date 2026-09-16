@@ -1,0 +1,100 @@
+@startuml
+!include style.iuml
+title 图 3-1  领域与持久层类图
+hide empty members
+
+class EmExt <<HxLib>> {
+  +repo: EmRepo
+  +model: EmModel
+  +scheduler: EmScheduler
+  +onStart() / onReady() / onStop(): Void
+  +onHouseKeeping(): Void
+}
+class EmRepo {
+  -folio: Folio
+  +readMeter(id: Ref): EmMeter
+  +subMeters(parent: Ref): EmMeter[]
+  +readLedger(q: EmLedgerQuery): EmLedgerEntry[]
+  +commitLedger(es: EmLedgerEntry[]): Void
+  +readRules(span: Span): EmAllocRule[]
+  +readTariff(medium: Str, ts: DateTime): EmTariff
+  +readFactor(medium: Str, yr: Int): EmFactor
+}
+class EmModel {
+  -ns: LibNamespace
+  +spec(name: Str): Spec
+  +fits(d: Dict, spec: Str): Bool
+  +validate(d: Dict): EmValidation
+}
+abstract class EmRec {
+  +id: Ref
+  +dis: Str
+  +rec: Dict
+  +toDict(): Dict
+}
+class EmMeter {
+  +role: EmMeterRole
+  +mediumId: Str
+  +subItem: Str?
+  +submeterOf: Ref?
+  +isVirtual: Bool
+  +formula: Str?
+  +factor / maxReading: Number
+}
+class EmLedgerEntry {
+  +meterRef: Ref
+  +span: Span
+  +granularity: EmGranularity
+  +val: Number
+  +dataSource: EmDataSource
+  +quality: Number?
+  +closed: Bool
+  +reversalOf: Ref?
+  +ruleRef: Ref?
+  +negate(): EmLedgerEntry
+}
+class EmAllocRule {
+  +sourceRef: Ref
+  +method: EmAllocMethod
+  +priority: Int
+  +effective: Span
+  +shares: EmAllocShare[]
+}
+class EmTariff {
+  +pricingModel: EmPricingModel
+  +effective: Span
+  +rates: EmTariffRate[]
+  +sourceDoc: Str
+}
+class EmFactor {
+  +mediumId: Str
+  +scope: EmScope
+  +year: Int
+  +factor: Number
+  +sourceDoc: Str
+}
+class EmBaselineDef {
+  +option: EmIpmvpOption
+  +modelType: EmModelType
+  +modelUri: Str?
+  +r2 / cvRmse / nmbe: Number?
+  +isValid: Bool
+}
+
+EmExt *-- EmRepo
+EmExt *-- EmModel
+EmRepo ..> EmModel
+EmRec <|-- EmMeter
+EmRec <|-- EmLedgerEntry
+EmRec <|-- EmAllocRule
+EmRec <|-- EmTariff
+EmRec <|-- EmFactor
+EmRec <|-- EmBaselineDef
+EmMeter "1" o-- "0..*" EmMeter : submeterOf
+EmMeter --> EmLedgerEntry : 生成
+EmAllocRule ..> EmLedgerEntry : ruleRef
+EmMeter -[hidden]down- EmAllocRule
+EmLedgerEntry -[hidden]down- EmTariff
+EmAllocRule -[hidden]down- EmFactor
+EmTariff -[hidden]down- EmBaselineDef
+@enduml

@@ -1,0 +1,129 @@
+pageType: content
+background:
+  type: solid
+  color: "$paper"
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [64, 36, 500, 16]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: SCENARIOS · 应用场景
+  - elementId: title
+    elementType: text
+    bounds: [64, 58, 760, 42]
+    content:
+      style: "$title"
+      wrap: false
+      text: 300 – 20,000 ㎡ 建筑与园区
+  - elementId: headrule
+    elementType: shape
+    bounds: [64, 110, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: s1icon
+    elementType: icon
+    bounds: [64, 134, 22, 22]
+    iconName: "fas:hospital"
+    fill: {type: solid, color: "$tealDark"}
+  - elementId: s1t
+    elementType: text
+    bounds: [100, 132, 160, 24]
+    content: {fontSize: 15, bold: true, color: "$ink", wrap: false, text: 医院建筑}
+  - elementId: s1d
+    elementType: text
+    bounds: [100, 158, 500, 36]
+    content:
+      style: "$body"
+      text: 候诊、病房、手术部、机房分项计量，定额考核到科室；24 小时负荷曲线保障用能安全。
+  - elementId: sr1
+    elementType: shape
+    bounds: [64, 202, 560, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$softline"}
+  - elementId: s2icon
+    elementType: icon
+    bounds: [64, 220, 22, 22]
+    iconName: "fas:building"
+    fill: {type: solid, color: "$tealDark"}
+  - elementId: s2t
+    elementType: text
+    bounds: [100, 218, 160, 24]
+    content: {fontSize: 15, bold: true, color: "$ink", wrap: false, text: 商业综合体}
+  - elementId: s2d
+    elementType: text
+    bounds: [100, 244, 500, 36]
+    content:
+      style: "$body"
+      text: 租户账单与公区分摊，每个账单项逐笔回溯到台账条目与表计，争议有据可查。
+  - elementId: sr2
+    elementType: shape
+    bounds: [64, 288, 560, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$softline"}
+  - elementId: s3icon
+    elementType: icon
+    bounds: [64, 306, 22, 22]
+    iconName: "fas:city"
+    fill: {type: solid, color: "$tealDark"}
+  - elementId: s3t
+    elementType: text
+    bounds: [100, 304, 160, 24]
+    content: {fontSize: 15, bold: true, color: "$ink", wrap: false, text: 办公园区}
+  - elementId: s3d
+    elementType: text
+    bounds: [100, 330, 500, 36]
+    content:
+      style: "$body"
+      text: 双碳目标进度跟踪、绿证核销、对上报表模板一键生成，能耗数据可接受审计。
+  - elementId: sr3
+    elementType: shape
+    bounds: [64, 374, 560, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$softline"}
+  - elementId: s4icon
+    elementType: icon
+    bounds: [64, 392, 22, 22]
+    iconName: "fas:futbol"
+    fill: {type: solid, color: "$tealDark"}
+  - elementId: s4t
+    elementType: text
+    bounds: [100, 390, 200, 24]
+    content: {fontSize: 15, bold: true, color: "$ink", wrap: false, text: 体育场馆 / 大空间}
+  - elementId: s4d
+    elementType: text
+    bounds: [100, 416, 500, 36]
+    content:
+      style: "$body"
+      text: 分时电价负荷曲线指导负荷转移，赛事 / 闭馆模式切换，夜间浪费自动识别。
+  - elementId: vrail
+    elementType: shape
+    bounds: [668, 132, 1, 320]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: deplabel
+    elementType: text
+    bounds: [700, 132, 196, 20]
+    content: {fontSize: 12, bold: true, color: "$teal", wrap: false, text: 部署方式}
+  - elementId: depbody
+    elementType: text
+    bounds: [700, 160, 196, 200]
+    content:
+      fontSize: 11.5
+      color: "$steel"
+      lineHeight: 1.6
+      text: |
+        <p><strong>本地私有化</strong></p>
+        <p>边缘引擎就地部署，数据不出楼宇</p>
+        <p style="margin-top:8px"><strong>集团多站点</strong></p>
+        <p>FIN Network 集中汇总与排名</p>
+        <p style="margin-top:8px"><strong>新建 / 存量改造</strong></p>
+        <p>兼容既有表计与楼宇自控系统</p>
+  - elementId: footnote
+    elementType: text
+    bounds: [64, 496, 832, 16]
+    content:
+      style: "$note"
+      wrap: false
+      text: 典型项目实践：三级医院全院分项计量示范、5 层商业综合体示范数据（一条命令即可在贵方环境复现完整演示）

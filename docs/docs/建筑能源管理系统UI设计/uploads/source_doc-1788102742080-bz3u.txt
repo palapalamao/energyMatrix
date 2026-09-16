@@ -1,0 +1,57 @@
+//
+// 域 8：指标体系与定额
+// 原则：指标 = 定义(EmKpi) + 时序实例(EmKpiPoint) 分离。
+//       定义可版本化、可复用到任意对象；实例是可 his 的归一化点（Layer1 的 L3）。
+//
+
+EmKpi: Dict {
+  energyMatrix
+  emKpi
+  id:          Ref
+  dis:         Str
+  emKpiCode:   Str  <doc:"稳定编码，跨项目复用，如 EUI_ELEC / WUI / PUE / CBEI">
+  emFormula:   Str  <doc:"Axon 表达式，输入为台账查询">
+  unit:        Str
+  emGranularity: EmGranularity
+  emDimension: List? <of:Str, doc:"支持的维度：site|floor|zone|tenant|org|subItem|equip">
+  emHigherIsBetter: Bool <doc:"方向性，决定告警与排名逻辑">
+  emStandardRef: Str? <doc:"对标依据：GB/T 51161-2016 等">
+}
+emKpi: Marker
+emKpiCode: Str
+
+// 指标时序实例：挂在被评价对象下的归一化点
+EmKpiPoint: NumberPoint {
+  energyMatrix
+  emNormalized
+  emKpiRef:   Ref <of:EmKpi>
+  emSubjectRef: Ref <doc:"被评价对象">
+  his
+}
+emKpiRef: Ref
+emSubjectRef: Ref
+
+// 定额 / 限额
+EmQuota: Dict {
+  energyMatrix
+  emQuota
+  id:          Ref
+  subjectRef:  Ref  <doc:"受限对象：site|zone|tenant|org|meter">
+  emKpiRef:    Ref? <of:EmKpi, doc:"以指标形式约束；为空则按绝对用量">
+  emMediumId:  Str?
+  span:        Span <doc:"考核期">
+  emLimit:     Number
+  emLimitSource: EmQuotaSource
+  emWarnRatio: Number? <doc:"预警阈值比例，默认 0.9">
+  emOverAction: Str?   <doc:"超限动作：notify | bill | limitLoad">
+}
+emQuota: Marker
+
+EmQuotaSource: Enum {
+  standard   <doc:"国标/地标约束值">
+  historical <doc:"历史同期">
+  benchmark  <doc:"同类对标">
+  contract   <doc:"合同约定（能源托管）">
+  manual     <doc:"人工下达">
+}
+emLimitSource: EmQuotaSource

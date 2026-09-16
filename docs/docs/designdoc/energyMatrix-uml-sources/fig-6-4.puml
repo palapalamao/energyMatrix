@@ -1,0 +1,48 @@
+@startuml
+!include style.iuml
+title 图 6-4  基线拟合与节能量核证时序
+autonumber "<b>[0]"
+
+actor "能源工程师" as U
+participant "EmRestMod" as API
+participant "EmBaselineEngine" as BLE
+participant "EmKpiEngine" as KE
+participant "EmRepo" as REPO
+participant "模型工件库" as MDL
+
+== 基线拟合 ==
+U -> API : POST /api/em/mv/baselines/{id}/fit
+API -> BLE : fit(def)
+BLE -> REPO : readLedger(subject, baselineSpan, monthly)
+BLE -> KE : 取自变量序列 CDD / HDD / 营业时长
+KE --> BLE : Grid
+alt modelType = changePoint 或 回归
+  BLE -> BLE : 本地拟合，产出系数
+else modelType = gbdt
+  BLE -> MDL : 载入 *.onnx 推理
+end
+BLE -> BLE : stats() 计算 R2 / CV(RMSE) / NMBE
+alt 未通过 ASHRAE G14
+  BLE -> REPO : 写 emValid = false
+  BLE --> API : EmError(EM-5001 基线未通过验收)
+  API --> U : 409 附统计明细
+else 通过
+  BLE -> MDL : 固化模型工件 + 版本号
+  BLE -> REPO : 写 emR2 / emCvRmse / emNmbe / emValid = true
+  API --> U : 200 基线可用
+end
+
+== 节能量核证 ==
+U -> API : POST /api/em/mv/projects/{id}/verify
+API -> BLE : verify(project)
+alt 基线 emValid = false
+  BLE --> API : EmError(EM-5002 引用的基线无效)
+end
+BLE -> REPO : readLedger(reportSpan)
+BLE -> BLE : 预测基准期能耗 yHat
+BLE -> BLE : measured = yHat - 实际
+BLE -> BLE : adjust() 常规 + 非常规调整
+BLE -> REPO : 写 emSavingsVerified\nemVerifyStatus = verified
+note right of REPO : 未走完本流程的项目\n一律保持 planned\n不得以节能量口径对外
+API --> U : 200 核证完成
+@enduml

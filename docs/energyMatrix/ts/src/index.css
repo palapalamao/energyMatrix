@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  @apply bg-slate-50 text-slate-800 antialiased;
+  font-family: theme("fontFamily.sans");
+}
+
+/* FIN 把本页放进 iframe，滚动条由内部容器负责，body 不滚。 */
+body {
+  overflow: hidden;
+}
+
+/* 宽内容（表格 / 计量树 / 图表）在自己的容器里横向滚动，页面本身不横向滚动。 */
+.em-scroll-x {
+  @apply overflow-x-auto;
+}

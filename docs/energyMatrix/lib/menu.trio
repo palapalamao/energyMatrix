@@ -1,0 +1,78 @@
+//
+// energyMatrix —— FIN 顶栏菜单注册
+//
+// `finStackMobileMenu` 标记让 FIN 外壳在构建 app launcher 时调用本函数，
+// 函数返回一个菜单条目 Grid，外壳把它合并进顶栏。
+//
+// 前端是单个 SPA（res/web/em/），13 个屏各占一个 hash 路由（见 ts/src/routes.tsx），
+// 所以每个菜单项都是一条深链，点进去直接落到对应屏。
+//
+// Axon 函数由 EnergyMatrixLib 经 skyarc.lib 自动注册（见 build.fan），
+// 本文件只声明菜单启动器 —— 它们是纯 Axon（没有 Fantom 绑定），因此必须住在 trio 里。
+//
+// order 用负数排在其他扩展前面；isDivider 的条目做分组分隔。
+//
+
+---
+name: emApp
+finStackMobileMenu
+func
+overridable
+doc: "在 FIN 顶栏注册 energyMatrix 应用及其 13 个屏的深链。"
+src:
+  () => do
+    root: "/pod/energyMatrix/res/web/em/index.html"
+    open: (route) => "top.app.LoadApplication('" + root + "#" + route +
+                     "', null, null, {app: '_energyMatrix'});top.app.ToggleCollapse(true);"
+    entry: (dis, route, order, icon) => {
+      displayName: dis,
+      appId:       "emApp",
+      parentAppId: "emApp",
+      link:        "",
+      icon:        icon,
+      iconType:    "class",
+      ui:          "mobile",
+      minUiTarget: "phone",
+      order:       order,
+      action:      open(route),
+      keepOpen:    true
+    }
+    [
+      // 分组分隔条
+      {displayName:"能源管理应用程序", appId:"", isDivider:true, level:0, order:-320, ui:"mobile"},
+
+      // 顶级入口 —— 落在能源总览
+      {
+        displayName: "能源总览",
+        appId:       "emApp",
+        link:        "",
+        icon:        "sm-meter",
+        iconType:    "class",
+        ui:          "mobile",
+        minUiTarget: "phone",
+        order:       -319,
+        action:      open("/overview"),
+        keepOpen:    true
+      },
+
+      // ── 监测运行 ────────────────────────────────────────────────
+      entry("实时监测与告警", "/realtime",   -318, "icon-alert"),
+      entry("工单管理",       "/workorder",  -317, "icon-toggles"),
+      entry("分项计量树",     "/meter-tree", -316, "sm-meter"),
+
+      // ── 分析优化 ────────────────────────────────────────────────
+      entry("能耗分析",       "/analysis",   -315, "chart-no-axes-column"),
+      entry("定额与对标",     "/quota",      -314, "icon-list"),
+      entry("节能诊断与核证", "/diagnosis",  -313, "icon-check"),
+      entry("碳排与双碳目标", "/carbon",     -312, "icon-globe"),
+
+      // ── 资产与建模 ──────────────────────────────────────────────
+      entry("数据模型配置",   "/model",      -311, "icon-settings"),
+      entry("表具与采集器",   "/devices",    -310, "icon-plug"),
+
+      // ── 集团与上报 ──────────────────────────────────────────────
+      entry("多项目总览",     "/portfolio",  -309, "icon-buildings"),
+      entry("报表与关账",     "/reports",    -308, "icon-file"),
+      entry("移动端速览",     "/mobile",     -307, "icon-phone")
+    ].toGrid
+  end

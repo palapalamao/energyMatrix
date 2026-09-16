@@ -1,0 +1,14 @@
+# 前端依赖与构建产物
+ts/node_modules/
+ts/dist/
+
+# Vite 产物（由 `npm run build` / `fan build.fan` 生成，不入库）
+res/web/em/*
+
+# build.sh --fantom-only 的临时备份（正常情况下会被自动还原）
+build.fan.bak
+build.fan.tmp
+
+.DS_Store
+__pycache__/
+*.pyc

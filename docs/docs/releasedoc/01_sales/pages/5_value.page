@@ -1,0 +1,112 @@
+pageType: content
+background:
+  type: solid
+  color: "$paper"
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [64, 36, 500, 16]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: VALUE · 价值呈现
+  - elementId: title
+    elementType: text
+    bounds: [64, 58, 760, 42]
+    content:
+      style: "$title"
+      wrap: false
+      text: 从采得到，到算得清，再到核得了
+  - elementId: headrule
+    elementType: shape
+    bounds: [64, 110, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: kn1
+    elementType: text
+    bounds: [64, 132, 130, 44]
+    content: {fontSize: 36, bold: true, color: "$teal", wrap: false, text: "13"}
+  - elementId: kd1
+    elementType: text
+    bounds: [200, 134, 220, 44]
+    content:
+      fontSize: 11.5
+      color: "$steel"
+      lineHeight: 1.45
+      text: |
+        <p><strong>业务屏</strong></p>
+        <p>全部接真数据，无占位页</p>
+  - elementId: kn2
+    elementType: text
+    bounds: [64, 196, 130, 44]
+    content: {fontSize: 36, bold: true, color: "$teal", wrap: false, text: 80+}
+  - elementId: kd2
+    elementType: text
+    bounds: [200, 198, 220, 44]
+    content:
+      fontSize: 11.5
+      color: "$steel"
+      lineHeight: 1.45
+      text: |
+        <p><strong>开放 Axon API</strong></p>
+        <p>二次开发与集成直接可用</p>
+  - elementId: kn3
+    elementType: text
+    bounds: [64, 260, 130, 44]
+    content: {fontSize: 36, bold: true, color: "$teal", wrap: false, text: "14"}
+  - elementId: kd3
+    elementType: text
+    bounds: [200, 262, 220, 44]
+    content:
+      fontSize: 11.5
+      color: "$steel"
+      lineHeight: 1.45
+      text: |
+        <p><strong>GB 分项类目</strong></p>
+        <p>A/B/C/D 四类分项全覆盖</p>
+  - elementId: kn4
+    elementType: text
+    bounds: [64, 324, 130, 44]
+    content: {fontSize: 36, bold: true, color: "$teal", wrap: false, text: "87"}
+  - elementId: kd4
+    elementType: text
+    bounds: [200, 326, 220, 44]
+    content:
+      fontSize: 11.5
+      color: "$steel"
+      lineHeight: 1.45
+      text: |
+        <p><strong>单元测试用例</strong></p>
+        <p>铁律与口径由测试钉死</p>
+  - elementId: vrule
+    elementType: shape
+    bounds: [452, 132, 1, 236]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: gainTitle
+    elementType: text
+    bounds: [488, 132, 408, 22]
+    content: {fontSize: 14, bold: true, color: "$ink", wrap: false, text: 典型管理收益}
+  - elementId: gains
+    elementType: text
+    bounds: [488, 162, 408, 220]
+    content:
+      fontSize: 11.5
+      color: "$steel"
+      lineHeight: 1.55
+      text: |
+        <p><strong>分项定位高耗回路</strong> —— 照明插座 / 空调 / 动力 / 特殊用电逐一归集，高耗回路无所遁形</p>
+        <p style="margin-top:10px"><strong>不明用能显性化</strong> —— 缺口量归入 emGap 虚表单独呈现，超 5% 阻断关账</p>
+        <p style="margin-top:10px"><strong>需量预警</strong> —— 最大需量逼近申报值时提醒，避免超需量部分加价计费</p>
+        <p style="margin-top:10px"><strong>非营业时段浪费识别</strong> —— 夜间 / 节假日强度异常自动命中规则并生成异常</p>
+  - elementId: noterule
+    elementType: shape
+    bounds: [64, 428, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$softline"}
+  - elementId: footnote
+    elementType: text
+    bounds: [64, 442, 832, 32]
+    content:
+      style: "$note"
+      text: 注：节能幅度取决于项目基线与管理动作，本页数值为产品能力口径（功能规模），不构成节能承诺；行业经验表明，分项计量与定额考核结合的管理节能空间通常在 5%–15% 区间，具体以项目核证为准。

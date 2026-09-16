@@ -1,0 +1,162 @@
+{
+  "generation": "hospitalDemo-20260909",
+  "parser": "FIN 5.3 axon::Parser",
+  "sources": [
+    {
+      "name": "kpi:hd-kpi-elec-area:formula",
+      "sha256": "3ebb2db8dc9e71a482f441cb9259e46fc15e7e34f1b432e96a009ec82bae0a6a"
+    },
+    {
+      "name": "kpi:hd-kpi-water-area:formula",
+      "sha256": "e0e3e4561e4451d410b321cd3c3ca2fc4d1bbac20540c9fbdc57009c0622d5d3"
+    },
+    {
+      "name": "kpi:hd-kpi-total-tce-area:formula",
+      "sha256": "4d87fdb9ce8ab9f1615a9c88eeff56246813850b32170aed8732479fb68db46b"
+    },
+    {
+      "name": "kpi:hd-kpi-cool-area:formula",
+      "sha256": "84580fa616f0d05ceb78049cca92aff0cdf280b316e539c20615b03f33ea2b12"
+    },
+    {
+      "name": "kpi:hd-kpi-heat-area:formula",
+      "sha256": "424defca29ddc21f2b55eb9bcb9e531e0c5ab50681da883c0cdecb97b7c3edec"
+    },
+    {
+      "name": "kpi:hd-kpi-elec-occupant:formula",
+      "sha256": "3c8554323c208165045a6e6c91b934127ad95dfa638e9f135e76267b46c5816b"
+    },
+    {
+      "name": "kpi:hd-kpi-carbon-area:formula",
+      "sha256": "ec9e83057b06923b0355e2b13da72987a5c0d6c2efb997609d3696c68347159a"
+    },
+    {
+      "name": "rule:hd-rule-night-base:subject_filter",
+      "sha256": "4e02c40be263462c5c707eb669349f155b00fac1e168ee59c3f886fdfc2ecfcd"
+    },
+    {
+      "name": "rule:hd-rule-balance:subject_filter",
+      "sha256": "5f0eab12708c813fcebe59cf0771f100b9bd067101a9a890d65e8c7a3eee7a6c"
+    },
+    {
+      "name": "rule:hd-rule-quota:subject_filter",
+      "sha256": "779742a35a4fdf902933ecdf5c49449de6a13ed62fb2b3cc1665c840145ab173"
+    },
+    {
+      "name": "rule:hd-rule-peak:subject_filter",
+      "sha256": "4e02c40be263462c5c707eb669349f155b00fac1e168ee59c3f886fdfc2ecfcd"
+    },
+    {
+      "name": "rule:hd-rule-water-leak:subject_filter",
+      "sha256": "99d9b9c13cb2a910abba9cc51bc119bd8e5bc432a20cd309c1e9f6553b477984"
+    },
+    {
+      "name": "rule:hd-rule-hvac-drift:subject_filter",
+      "sha256": "ef6072f941811c46e0e35efa9eab185b980365df4c5cae2671cd1ca74d8adc15"
+    },
+    {
+      "name": "rule:hd-rule-carbon:subject_filter",
+      "sha256": "c25b343ba4c55bfba744a2a763f1c047518e2acdd832b8f1e2ede72ddc32e624"
+    },
+    {
+      "name": "rule:hd-rule-coverage:subject_filter",
+      "sha256": "5eff322a1bd4164e1db317c7f60b1b6529b05d692d739317f36720ffd1fc5abe"
+    }
+  ],
+  "batchCount": 15,
+  "batchParserScope": "parse",
+  "runtime": "FIN 5.3 hxd::HxdContext",
+  "runtimeScope": "pure Axon evaluation",
+  "runtimeSourceCount": 2,
+  "runtimeSources": [
+    {
+      "name": "audit-nonempty",
+      "sha256": "efee12436a9679aceedf1ffe8aca61b99e81a2b842b6c138de6b61b243217063"
+    },
+    {
+      "name": "audit-empty",
+      "sha256": "d22b922363fa57f70c06671cf457525ea9d3d0e47106cc2d35c9280570f434f3"
+    }
+  ],
+  "runtimePassed": [
+    "audit-nonempty",
+    "audit-empty"
+  ],
+  "batches": [
+    {
+      "name": "01-model-and-parameters",
+      "bytes": 19461,
+      "sha256": "7092fdd1ced897434c5f784675e66fccef2eb63ba92831d5f4b530bf7fb13735"
+    },
+    {
+      "name": "02-primary-recent-history-01",
+      "bytes": 10250,
+      "sha256": "aacbbbd8a78d3ea1b2008707f9945675a162a75b1d39bd2539bb0bd3b7ae7543"
+    },
+    {
+      "name": "02-primary-recent-history-02",
+      "bytes": 10465,
+      "sha256": "80e00aa2f5925a1c2c4cd65d961629af644c4b02c031a268181417afb3e52bdd"
+    },
+    {
+      "name": "02-primary-recent-history-03",
+      "bytes": 10367,
+      "sha256": "ddf5070774781c87449bd097ebfecc8fde72003cd91af13eccd8758bcc519f3c"
+    },
+    {
+      "name": "02-primary-recent-history-04",
+      "bytes": 10420,
+      "sha256": "f71e5cea803d89bb0dee51399d1e2e7cf59b744eb5ed96f349df488fed78477c"
+    },
+    {
+      "name": "02-primary-recent-history-05",
+      "bytes": 10371,
+      "sha256": "bcf69c40fd7548db51253707b463ff2fc01b492c11953c597fbed9bbf63883ba"
+    },
+    {
+      "name": "02-primary-recent-history-06",
+      "bytes": 10320,
+      "sha256": "a0f2517df1700bb0f310c0933a037f3b9eecd967cf55dfebb6d0db7e7aec1ee0"
+    },
+    {
+      "name": "03-primary-prior-year-history",
+      "bytes": 14862,
+      "sha256": "e3e383b63770d7a934b339782ec54738a509f41f4f3d6c9bc5b805230a612ebf"
+    },
+    {
+      "name": "04-east-history",
+      "bytes": 11771,
+      "sha256": "4f1895d8bd5ba1594733a5a367638c16075bbeaccaae578506bd5e598d51078d"
+    },
+    {
+      "name": "04-rehab-history",
+      "bytes": 11878,
+      "sha256": "1950ca925c735ebde4e30cc75d860ed9f2b81bf9fbc05a34582b8759b75e3c1c"
+    },
+    {
+      "name": "05-primary-recent-ledger",
+      "bytes": 3312,
+      "sha256": "9b71e6aa58a7431e660d7783608a469a0821eb6f91a8761e85f8a184f1e9a446"
+    },
+    {
+      "name": "05-comparison-ledger",
+      "bytes": 3370,
+      "sha256": "95359478848639e18fd10ce10f710c088a1ddeb3a78749279ca1873c19d65002"
+    },
+    {
+      "name": "05-secondary-ledger-and-diagnostics",
+      "bytes": 17424,
+      "sha256": "d0a549f696861d9ed20dd917b2a89da96f8ed6ec7a49f46b0a6bdc010e4d7f11"
+    },
+    {
+      "name": "06-workflows-and-close-period",
+      "bytes": 14660,
+      "sha256": "3513d6d6cdd83c5a0bad6938287d483f08475715322d6db0c487042b3c1e1352"
+    },
+    {
+      "name": "07-cutover",
+      "bytes": 12501,
+      "sha256": "053d86db1c3ea0aae42bec65a115ab4125b599d8bb186a893b2e0c9c7f91549a"
+    }
+  ]
+}

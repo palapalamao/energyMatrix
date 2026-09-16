@@ -1,0 +1,150 @@
+//
+// EmCoolMeter.trio —— 冷量表（说明书 §3.3 表 3-2）
+//
+// 组合继承的子模板，叠加在 EmMeterBase.trio 之上。规则见 EmElecMeter.trio 头部。
+//
+// 介质推断顺序上，冷/热量表本身也带 `water`（载冷介质是水），所以
+// EmMedium.of 必须先判 `chilled` / `hot` 再判 `water`，否则会被误判成水表。
+//
+
+---
+// 冷量表本体
+emCoolMeterModelId:"_equip:emCoolMeter"
+emMeterModelId:"_equip:emMeter"
+id:@_equip:emCoolMeter
+energyMatrix
+equip
+meter
+chilled
+water
+emMedium:"cool"
+
+---
+// L1 累积冷量
+emCoolMeterModelId:"_equip:emCoolMeter_point:l1Total"
+emMeterModelId:"_equip:emMeter_point:l1Total"
+id:@_equip:emCoolMeter_point:l1Total
+energyMatrix
+point
+sensor
+total
+emL1Point
+chilled
+energy
+equipRef:@_equip:emCoolMeter
+emMeterRef:@_equip:emCoolMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"累积冷量"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"kWh"
+his
+hisCollectInterval:15min
+hisInterpolate:"linear"
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// L2 区间冷量增量
+emCoolMeterModelId:"_equip:emCoolMeter_point:l2Delta"
+emMeterModelId:"_equip:emMeter_point:l2Delta"
+id:@_equip:emCoolMeter_point:l2Delta
+energyMatrix
+point
+sensor
+emDelta
+chilled
+energy
+equipRef:@_equip:emCoolMeter
+emMeterRef:@_equip:emCoolMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"区间冷量"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"kWh"
+his
+hisInterpolate:"linear"
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// 瞬时冷功率
+emCoolMeterModelId:"_equip:emCoolMeter_point:powerThermal"
+id:@_equip:emCoolMeter_point:powerThermal
+energyMatrix
+point
+sensor
+chilled
+power
+equipRef:@_equip:emCoolMeter
+emMeterRef:@_equip:emCoolMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"瞬时冷功率"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"kW"
+his
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// 进水温度
+emCoolMeterModelId:"_equip:emCoolMeter_point:entering"
+id:@_equip:emCoolMeter_point:entering
+energyMatrix
+point
+sensor
+water
+temp
+entering
+equipRef:@_equip:emCoolMeter
+emMeterRef:@_equip:emCoolMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"进水温度"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"°C"
+his
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// 出水温度
+emCoolMeterModelId:"_equip:emCoolMeter_point:leaving"
+id:@_equip:emCoolMeter_point:leaving
+energyMatrix
+point
+sensor
+water
+temp
+leaving
+equipRef:@_equip:emCoolMeter
+emMeterRef:@_equip:emCoolMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"出水温度"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"°C"
+his
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// 瞬时流量
+emCoolMeterModelId:"_equip:emCoolMeter_point:flow"
+id:@_equip:emCoolMeter_point:flow
+energyMatrix
+point
+sensor
+water
+flow
+equipRef:@_equip:emCoolMeter
+emMeterRef:@_equip:emCoolMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"瞬时流量"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"m³/h"
+his
+tz:Arg("tz:Asia/Shanghai")

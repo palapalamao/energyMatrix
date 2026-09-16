@@ -1,0 +1,80 @@
+//
+// 域 9：基线与节能量核证（IPMVP / ASHRAE Guideline 14）
+// 铁律：任何"节能量"在通过基线核证前，一律标记为 planned（规划目标），
+//       禁止以 verified 形式出现在报表、账单或对外材料中。
+//
+
+EmBaseline: Dict {
+  energyMatrix
+  emBaseline
+  id:          Ref
+  dis:         Str
+  emSubjectRef:  Ref  <doc:"核证边界：site | meter | system">
+  emMedium:  EmMedium
+  emIpmvpOption: EmIpmvpOption
+  emBaselineSpan: Span <doc:"基准期">
+  emIndepVars: List? <of:Str, doc:"自变量：cdd|hdd|occupancy|production|opHours">
+  emModelType: EmModelType
+  emModelUri:  Str?    <doc:"模型工件路径（.onnx / 系数 JSON）">
+  emCoeffs:    Dict?   <doc:"回归系数，便于人工复核">
+  emR2:        Number? <doc:"决定系数">
+  emCvRmse:    Number? <unit:"%", doc:"ASHRAE G14 月度 ≤15%，小时 ≤30%">
+  emNmbe:      Number? <unit:"%", doc:"ASHRAE G14 月度 ≤±5%">
+  emValid:     Bool?   <doc:"是否通过统计验收">
+}
+emBaseline: Marker
+
+EmIpmvpOption: Enum {
+  optionA <doc:"部分参数测量（关键参数实测，其余估算）">
+  optionB <doc:"全参数测量（措施级独立计量）">
+  optionC <doc:"整体计量（关口表/总表回归）">
+  optionD <doc:"校准仿真（对接 CoolSim）">
+}
+emIpmvpOption: EmIpmvpOption
+
+EmModelType: Enum {
+  linearRegression
+  multiVarRegression
+  changePoint     <doc:"变点模型 3P/5P，温度相关负荷首选">
+  gbdt            <doc:"LightGBM 等，需固化为 ONNX">
+  simulation      <doc:"CoolSim 校准仿真">
+}
+emModelType: EmModelType
+
+// 节能措施 / 项目
+EmSavingsProject: Dict {
+  energyMatrix
+  emSavingsProject
+  id:           Ref
+  dis:          Str
+  emSubjectRef:   Ref
+  emBaselineRef: Ref? <of:EmBaseline>
+  emEcmType:    Str?  <doc:"措施类型：control|retrofit|operation|renewable">
+  emInvest:     Number? <doc:"投资额">
+  emImplSpan:   Span?   <doc:"实施期（基准期与报告期之间的排除区间）">
+  emReportSpan: Span?   <doc:"报告期">
+  emSavingsPlanned:  Number? <doc:"规划节能量（目标值，未核证）">
+  emSavingsMeasured: Number? <doc:"报告期实测差值，未做调整">
+  emSavingsVerified: Number? <doc:"经基线调整后的核证节能量">
+  emAdjustments: List? <of:EmAdjustment>
+  emVerifyStatus: EmVerifyStatus
+  emVerifiedBy: Str?
+  emVerifiedAt: DateTime?
+}
+emSavingsProject: Marker
+
+EmVerifyStatus: Enum {
+  planned   <doc:"规划目标：所有对外数字的默认状态">
+  monitoring <doc:"报告期采集中">
+  computed  <doc:"已算出但未审核">
+  verified  <doc:"已核证">
+  rejected  <doc:"核证不通过">
+}
+emVerifyStatus: EmVerifyStatus
+
+EmAdjustment: Dict {
+  emAdjType: Str   <doc:"routine（常规：气象/使用率）| nonRoutine（非常规：面积/工艺变更）">
+  emReason:  Str
+  emAdjDelta: Number <doc:"单笔调整量。偏差 #9：原稿写作 emDelta，与 L2 增量点的 marker 同名">
+  emAppliedAt: DateTime?
+}

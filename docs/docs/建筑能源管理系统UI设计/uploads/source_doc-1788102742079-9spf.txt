@@ -1,0 +1,79 @@
+//
+// 域 11：诊断与闭环
+// 原则：诊断规则输出"异常事件"，事件经确认后才升级为工单；
+//       所有节能建议必须落到 EmSavingsProject，形成 诊断→措施→核证 的闭环。
+//       —— 沿用 AI建议 / 确定性执行 原则：模型只产生 EmAnomaly，不直写控制点。
+//
+
+EmDiagnostic: Dict {
+  energyMatrix
+  emDiagnostic
+  id:         Ref
+  dis:        Str
+  emRuleCode: Str
+  emCategory: EmDiagCategory
+  emSubjectFilter: Str <doc:"作用对象筛选器（Axon filter）">
+  emExpr:     Str  <doc:"判据表达式，返回 true 触发">
+  emSeverity: EmSeverity
+  emGranularity: EmGranularity
+  disabled:   Marker?
+}
+emDiagnostic: Marker
+
+EmDiagCategory: Enum {
+  dataQuality   <doc:"数据质量：断点/冻结/负增量/超量程">
+  balance       <doc:"平衡校核：缺口率超限/子表大于总表">
+  overConsume   <doc:"用能异常：同比环比突变/夜间基线偏高">
+  efficiency    <doc:"效率异常：EUI/PUE 劣化">
+  scheduleWaste <doc:"作息浪费：非营业时段用能">
+  demandRisk    <doc:"需量风险：逼近申报值">
+  quotaRisk     <doc:"定额风险：进度超前">
+  carbonRisk    <doc:"碳目标偏离">
+}
+emCategory: EmDiagCategory
+
+EmSeverity: Enum { info, warn, critical }
+emSeverity: EmSeverity
+
+EmAnomaly: Dict {
+  energyMatrix
+  emAnomaly
+  id:          Ref
+  emDiagRef:   Ref <of:EmDiagnostic>
+  subjectRef:  Ref
+  emSeverity:  EmSeverity
+  ts:          DateTime
+  span:        Span?
+  emVal:       Number?
+  emExpected:  Number?
+  emDeviation: Number? <unit:"%">
+  emImpactVal: Number? <doc:"估算影响用量，emDataSource 恒为 estimated">
+  emAckBy:     Str?
+  emAckAt:     DateTime?
+  emStatus:    EmAnomalyStatus
+  emWorkOrderRef: Ref?
+}
+emAnomaly: Marker
+
+EmAnomalyStatus: Enum {
+  open
+  acked
+  dispatched
+  resolved
+  falseAlarm
+}
+
+EmWorkOrder: Dict {
+  energyMatrix
+  emWorkOrder
+  id:          Ref
+  emOrderNo:   Str
+  subjectRef:  Ref
+  emAnomalyRefs: List? <of:Ref>
+  emAssignee:  Str?
+  emDueDate:   Date?
+  emStatus:    Str <doc:"new|assigned|inProgress|done|closed">
+  emSavingsProjectRef: Ref? <doc:"若形成长期措施，指向节能项目">
+  emResult:    Str?
+}
+emWorkOrder: Marker

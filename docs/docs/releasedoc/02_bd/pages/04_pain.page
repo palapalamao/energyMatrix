@@ -1,0 +1,90 @@
+pageType: content
+background:
+  type: solid
+  color: "$paper"
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [64, 36, 400, 16]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: 02 · 业务场景分析 —— 现状痛点
+  - elementId: title
+    elementType: text
+    bounds: [64, 58, 800, 42]
+    content:
+      style: "$title"
+      wrap: false
+      text: 传统能源管理的三个断点
+  - elementId: headrule
+    elementType: shape
+    bounds: [64, 110, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: p1n
+    elementType: text
+    bounds: [64, 138, 90, 54]
+    content: {fontSize: 42, bold: true, color: "#D9DEE3", wrap: false, text: "01"}
+  - elementId: p1t
+    elementType: text
+    bounds: [150, 138, 300, 28]
+    content: {fontSize: 18, bold: true, color: "$ink", wrap: false, text: 采不准 · 数据孤岛}
+  - elementId: p1d
+    elementType: text
+    bounds: [150, 170, 700, 56]
+    content:
+      style: "$body"
+      text: 表计、楼控、电力监控各自为战，点位没有统一语义；同一度电在不同系统里对不上，跨介质（电 / 水 / 气 / 冷热）更没有统一账目，分析只能停留在“看曲线”。
+  - elementId: pr1
+    elementType: shape
+    bounds: [64, 240, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$softline"}
+  - elementId: p2n
+    elementType: text
+    bounds: [64, 258, 90, 54]
+    content: {fontSize: 42, bold: true, color: "#D9DEE3", wrap: false, text: "02"}
+  - elementId: p2t
+    elementType: text
+    bounds: [150, 258, 300, 28]
+    content: {fontSize: 18, bold: true, color: "$ink", wrap: false, text: 算不清 · 台账不可信}
+  - elementId: p2d
+    elementType: text
+    bounds: [150, 290, 700, 56]
+    content:
+      style: "$body"
+      text: 表底翻转、换表、CT 变比、倍率漏乘让读数失真；总表与分表之和的缺口无人认领；月底 Excel 手工平账，改过一个数就再也说不清哪版是真的。
+  - elementId: pr2
+    elementType: shape
+    bounds: [64, 360, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$softline"}
+  - elementId: p3n
+    elementType: text
+    bounds: [64, 378, 90, 54]
+    content: {fontSize: 42, bold: true, color: "#D9DEE3", wrap: false, text: "03"}
+  - elementId: p3t
+    elementType: text
+    bounds: [150, 378, 380, 28]
+    content: {fontSize: 18, bold: true, color: "$ink", wrap: false, text: 核不了 · 节能与碳排说不清}
+  - elementId: p3d
+    elementType: text
+    bounds: [150, 410, 700, 56]
+    content:
+      style: "$body"
+      text: 节能改造做了，节能量没有基线核证，业主不认；碳排放因子随手引用，换一年口径全变；绿证买了却算不进账。管理层要的“节了多少、排了多少”，始终没有一个能签字的数字。
+  - elementId: bottomrule
+    elementType: shape
+    bounds: [64, 486, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: bottom
+    elementType: text
+    bounds: [64, 498, 832, 20]
+    content:
+      fontSize: 12
+      color: "$tealDark"
+      bold: true
+      wrap: false
+      text: 三个断点的共同根因：能耗数据没有一套“有语义、有账本、有纪律”的底座。

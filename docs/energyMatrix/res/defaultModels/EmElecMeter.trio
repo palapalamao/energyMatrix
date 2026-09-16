@@ -1,0 +1,228 @@
+//
+// EmElecMeter.trio —— 电表（说明书 §3.3 表 3-2）
+//
+// 组合继承的子模板：由 ModelEntityEmElecMeter 在 makeFromTrio 之后
+// readTrioWithSwizzle + extendByDicts 叠加到 EmMeterBase.trio 之上。
+//
+// 三条书写规则：
+//   1. equip 与**重述的继承点**同时带子 modelId + 基 modelId（后者是合并 match-key）
+//   2. 重述的继承点必须把 equipRef 重指到子 equip，否则 equipRef 悬挂
+//   3. 新增的点只带子 modelId
+//
+// Haystack 本体：`equip meter elec` 即 phIoT 的 conjunct `elec-meter`。
+// xeto 原稿写的小驼峰 marker `elecMeter` 在 phIoT 里并不存在，详见 README 偏差 #7。
+//
+
+---
+// 电表本体（重述基类 equip）
+emElecMeterModelId:"_equip:emElecMeter"
+emMeterModelId:"_equip:emMeter"
+id:@_equip:emElecMeter
+energyMatrix
+equip
+meter
+elec
+emMedium:"elec"
+// 互感器变比，读数还原用
+emCtRatio:Arg("emCtRatio:1")
+emPtRatio:Arg("emPtRatio:1")
+// single | three
+emPhaseType:Arg("emPhaseType:three")
+
+---
+// L1 累积电量（重述继承点：补上量纲标记与单位，equipRef 重指到子 equip）
+emElecMeterModelId:"_equip:emElecMeter_point:l1Total"
+emMeterModelId:"_equip:emMeter_point:l1Total"
+id:@_equip:emElecMeter_point:l1Total
+energyMatrix
+point
+sensor
+total
+emL1Point
+elec
+energy
+equipRef:@_equip:emElecMeter
+emMeterRef:@_equip:emElecMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"累积电量"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"kWh"
+his
+hisCollectInterval:15min
+hisInterpolate:"linear"
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// L2 区间电量增量
+emElecMeterModelId:"_equip:emElecMeter_point:l2Delta"
+emMeterModelId:"_equip:emMeter_point:l2Delta"
+id:@_equip:emElecMeter_point:l2Delta
+energyMatrix
+point
+sensor
+emDelta
+elec
+energy
+equipRef:@_equip:emElecMeter
+emMeterRef:@_equip:emElecMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"区间电量"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"kWh"
+his
+hisInterpolate:"linear"
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// 有功功率
+emElecMeterModelId:"_equip:emElecMeter_point:powerActive"
+id:@_equip:emElecMeter_point:powerActive
+energyMatrix
+point
+sensor
+elec
+power
+equipRef:@_equip:emElecMeter
+emMeterRef:@_equip:emElecMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"有功功率"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"kW"
+his
+hisCollectInterval:15min
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// 功率因数
+emElecMeterModelId:"_equip:emElecMeter_point:powerFactor"
+id:@_equip:emElecMeter_point:powerFactor
+energyMatrix
+point
+sensor
+elec
+pf
+equipRef:@_equip:emElecMeter
+emMeterRef:@_equip:emElecMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"功率因数"
+disMacro:"$equipRef $navName"
+kind:"Number"
+his
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// 最大需量 —— 两部制基本电费与 demandRisk 诊断的输入
+emElecMeterModelId:"_equip:emElecMeter_point:demandMax"
+id:@_equip:emElecMeter_point:demandMax
+energyMatrix
+point
+sensor
+elec
+power
+max
+emDemand
+equipRef:@_equip:emElecMeter
+emMeterRef:@_equip:emElecMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"最大需量"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"kW"
+his
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// 分时电量 · 尖
+emElecMeterModelId:"_equip:emElecMeter_point:energySharp"
+id:@_equip:emElecMeter_point:energySharp
+energyMatrix
+point
+sensor
+total
+elec
+energy
+emTouPeriod:"sharp"
+equipRef:@_equip:emElecMeter
+emMeterRef:@_equip:emElecMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"分时电量-尖"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"kWh"
+his
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// 分时电量 · 峰
+emElecMeterModelId:"_equip:emElecMeter_point:energyPeak"
+id:@_equip:emElecMeter_point:energyPeak
+energyMatrix
+point
+sensor
+total
+elec
+energy
+emTouPeriod:"peak"
+equipRef:@_equip:emElecMeter
+emMeterRef:@_equip:emElecMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"分时电量-峰"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"kWh"
+his
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// 分时电量 · 平
+emElecMeterModelId:"_equip:emElecMeter_point:energyFlat"
+id:@_equip:emElecMeter_point:energyFlat
+energyMatrix
+point
+sensor
+total
+elec
+energy
+emTouPeriod:"flat"
+equipRef:@_equip:emElecMeter
+emMeterRef:@_equip:emElecMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"分时电量-平"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"kWh"
+his
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// 分时电量 · 谷
+emElecMeterModelId:"_equip:emElecMeter_point:energyValley"
+id:@_equip:emElecMeter_point:energyValley
+energyMatrix
+point
+sensor
+total
+elec
+energy
+emTouPeriod:"valley"
+equipRef:@_equip:emElecMeter
+emMeterRef:@_equip:emElecMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"分时电量-谷"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"kWh"
+his
+tz:Arg("tz:Asia/Shanghai")

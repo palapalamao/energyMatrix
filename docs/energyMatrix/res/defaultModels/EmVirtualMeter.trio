@@ -1,0 +1,60 @@
+//
+// EmVirtualMeter.trio —— 虚拟表（说明书 §3.3.2）
+//
+// 独立模板（不叠加 EmMeterBase.trio）：虚表没有 L1 采集点，用量由 emFormula
+// 求值得到。它在**业务层**与物理表同构 —— EmMeterConsumption 负责分派，
+// 上层拿到一块表时不需要知道它是采出来的还是算出来的。
+//
+// 公式里的账期由 EmEvalScope 注入（Actor.locals），所以可以直接写
+// 说明书原文那种不带 span 参数的形式：
+//   emFormula: "emMeterRead(@M-B1-01) - emSubMeterSum(@M-B1-01)"
+//   emFormula: "emAllocByArea(@M-D2-01, tenantSet)"
+//
+
+---
+// 虚拟表本体
+emVirtualMeterModelId:"_equip:emVirtualMeter"
+id:@_equip:emVirtualMeter
+energyMatrix
+equip
+meter
+emVirtual
+siteRef:Arg("parentId")
+floorRef:Arg("floorRef:N")
+navName:Arg("entityDis:Virtual Meter")
+disMacro:"$siteRef $navName"
+tz:Arg("tz:Asia/Shanghai")
+// 虚表的角色固定是 virtual —— 汇总算法据此识别它是导出量而不是采集量
+emMeterRole:"virtual"
+// 虚表的数据来源是推导（差值法 / 多表求和）；由分摊规则驱动时，
+// EmAllocEngine 在写台账条目时把条目的 emDataSource 覆写为 allocated
+emDataSource:"derived"
+emMedium:Arg("emMedium:elec")
+emFormula:Arg("emFormula:0")
+submeterOf:Arg("submeterOf:N")
+emServesRef:Arg("emServesRef:N")
+emSpaceRef:Arg("emSpaceRef:N")
+emTenantRef:Arg("emTenantRef:N")
+emSubItem:Arg("emSubItem:N")
+emMeterScope:Arg("emMeterScope:N")
+
+---
+// 计算量的时序留档（可选写入）。虚表没有 L1，但把每期算出的值写成历史
+// 有实际价值：趋势、诊断与"当时算出来是多少"的复现都靠它。
+emVirtualMeterModelId:"_equip:emVirtualMeter_point:l2Delta"
+id:@_equip:emVirtualMeter_point:l2Delta
+energyMatrix
+point
+sensor
+emDelta
+emVirtual
+equipRef:@_equip:emVirtualMeter
+emMeterRef:@_equip:emVirtualMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"区间计算量"
+disMacro:"$equipRef $navName"
+kind:"Number"
+his
+hisInterpolate:"linear"
+tz:Arg("tz:Asia/Shanghai")

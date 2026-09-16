@@ -1,0 +1,99 @@
+pageType: content
+background:
+  type: solid
+  color: "$paper"
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [64, 36, 400, 16]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: 01 · 方案价值主张 —— 政策背景
+  - elementId: title
+    elementType: text
+    bounds: [64, 58, 800, 42]
+    content:
+      style: "$title"
+      wrap: false
+      text: 双碳目标下，能耗计量从“选答题”变成“必答题”
+  - elementId: headrule
+    elementType: shape
+    bounds: [64, 110, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: r1t
+    elementType: text
+    bounds: [64, 132, 420, 24]
+    content: {fontSize: 15, bold: true, color: "$tealDark", wrap: false, text: GB 55015-2021}
+  - elementId: r1d
+    elementType: text
+    bounds: [64, 158, 420, 52]
+    content:
+      style: "$body"
+      text: 《建筑节能与可再生能源利用通用规范》—— 强制性工程建设规范，要求建筑能耗分类、分项计量与能耗监测。
+  - elementId: r2t
+    elementType: text
+    bounds: [64, 222, 420, 24]
+    content: {fontSize: 15, bold: true, color: "$tealDark", wrap: false, text: GB/T 51161-2016}
+  - elementId: r2d
+    elementType: text
+    bounds: [64, 248, 420, 52]
+    content:
+      style: "$body"
+      text: 《民用建筑能耗标准》—— 给出分业态能耗约束值与引导值，是 EUI 对标与定额管理的直接依据。
+  - elementId: r3t
+    elementType: text
+    bounds: [64, 312, 420, 24]
+    content: {fontSize: 15, bold: true, color: "$tealDark", wrap: false, text: 分项能耗数据采集技术导则}
+  - elementId: r3d
+    elementType: text
+    bounds: [64, 338, 420, 52]
+    content:
+      style: "$body"
+      text: 国家机关办公建筑和大型公共建筑能耗监测系统的分项框架：A 照明插座 / B 空调用电 / C 动力用电 / D 特殊用电。
+  - elementId: r4t
+    elementType: text
+    bounds: [64, 402, 420, 24]
+    content: {fontSize: 15, bold: true, color: "$tealDark", wrap: false, text: GB 17167-2006}
+  - elementId: r4d
+    elementType: text
+    bounds: [64, 428, 420, 52]
+    content:
+      style: "$body"
+      text: 《用能单位能源计量器具配备和管理通则》—— 计量器具配备率与准确度等级的硬性要求。
+  - elementId: vrail
+    elementType: shape
+    bounds: [524, 132, 1, 348]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: quote1
+    elementType: text
+    bounds: [560, 150, 336, 110]
+    content:
+      fontSize: 19
+      bold: true
+      color: "$ink"
+      lineHeight: 1.5
+      text: 标准已经把“要计什么、怎么分项、计到什么精度”写清楚了。
+  - elementId: quote2
+    elementType: text
+    bounds: [560, 280, 336, 110]
+    content:
+      fontSize: 19
+      bold: true
+      color: "$teal"
+      lineHeight: 1.5
+      text: 剩下的问题是：谁来把这件事真正落地，并且让账可信。
+  - elementId: qline
+    elementType: shape
+    bounds: [560, 132, 48, 3]
+    shapeName: rect
+    fill: {type: solid, color: "$amber"}
+  - elementId: footnote
+    elementType: text
+    bounds: [64, 508, 832, 16]
+    content:
+      style: "$note"
+      wrap: false
+      text: 本页引用的均为现行国家标准与技术导则编号，条文以官方发布文本为准。

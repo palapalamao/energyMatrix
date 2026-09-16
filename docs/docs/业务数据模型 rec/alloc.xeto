@@ -1,0 +1,37 @@
+//
+// 域 6：分摊规则引擎
+// 原则：分摊是"生成台账条目"的一等公民行为，规则可版本化、可追溯、可重算。
+//       任何分摊结果条目必须携带 emRuleRef + emDataSource:"allocated"。
+//
+
+EmAllocRule: Dict {
+  energyMatrix
+  emAllocRule
+  id:          Ref
+  dis:         Str
+  sourceRef:   Ref  <of:EmMeter, doc:"被分摊的源（通常是总表或缺口虚表）">
+  emMethod:    EmAllocMethod
+  emPriority:  Number <doc:"多规则冲突时的执行序，小者先">
+  emEffective: Span   <doc:"规则生效期">
+  emShares:    List?  <of:EmAllocShare>
+  emResidualRef: Ref? <doc:"分摊后余量的归集对象（一般为公区）">
+  emFormula:   Str?   <doc:"method=custom 时的 Axon 表达式">
+  disabled:    Marker?
+}
+emAllocRule: Marker
+
+EmAllocMethod: Enum {
+  byArea        <doc:"按面积（租赁/空调面积）">
+  byHeadcount   <doc:"按人数">
+  byFixedRatio  <doc:"按固定比例，见 emShares">
+  byRatedRuntime <doc:"按额定功率×运行时长（EmLoad.emAllocWeight）">
+  byRemainder   <doc:"差值法：源 - 已计量子表之和">
+  bySubMeterPro <doc:"按已计量子表用量比例（用于分摊公摊）">
+  custom        <doc:"自定义 Axon 公式">
+}
+emMethod: EmAllocMethod
+
+EmAllocShare: Dict {
+  targetRef: Ref <doc:"分摊目标：tenant | space | org | meter">
+  emWeight:  Number
+}

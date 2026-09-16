@@ -1,0 +1,29 @@
+//
+// EmFloor.trio —— 楼层（说明书 §3.2 表 3-1）
+//
+// 空间树来自 ph::Site / Floor / Space，本库只扩展计量与考核必需的属性。
+// 楼层是站点与分区之间的一层，用于按层出报表与按层对标。
+//
+// 与计量分区（EmZone）的关系是**可选**的：分区填了 floorRef 就显示在该楼层
+// 下面，不填就直接挂站点 —— 商业综合体里"餐饮区""主力店"这种分区经常跨楼层
+// （说明书 §6 待决事项 OI-04 取的是"允许跨楼层"），强绑楼层会让它们建不出来。
+//
+// floorNum 是 Haystack 标准标签：地面层为 0，地上 1/2/3…，地下 -1/-2/-3…
+//
+
+---
+emFloorModelId:"_floor:emFloor"
+id:@_floor:emFloor
+energyMatrix
+floor
+space
+siteRef:Arg("parentId")
+navName:Arg("entityDis:Floor")
+disMacro:"$siteRef $navName"
+tz:Arg("tz:Asia/Shanghai")
+// 楼层建筑面积 —— 按层 EUI 的分母
+area:Arg("area:1000m²")
+// 楼层号：地面层 0，地上为正，地下为负
+floorNum:Arg("floorNum:1")
+// 业态类型，用于按层对标
+emUsageType:Arg("emUsageType:office")

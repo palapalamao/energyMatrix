@@ -1,0 +1,95 @@
+pageType: content
+background:
+  type: solid
+  color: "$paper"
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [64, 36, 500, 16]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: WHY US · 为什么是我们
+  - elementId: title
+    elementType: text
+    bounds: [64, 58, 832, 42]
+    content:
+      style: "$title"
+      wrap: false
+      text: 值得信赖的长期合作伙伴
+  - elementId: headrule
+    elementType: shape
+    bounds: [64, 110, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: c1t
+    elementType: text
+    bounds: [64, 132, 380, 24]
+    content: {fontSize: 15, bold: true, color: "$ink", wrap: false, text: Digital Twin System 完整拼图}
+  - elementId: c1d
+    elementType: text
+    bounds: [64, 162, 380, 110]
+    content:
+      style: "$body"
+      text: energyMatrix（能源）与 CoolMatrix（冷源群控）、heatMatrix（智慧供热）、CoolSim（数字孪生仿真）共享同一 Haystack 语义底座 —— 能源账与控制系统天然打通，不存在二次集成。
+  - elementId: c1r
+    elementType: shape
+    bounds: [64, 128, 48, 3]
+    shapeName: rect
+    fill: {type: solid, color: "$teal"}
+  - elementId: c2t
+    elementType: text
+    bounds: [516, 132, 380, 24]
+    content: {fontSize: 15, bold: true, color: "$ink", wrap: false, text: 开放生态，不锁定}
+  - elementId: c2d
+    elementType: text
+    bounds: [516, 162, 380, 110]
+    content:
+      style: "$body"
+      text: 基于 FIN Framework 与 Project Haystack 开放标准；80+ Axon 开放 API 与 Haystack RESTful 接口向任何集成商开放；Xeto 规格随 pod 交付，未来可平滑迁移至 Haxall。
+  - elementId: c2r
+    elementType: shape
+    bounds: [516, 128, 48, 3]
+    shapeName: rect
+    fill: {type: solid, color: "$teal"}
+  - elementId: c3t
+    elementType: text
+    bounds: [64, 296, 380, 24]
+    content: {fontSize: 15, bold: true, color: "$ink", wrap: false, text: 数据治理是产品纪律}
+  - elementId: c3d
+    elementType: text
+    bounds: [64, 326, 380, 110]
+    content:
+      style: "$body"
+      text: 十条铁律不是口号，是代码强制点与单元测试；关账不可变、参数版本化、节能量核证 —— 交付的每个数字都经得起审计与复算。
+  - elementId: c3r
+    elementType: shape
+    bounds: [64, 292, 48, 3]
+    shapeName: rect
+    fill: {type: solid, color: "$teal"}
+  - elementId: c4t
+    elementType: text
+    bounds: [516, 296, 380, 24]
+    content: {fontSize: 15, bold: true, color: "$ink", wrap: false, text: 交付与服务能力}
+  - elementId: c4d
+    elementType: text
+    bounds: [516, 326, 380, 110]
+    content:
+      style: "$body"
+      text: 边缘引擎免服务器部署缩短工期；模板化建模与点表交底降低工程门槛；示范数据一条命令复现，培训与验收有据可依；本地化部署，数据不出项目内网。
+  - elementId: c4r
+    elementType: shape
+    bounds: [516, 292, 48, 3]
+    shapeName: rect
+    fill: {type: solid, color: "$teal"}
+  - elementId: bottomrule
+    elementType: shape
+    bounds: [64, 462, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: bottom
+    elementType: text
+    bounds: [64, 476, 832, 40]
+    content:
+      style: "$note"
+      text: 西门子（中国）有限公司专注建筑能源与双碳数字化；energyMatrix 语义模型设计说明书编号 AI4B-EM-DS-2026-001，全部设计取舍在 README 与规格文件中留痕可查。

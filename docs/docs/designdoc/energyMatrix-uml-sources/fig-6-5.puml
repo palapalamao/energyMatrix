@@ -1,0 +1,44 @@
+@startuml
+!include style.iuml
+title 图 6-5  诊断触发到工单闭环时序
+autonumber "<b>[0]"
+
+participant "EmScheduler" as SCH
+participant "EmDiagEngine" as DE
+participant "EmRepo" as REPO
+actor "运维主管" as M
+participant "EmRestMod" as API
+participant "CoolMatrix 策略层" as CM
+
+SCH -> DE : run(ctx) 每日 cron 0 15 1 * * *
+DE -> REPO : readDiagnostics(disabled = false)
+loop 每条规则
+  DE -> REPO : 按 emSubjectFilter 取对象
+  DE -> DE : match(emExpr)
+  alt 命中
+    DE -> DE : raise() 生成 EmAnomaly\nemImpactVal 恒为 estimated
+    DE -> REPO : commit(EmAnomaly, status = open)
+  end
+end
+note over DE : 诊断模型只产生事件\n不直接写控制点
+
+M -> API : GET /api/em/diag/anomalies?status=open
+API --> M : 事件列表按 severity 排序
+M -> API : POST /api/em/diag/anomalies/{id}/ack
+API -> REPO : status = acked
+
+alt 需要现场处置
+  M -> API : POST /api/em/diag/workorders
+  API -> REPO : commit(EmWorkOrder, 关联 anomalyRefs)
+  API --> M : 200 工单已派发
+else 需要调整控制策略
+  M -> CM : 在 CoolMatrix 中调整策略参数
+  note right of CM : 跨产品动作由人工发起\nenergyMatrix 不写控制点
+end
+
+alt 形成长期措施
+  M -> API : POST /api/em/mv/projects\n{fromWorkOrder}
+  API -> REPO : commit(EmSavingsProject, status = planned)
+  note right of REPO : 闭环终点：诊断 → 工单 → 措施 → 核证
+end
+@enduml

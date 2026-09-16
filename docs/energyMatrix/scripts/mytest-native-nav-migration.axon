@@ -1,0 +1,250 @@
+// energyMatrix / mytest native FIN navigation migration
+//
+// Paste the complete `do ... end` expression into the FIN Axon shell.
+// The safe default is preview:true: it computes and returns the complete plan
+// without committing records or writing history. Export a project backup first,
+// inspect every blocked/ambiguous row, then change only preview to false.
+//
+// Scope: the single named synthetic energyMatrix site. No deletes, setpoints,
+// overrides, or close-period operations are performed.
+
+do
+  opts: {
+    siteName: "mytest Synthetic Demo",
+    preview: true,
+    historyDays: 14,
+    finalize: true,
+    equipPath: "/site/[floor]/equip/point",
+    provenance: "emDemoBuild"
+  }
+
+  demoTags: {emSynthetic, emDataProvenance: opts->provenance}
+  alreadyCorrect: (rec, changes) => changes.keys.all(k => rec[k] == changes[k])
+  labelOf: rec => if (rec["navName"] == null) rec.dis else rec["navName"]
+
+  // Select exactly one target. This refuses to guess if another demo uses the same name.
+  sites: readAll(energyMatrix and site).findAll(rec =>
+    labelOf(rec) == opts->siteName or rec.dis == opts->siteName)
+  if (sites.size != 1)
+    throw("Expected exactly one energyMatrix site named '" + opts->siteName +
+      "', found " + sites.size)
+  siteRec: sites[0]
+  site: siteRec->id
+
+  floors: readAll(energyMatrix and floor and siteRef==site)
+  floorByNum: n => do
+    matches: floors.findAll(f => f.has("floorNum") and f->floorNum == n)
+    if (matches.size != 1)
+      throw("Expected exactly one floorNum " + n + " under " + site.toStr +
+        ", found " + matches.size)
+    matches[0]->id
+  end
+
+  // Resolution order is stable: validated existing floorRef, space ancestry, then
+  // the four exact demo names whose scope is explicitly tied to one floor.
+  resolveFloor: equipRec => do
+    if (equipRec.has("floorRef")) do
+      matches: floors.findAll(f => f->id == equipRec->floorRef)
+      if (matches.size != 1)
+        throw("Invalid or cross-site floorRef on " + equipRec->id.toStr)
+      equipRec->floorRef
+    end else if (equipRec.has("emSpaceRef")) do
+      space: readById(equipRec->emSpaceRef, false)
+      if (space == null)
+        throw("Dangling emSpaceRef on " + equipRec->id.toStr)
+      if (not space.has("siteRef") or space->siteRef != site)
+        throw("Cross-site emSpaceRef on " + equipRec->id.toStr)
+      if (space.has("floorRef")) do
+        matches: floors.findAll(f => f->id == space->floorRef)
+        if (matches.size != 1)
+          throw("Invalid or cross-site space floorRef on " + equipRec->id.toStr)
+        space->floorRef
+      end else null
+    end else do
+      name: labelOf(equipRec)
+      if (name == "厨房餐饮") floorByNum(3)
+      else if (name == "影院健身") floorByNum(4)
+      else if (name == "充电桩") floorByNum(-1)
+      else if (name == "厨房燃气表") floorByNum(3)
+      else null
+    end
+  end
+
+  unitFor: medium => do
+    if (medium == "elec") parseUnit("kWh")
+    else if (medium == "water") parseUnit("m³")
+    else if (medium == "gas") parseUnit("m³")
+    else if (medium == "steam") parseUnit("kg")
+    else if (medium == "heat") parseUnit("kWh")
+    else if (medium == "cool") parseUnit("kWh")
+    else null
+  end
+
+  recordPlan: (rec, kind, changes) => {
+    recRef: rec->id,
+    dis: labelOf(rec),
+    kind: kind,
+    action: if (alreadyCorrect(rec, changes)) "skip" else "update",
+    changes: changes
+  }
+
+  // navMeta is intentionally handled separately because it is project metadata,
+  // not an energyMatrix record. Multiple candidates are treated as ambiguous.
+  navs: readAll(navMeta).findAll(rec => rec.has("equipPath"))
+  if (navs.size != 1)
+    throw("Expected exactly one navMeta record with equipPath, found " + navs.size)
+  navRec: navs[0]
+  navPlan: recordPlan(navRec, "navMeta", {equipPath: opts->equipPath})
+
+  scoped: readAll(energyMatrix and (id==site or siteRef==site or emSubjectRef==site))
+  equips: scoped.findAll(rec => rec.has("equip"))
+  points: scoped.findAll(rec => rec.has("point"))
+
+  equipPlans: equips.map(rec => do
+    floorRef: resolveFloor(rec)
+    changes: if (floorRef == null) demoTags else merge(demoTags, {floorRef: floorRef})
+    recordPlan(rec, "equip", changes)
+  end)
+
+  pointPlans: points.map(rec => do
+    if (not rec.has("equipRef")) {
+        recRef: rec->id, dis: labelOf(rec), kind: "point", action: "blocked",
+        reason: "missing equipRef", changes: {}
+      }
+    else do
+      equipRec: readById(rec->equipRef, false)
+      if (equipRec == null or not equipRec.has("equip") or
+          not equipRec.has("siteRef") or equipRec->siteRef != site) {
+          recRef: rec->id, dis: labelOf(rec), kind: "point", action: "blocked",
+          reason: "dangling, non-equip, or cross-site equipRef", changes: {}
+        }
+      else do
+        floorRef: resolveFloor(equipRec)
+        changes: merge(demoTags, {siteRef: site})
+        if (floorRef != null) changes = merge(changes, {floorRef: floorRef})
+        if (floorRef == null and rec.has("floorRef"))
+          changes = merge(changes, {floorRef: removeMarker()})
+        if (equipRec.has("emGap") and rec.has("emDelta") and not rec.has("unit")) do
+          gapUnit: unitFor(equipRec->emMedium)
+          if (gapUnit == null) {
+            recRef: rec->id, dis: labelOf(rec), kind: "point", action: "blocked",
+            reason: "unknown gap meter unit for " + equipRec->emMedium, changes: changes
+          }
+          else do
+            changes = merge(changes, {unit: gapUnit})
+            recordPlan(rec, "point", changes)
+          end
+        end
+        else recordPlan(rec, "point", changes)
+      end
+    end
+  end)
+
+  otherPlans: scoped.findAll(rec => not rec.has("equip") and not rec.has("point"))
+    .map(rec => recordPlan(rec, "scoped", demoTags))
+  recordPlans: equipPlans.addAll(pointPlans).addAll(otherPlans)
+  blockedRecords: recordPlans.findAll(plan => plan->action == "blocked")
+
+  // Complete profile table for every physical meter generated by emDemoBuild.
+  profiles: [
+    {name:"10kV 进线关口表", daily:12450, kind:"retail"},
+    {name:"照明插座", daily:2600, kind:"retail"},
+    {name:"走廊应急照明", daily:380, kind:"flat"},
+    {name:"室外景观照明", daily:220, kind:"night"},
+    {name:"冷热站", daily:4200, kind:"hvac"},
+    {name:"空调末端", daily:1500, kind:"hvac"},
+    {name:"电梯扶梯", daily:620, kind:"retail"},
+    {name:"给排水泵", daily:240, kind:"flat"},
+    {name:"通风机", daily:480, kind:"flat"},
+    {name:"信息中心", daily:300, kind:"flat"},
+    {name:"厨房餐饮", daily:900, kind:"kitchen"},
+    {name:"影院健身", daily:350, kind:"retail"},
+    {name:"充电桩", daily:260, kind:"retail"},
+    {name:"B1 照明", daily:300, kind:"flat"},
+    {name:"1F 照明", daily:620, kind:"retail"},
+    {name:"2F 照明", daily:580, kind:"retail"},
+    {name:"3F 照明", daily:520, kind:"retail"},
+    {name:"4F 照明", daily:480, kind:"retail"},
+    {name:"优衣库租户表", daily:180, kind:"retail"},
+    {name:"星巴克租户表", daily:95, kind:"kitchen"},
+    {name:"金逸影城租户表", daily:210, kind:"retail"},
+    {name:"1F 主力店考核表", daily:610, kind:"retail"},
+    {name:"市政进水关口表", daily:180, kind:"retail"},
+    {name:"生活给水表", daily:130, kind:"retail"},
+    {name:"空调补水表", daily:40, kind:"hvac"},
+    {name:"绿化灌溉表", daily:8, kind:"night"},
+    {name:"厨房燃气表", daily:320, kind:"kitchen"},
+    {name:"冷站供冷计量表", daily:9800, kind:"hvac"}
+  ]
+  profileFor: meterRec => profiles.find(profile => profile->name == labelOf(meterRec))
+
+  cutoff: dateTime(today(), time(hour(now()), 0), "Asia/Shanghai")
+  physicalMeters: equips.findAll(rec => rec.has("meter") and not rec.has("emVirtual"))
+  historyPlans: physicalMeters.map(meterRec => do
+    pts: points.findAll(pt => pt.has("emL1Point") and pt->equipRef == meterRec->id)
+    if (pts.size != 1) {
+        meterRef: meterRec->id, dis: labelOf(meterRec), action: "blocked",
+        reason: "expected exactly one emL1Point, found " + pts.size
+      }
+    else do
+      profile: profileFor(meterRec)
+      if (profile == null) {
+          meterRef: meterRec->id, pointRef: pts[0]->id, dis: labelOf(meterRec),
+          action: "blocked", reason: "no deterministic demo history profile"
+        }
+      else do
+        stale: not pts[0].has("hisEnd") or pts[0]->hisEnd < cutoff
+        {
+          meterRef: meterRec->id,
+          pointRef: pts[0]->id,
+          dis: labelOf(meterRec),
+          daily: profile->daily,
+          kind: profile->kind,
+          action: if (stale) "write" else "skip"
+        }
+      end
+    end
+  end)
+  blockedHistory: historyPlans.findAll(plan => plan->action == "blocked")
+
+  closedLedger: readAll(energyMatrix and emLedger and emClosed and siteRef==site)
+  deriveAction: if (not opts->finalize) "disabled"
+    else if (not closedLedger.isEmpty) "blockedClosedLedger"
+    else if (not blockedRecords.isEmpty or not blockedHistory.isEmpty) "blockedIntegrity"
+    else "buildOpenPeriod"
+
+  if (not opts->preview) do
+    if (not blockedRecords.isEmpty or not blockedHistory.isEmpty)
+      throw("Apply refused: resolve blocked record/history plans first")
+
+    if (navPlan->action == "update")
+      commit(diff(readById(navPlan->recRef), navPlan->changes))
+    recordPlans.findAll(plan => plan->action == "update")
+      .each(plan => commit(diff(readById(plan->recRef), plan->changes)))
+    historyPlans.findAll(plan => plan->action == "write")
+      .each(plan => emDemoHis(plan->meterRef, plan->daily, plan->kind, opts->historyDays))
+
+    if (deriveAction == "buildOpenPeriod") do
+      emLedgerBuild(site, emThisMonthSpan(), "daily")
+      emDiagRun(site, emThisMonthSpan())
+      // Newly derived, still-open demo records inherit the same provenance.
+      readAll(energyMatrix and siteRef==site and not emClosed)
+        .findAll(rec => rec.has("emLedger") or rec.has("emAnomaly"))
+        .each(rec => if (not alreadyCorrect(rec, demoTags)) commit(diff(rec, demoTags)))
+    end
+  end
+
+  {
+    mode: if (opts->preview) "preview" else "applied",
+    siteRef: site,
+    nav: navPlan,
+    recordPlans: recordPlans,
+    historyPlans: historyPlans,
+    deriveAction: deriveAction,
+    closedLedgerCount: closedLedger.size,
+    audit: emDataAudit(site),
+    note: if (opts->preview)
+      "No changes committed. Export a backup, review blocked rows, then set preview:false."
+      else "Migration applied; inspect audit rows and hard-refresh the FIN browser."
+  }
+end

@@ -1,0 +1,80 @@
+pageType: content
+background:
+  type: solid
+  color: "$paper"
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [64, 36, 500, 16]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: 核心能力 2 · 指标定额与对标
+  - elementId: title
+    elementType: text
+    bounds: [64, 58, 832, 42]
+    content:
+      style: "$title"
+      wrap: false
+      text: EUI 对标国标，定额执行到每一个对象
+  - elementId: headrule
+    elementType: shape
+    bounds: [64, 110, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: chartTitle
+    elementType: text
+    bounds: [64, 126, 480, 20]
+    content: {fontSize: 12, bold: true, color: "$tealDark", wrap: false, text: 单位面积能耗 EUI 对标（kWh/m²·a，示例口径）}
+  - elementId: chart
+    elementType: chart
+    bounds: [64, 152, 480, 240]
+    data:
+      cols: ["对象", "EUI"]
+      rows:
+        - ["本项目", 45.2]
+        - ["GB 55015 约束值", 65]
+        - ["GB/T 51161 引导值", 50]
+        - ["同业态中位数", 58]
+    series:
+      - type: bar
+        encode: {x: "对象", y: "EUI"}
+        fill: "$teal"
+        dataLabels: {show: true, fontSize: 11}
+    legend: false
+    barWidth: 0.45
+    yAxis: {label: {fontSize: 10}}
+    xAxis: {label: {fontSize: 10.5}}
+  - elementId: chartNote
+    elementType: text
+    bounds: [64, 398, 480, 30]
+    content:
+      style: "$note"
+      text: 示例数据：emStandardRef 挂接 GB 55015-2021 约束值与 GB/T 51161-2016 引导值，按气候区与业态选取。
+  - elementId: vrail
+    elementType: shape
+    bounds: [584, 132, 1, 330]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: rt
+    elementType: text
+    bounds: [616, 126, 280, 22]
+    content: {fontSize: 13, bold: true, color: "$ink", wrap: false, text: 指标与定额机制}
+  - elementId: rd
+    elementType: text
+    bounds: [616, 154, 280, 300]
+    content:
+      style: "$body"
+      lineHeight: 1.6
+      text: |
+        <p><strong>定义与时序分离</strong> —— EmKpi 可版本化并复用到任意对象，公式为 Axon 表达式，自由变量仅 emSelf 与 emSpan。</p>
+        <p style="margin-top:8px"><strong>批量指标</strong> —— 同一指标对楼层 / 租户 / 项目批量求值，自动生成排名。</p>
+        <p style="margin-top:8px"><strong>定额进度</strong> —— EmQuota 记录限额来源（政府下达 / 集团分解 / 历史基准），按时间过半线性期望给出超前 / 滞后动作建议。</p>
+        <p style="margin-top:8px"><strong>集团对标</strong> —— 多项目归一化至标准气象年（CDD/HDD 修正）后排名。</p>
+  - elementId: footnote
+    elementType: text
+    bounds: [64, 496, 832, 16]
+    content:
+      style: "$note"
+      wrap: false
+      text: 对应产品屏：能耗分析（7×24 用能强度、典型日负荷曲线、分时电价）· 定额与对标 · 多项目总览

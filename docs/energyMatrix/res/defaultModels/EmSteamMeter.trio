@@ -1,0 +1,124 @@
+//
+// EmSteamMeter.trio —— 蒸汽表（说明书 §3.3 表 3-2）
+//
+// 组合继承的子模板，叠加在 EmMeterBase.trio 之上。规则见 EmElecMeter.trio 头部。
+// 蒸汽的入账量是**质量**（kg）；热量点是辅助量，用于折标煤与能效分析。
+//
+
+---
+// 蒸汽表本体
+emSteamMeterModelId:"_equip:emSteamMeter"
+emMeterModelId:"_equip:emMeter"
+id:@_equip:emSteamMeter
+energyMatrix
+equip
+meter
+steam
+emMedium:"steam"
+
+---
+// L1 累积质量
+emSteamMeterModelId:"_equip:emSteamMeter_point:l1Total"
+emMeterModelId:"_equip:emMeter_point:l1Total"
+id:@_equip:emSteamMeter_point:l1Total
+energyMatrix
+point
+sensor
+total
+emL1Point
+steam
+equipRef:@_equip:emSteamMeter
+emMeterRef:@_equip:emSteamMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"累积质量"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"kg"
+his
+hisCollectInterval:15min
+hisInterpolate:"linear"
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// L2 区间质量增量
+emSteamMeterModelId:"_equip:emSteamMeter_point:l2Delta"
+emMeterModelId:"_equip:emMeter_point:l2Delta"
+id:@_equip:emSteamMeter_point:l2Delta
+energyMatrix
+point
+sensor
+emDelta
+steam
+equipRef:@_equip:emSteamMeter
+emMeterRef:@_equip:emSteamMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"区间质量"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"kg"
+his
+hisInterpolate:"linear"
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// 累积热量（辅助量）
+emSteamMeterModelId:"_equip:emSteamMeter_point:energyTotal"
+id:@_equip:emSteamMeter_point:energyTotal
+energyMatrix
+point
+sensor
+total
+steam
+energy
+equipRef:@_equip:emSteamMeter
+emMeterRef:@_equip:emSteamMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"累积热量"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"kWh"
+his
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// 蒸汽温度
+emSteamMeterModelId:"_equip:emSteamMeter_point:temp"
+id:@_equip:emSteamMeter_point:temp
+energyMatrix
+point
+sensor
+steam
+temp
+equipRef:@_equip:emSteamMeter
+emMeterRef:@_equip:emSteamMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"蒸汽温度"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"°C"
+his
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// 蒸汽压力
+emSteamMeterModelId:"_equip:emSteamMeter_point:pressure"
+id:@_equip:emSteamMeter_point:pressure
+energyMatrix
+point
+sensor
+steam
+pressure
+equipRef:@_equip:emSteamMeter
+emMeterRef:@_equip:emSteamMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"蒸汽压力"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"kPa"
+his
+tz:Arg("tz:Asia/Shanghai")

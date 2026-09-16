@@ -1,0 +1,64 @@
+@startuml
+!include style.iuml
+title 图 3-2  计算引擎基类与台账/分摊/关账
+hide empty members
+
+abstract class EmEngine {
+  #repo: EmRepo
+  #log: Log
+  +{abstract} run(ctx: EmCalcCtx): EmCalcResult
+  #audit(op: Str, r: EmCalcResult): Void
+}
+class EmCalcCtx {
+  +siteRef: Ref
+  +span: Span
+  +granularity: EmGranularity
+  +actor: Str
+  +dryRun: Bool
+  +idempotencyKey: Str
+}
+class EmCalcResult {
+  +ok: Bool
+  +entryCount: Int
+  +elapsed: Duration
+  +errors: EmError[]
+  +summary: Dict
+}
+class EmLedgerEngine {
+  +run(ctx): EmCalcResult
+  -deltaOf(m: EmMeter, span): Number
+  -compensateRollover(v, max): Number
+  -compensateSwap(m, span): Number
+  -qualityOf(m, span): Number
+}
+class EmAllocEngine {
+  +run(ctx): EmCalcResult
+  -resolve(rule): EmAllocShare[]
+  -byArea(rule, ctx): EmLedgerEntry[]
+  -byRemainder(rule, ctx): EmLedgerEntry[]
+  -byRatedRuntime(rule, ctx): EmLedgerEntry[]
+  -custom(rule, ctx): EmLedgerEntry[]
+}
+class EmCloseTx {
+  -ctx: EmCalcCtx
+  +execute(): EmClosePeriod
+  -freeze(): Void
+  -runAlloc(): Void
+  -checkBalance(): Number
+  -gate(gapRatio: Number): Void
+  -seal(): Void
+}
+class EmFormulaEval {
+  +eval(expr: Str, scope: Dict): Obj?
+  +compile(expr: Str): Fn
+}
+
+EmEngine <|-- EmLedgerEngine
+EmEngine <|-- EmAllocEngine
+EmEngine ..> EmCalcCtx
+EmEngine ..> EmCalcResult
+EmCloseTx --> EmLedgerEngine : 步骤 2
+EmCloseTx --> EmAllocEngine : 步骤 3
+EmAllocEngine ..> EmFormulaEval
+EmCalcCtx -[hidden]right- EmCalcResult
+@enduml

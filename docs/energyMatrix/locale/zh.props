@@ -1,0 +1,187 @@
+# energyMatrix 本地化字符串 —— 简体中文
+#
+# 与 en.props 一一对应。前端 SPA 另有一份 ts/src/i18n/zh.json，
+# 两边需要人工保持同步（改了这里记得改那边）。
+
+lib.dis = 能源管理
+lib.doc = 建筑能源管理：计量、台账、分摊、计费、指标、核证、碳资产、诊断闭环
+
+# ── 菜单 ──────────────────────────────────────────────────────────────
+emApp.dis = 能源总览
+emApp.doc = 在 FIN 顶栏打开 energyMatrix 应用
+
+# ── 信息 ──────────────────────────────────────────────────────────────
+emInfo.dis = 扩展信息
+emInfo.doc = 身份探针：版本、Ext 名、UI 地址
+emEnums.dis = 枚举全集
+emEnums.doc = 本库定义的全部枚举取值，前端下拉与校验共用一份真相
+
+# ── 域 1-4 · 实体工厂 ─────────────────────────────────────────────────
+emAddSite.dis = 新建站点
+emAddSite.doc = 按 EmSite 模板创建站点
+emAddFloor.dis = 新建楼层
+emAddFloor.doc = 站点与分区之间的一层，用于按层出报表与对标
+emAddZone.dis = 新建计量分区
+emAddZone.doc = 创建能耗核算最小空间单元（可跨楼层）
+emAddTenant.dis = 新建租户
+emAddTenant.doc = 创建租户 / 组织单元
+emAddMeter.dis = 新建表计
+emAddMeter.doc = 按介质创建计量表
+emAddVirtualMeter.dis = 新建虚拟表
+emAddVirtualMeter.doc = 创建由公式导出的虚拟表
+emAddGapMeter.dis = 新建缺口表
+emAddGapMeter.doc = 创建差值法缺口表（总表 − 已计量子表之和）
+emAttachLoad.dis = 挂载能耗身份
+emAttachLoad.doc = 给既有设备挂上分项归类、计量归属与额定值（不新建设备）
+
+# ── 域 2 · 计量 ───────────────────────────────────────────────────────
+emMeterTree.dis = 计量树
+emMeterTree.doc = 站点的扁平化计量树
+emMeterTreeValidate.dis = 计量树校验
+emMeterTreeValidate.doc = 环检测、跨介质挂接、虚表公式、关口表唯一性
+emInvalidateMeterTree.dis = 作废计量树缓存
+emInvalidateMeterTree.doc = 手工改了表计标签而订阅没触发时用
+emMeterRead.dis = 表计用量
+emMeterRead.doc = 某表在账期内的用量
+emSubMeterSum.dis = 子表合计
+emSubMeterSum.doc = 直接子表用量之和（考核表不计入）
+emMeterConsumption.dis = 表计用量与质量
+emMeterConsumption.doc = 用量 + 完好率 + 数据来源等级
+emMeterDeltas.dis = 区间增量
+emMeterDeltas.doc = L2 区间增量，含溢出与换表补偿
+emGap.dis = 缺口明细
+emGap.doc = 单块表的缺口量与缺口率
+emSiteGaps.dis = 站点平衡校核
+emSiteGaps.doc = 各介质的缺口校核明细
+emSiteGapRatio.dis = 站点缺口率
+emSiteGapRatio.doc = 各介质中最差的缺口率，关账闸门的判据
+
+# ── 域 5 · 台账 ───────────────────────────────────────────────────────
+emLedgerBuild.dis = 构建台账
+emLedgerBuild.doc = 为站点在账期内构建台账条目
+emLedgerEntries.dis = 台账条目
+emLedgerEntries.doc = 原始条目，默认剔除红冲对
+emLedgerAggregate.dis = 台账聚合
+emLedgerCrosstab.dis = 台账交叉表
+emLedgerCrosstab.doc = 账期 × 分项这类堆叠图数据源；列维度只能是 subItem 或 medium（其余是 Ref，摊成列名非法）
+emLedgerAggregate.doc = 按分项 / 介质 / 空间 / 租户 / 组织 / 表 / 账期聚合
+emLedgerTotal.dis = 台账合计
+emLedgerTotal.doc = 账期用量合计
+emLedgerSourceMix.dis = 数据可信度
+emLedgerSourceMix.doc = 各来源等级的用量占比
+emClosePeriod.dis = 关账
+emClosePeriod.doc = 原子关账事务，含缺口率闸门
+emClosePeriods.dis = 关账批次
+emClosePeriods.doc = 站点的关账批次记录
+emReverseLedgerEntry.dis = 红冲
+emReverseLedgerEntry.doc = 已关账条目的唯一修改路径
+emCorrectLedgerEntry.dis = 红冲并重录
+emCorrectLedgerEntry.doc = 红冲原条目并录入正确条目，返回完整修正链
+emLedgerChain.dis = 修正链
+emLedgerChain.doc = 原条目 / 红冲 / 重录三条记录
+
+# ── 域 6-11 ───────────────────────────────────────────────────────────
+emAllocRules.dis = 分摊规则
+emAllocRules.doc = 某时刻生效的规则，按优先级排序
+emAllocValidate.dis = 分摊规则校验
+emAllocRun.dis = 执行分摊
+emTariffResolve.dis = 解析费率
+emTariffResolve.doc = 某时刻生效的费率版本
+emBillBuild.dis = 生成账单
+emKpiDefs.dis = 指标定义
+emAddKpi.dis = 新建指标定义
+emAddKpi.doc = 编码要跨项目稳定；公式里 emSelf 是被评价对象、emSpan 是账期
+emKpiCompute.dis = 计算指标
+emKpiComputeAll.dis = 批量计算指标
+emKpiComputeAll.doc = 同一指标算一批对象（排名 / 对标）；单个算不出不影响其余行
+emAddQuota.dis = 新建定额
+emAddQuota.doc = emLimitSource 必填 —— 不知道出处的限值没有约束力
+emQuotas.dis = 定额清单
+emQuotaProgressAll.dis = 全部定额进度
+emQuotaProgressAll.doc = 一次算完某对象的全部定额，UI 不必逐条回查
+emQuotaProgress.dis = 定额进度
+emQuotaProgress.doc = 定额消耗进度与预警 / 超限等级
+emBaselineValidate.dis = 基线统计验收
+emBaselineValidate.doc = ASHRAE Guideline 14 验收（R² / CV(RMSE) / NMBE）
+emAddSavingsProject.dis = 新建节能项目
+emAddSavingsProject.doc = 恒以 emVerifyStatus=planned 创建（铁律 10）
+emSavingsProjects.dis = 节能项目清单
+emBaselines.dis = 基线清单
+emBaselines.doc = 含 R² / CV(RMSE) / NMBE 统计验收字段
+emSavingsCompute.dis = 计算节能量
+emFactorResolve.dis = 解析排放因子
+emFactors.dis = 排放因子清单
+emFactors.doc = 因子版本表；缺 emSourceDoc 依据文号的不允许生效（铁律 8）
+emTariffs.dis = 费率清单
+emCarbonAccount.dis = 生成碳账
+emCarbonAccount.doc = 逐介质明细在 rows，Scope 汇总与因子版本快照在 meta；lock 仅关账时传
+emCarbonNet.dis = 净排放量
+emCarbonNet.doc = 总排放 − 抵消，指标公式里最常用的碳数字
+emCoalEquivalent.dis = 折标煤合计
+emCoalEquivalent.doc = 综合能耗（tce）；明细在 rows、合计在 meta，emMissing 列出没有折标煤系数的介质
+emCarbonTargets.dis = 碳目标清单
+emCarbonTargetProgress.dis = 碳目标进度
+emCarbonTargetProgress.doc = 总量型比净排放，强度型比单位面积净排放 —— 两种口径不混用
+emGreenCerts.dis = 绿电 / 绿证 / CCER
+emGreenCerts.doc = 仅 emRetired（已注销核销）的可用于抵消
+emDiagRules.dis = 诊断规则
+emAddDiagRule.dis = 新建诊断规则
+emAddDiagRule.doc = 阈值含义随分类而定：dataQuality 是完好率下限，balance 是缺口率上限
+emDiagValidate.dis = 诊断规则校验
+emDiagRun.dis = 执行诊断
+emDiagRun.doc = 幂等：同规则 + 同对象 + 同账期只产生一条异常；跳过的规则记在 meta.emSkipped
+emAnomalies.dis = 异常清单
+emAnomalyStats.dis = 异常统计
+emAnomalyAck.dis = 确认异常
+emAnomalyFalseAlarm.dis = 标记误报
+emAnomalyFalseAlarm.doc = 与「已处置」分开统计 —— 误报多说明规则该调阈值了
+emDispatchWorkOrder.dis = 派单
+emDispatchWorkOrder.doc = 多条异常可合成一张工单（同一块表连着几天报警是一个问题）
+emWorkOrders.dis = 工单清单
+emWorkOrderUpdate.dis = 工单状态流转
+emWorkOrderUpdate.doc = 只能沿 new→assigned→inProgress→done→closed 往前走
+
+# ── 作业 ──────────────────────────────────────────────────────────────
+emNightlyPipeline.dis = 夜间台账流水线
+emNightlyPipeline.doc = 台账构建 → 分摊 → 缺口校核，合并在一个 Job 里串行执行
+
+# ── 建模器（数据模型配置屏）─────────────────────────────────────────────
+emModelTree.dis = 资产树
+emModelTree.doc = 空间/计量/设备/组织合并成一棵可浏览的资产树
+emDataAudit.dis = 站点数据审计
+emDataAudit.doc = 只读检查原生设备树、计量层级、历史、单位和测试数据来源
+emEntityDetail.dis = 实体详情
+emEntityDetail.doc = 记录、模板 id 与删除前的影响面（子点位数、已入账条目数）
+emEntityPoints.dis = 实体点位
+emEntityPoints.doc = 子点位清单及其 L1/L2 层次与采集绑定状态
+emEntityValidate.dis = 实体校验
+emEntityValidate.doc = 逐实体铁律检查，返回 err/warn/info 清单
+emEntityUpdate.dis = 修改实体属性
+emEntityUpdate.doc = 拒绝改 modelId、非法枚举值、已入账表计的介质
+emEntityDelete.dis = 删除实体
+emEntityDelete.doc = 连同子点位一并删除；被已关账条目引用的表永远不可删
+emSpecSource.dis = Xeto 规格源码
+emSpecSource.doc = 读取 pod 内 res/spec/em/<name>.xeto 的原文
+emSpecFiles.dis = Xeto 规格文件清单
+
+# ── 表具与采集器管理 ───────────────────────────────────────────────────
+emAddLoadGroup.dis = 新建用能设备组
+emAddLoadGroup.doc = 无独立计量、不按单台管理的批量对象（灯具回路、插座片区）
+emMeterInventory.dis = 表具台账
+emMeterInventory.doc = 每块表的介质、角色、采集器、通信状态与数据完好率
+emMeterStats.dis = 表具统计
+emMeterStats.doc = 在册数、通信正常数、待处理数、采集器数、平均完好率
+emConnectors.dis = 采集器清单
+emConnectors.doc = 带着本站点表计的采集器及其带表数与点位数
+
+# ── 示范数据 ───────────────────────────────────────────────────────────
+emDemoBuild.dis = 生成示范数据
+emDemoBuild.doc = 5 层商业综合体：完整模型、Synthetic 来源、近期逐小时历史，可选自动构建台账与诊断
+emDemoClear.dis = 清除示范数据
+emDemoClear.doc = 删除全部 energyMatrix 记录。破坏性操作，只在演示环境用
+emDemoHis.dis = 写入示范历史
+emDemoHis.doc = 给一块表的累积读数点写若干天历史并补到最近完成整点
+emDemoHisPartial.dis = 写入当日完整小时
+emDemoHisPartial.doc = 生成今天已经完成的逐小时累积读数
+emDemoProfile.dis = 日内负荷曲线
+emDemoProfile.doc = 返回 24 个累积占比：retail | hvac | kitchen | flat | night

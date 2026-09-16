@@ -1,0 +1,188 @@
+# energyMatrix locale strings — English
+#
+# 只有 build.fan 的 index["fin.lang"] = "energyMatrix" 存在时，本目录才会被
+# FIN 加载。漏掉那一行的话 locale **静默**不加载，没有任何报错。
+#
+# 前端 SPA 有自己独立的一份 ts/src/i18n/{en,zh}.json —— 两边需要人工保持同步。
+
+lib.dis = energyMatrix
+lib.doc = Building energy management: metering, ledger, allocation, billing, KPI, M&V, carbon, diagnostics
+
+# ── Menu ──────────────────────────────────────────────────────────────
+emApp.dis = Energy Overview
+emApp.doc = Opens the energyMatrix application in the FIN top menu
+
+# ── Info ──────────────────────────────────────────────────────────────
+emInfo.dis = energyMatrix Info
+emInfo.doc = Pod identity probe: version, ext name, UI uri
+emEnums.dis = Enumerations
+emEnums.doc = All enum value sets defined by this library
+
+# ── Domain 1-4 · Entity factories ─────────────────────────────────────
+emAddSite.dis = Add Site
+emAddSite.doc = Create an energyMatrix site from the EmSite template
+emAddFloor.dis = Add Floor
+emAddFloor.doc = A level between site and zone, used for per-floor reporting and benchmarking
+emAddZone.dis = Add Zone
+emAddZone.doc = Create a metering zone (smallest accounting space unit, may span floors)
+emAddTenant.dis = Add Tenant
+emAddTenant.doc = Create a tenant / organisational unit
+emAddMeter.dis = Add Meter
+emAddMeter.doc = Create a meter for the given medium
+emAddVirtualMeter.dis = Add Virtual Meter
+emAddVirtualMeter.doc = Create a formula-derived virtual meter
+emAddGapMeter.dis = Add Gap Meter
+emAddGapMeter.doc = Create a gap meter (main minus sum of submeters)
+emAttachLoad.dis = Attach Load Identity
+emAttachLoad.doc = Give an existing equip its energy accounting identity
+
+# ── Domain 2 · Metering ───────────────────────────────────────────────
+emMeterTree.dis = Meter Tree
+emMeterTree.doc = Flattened metering tree for a site
+emMeterTreeValidate.dis = Validate Meter Tree
+emMeterTreeValidate.doc = DAG, cross-medium, virtual formula and gateway uniqueness checks
+emInvalidateMeterTree.dis = Invalidate Meter Tree Cache
+emInvalidateMeterTree.doc = Drop the cached meter record list for a site
+emMeterRead.dis = Meter Reading
+emMeterRead.doc = Consumption of a meter over the billing period
+emSubMeterSum.dis = Submeter Sum
+emSubMeterSum.doc = Sum of direct submeters (check meters excluded)
+emMeterConsumption.dis = Meter Consumption
+emMeterConsumption.doc = Consumption with data quality and source grade
+emMeterDeltas.dis = Meter Deltas
+emMeterDeltas.doc = L2 interval increments with overflow / meter-change compensation
+emGap.dis = Gap
+emGap.doc = Gap detail for one meter
+emSiteGaps.dis = Site Gaps
+emSiteGaps.doc = Balance check across all media of a site
+emSiteGapRatio.dis = Site Gap Ratio
+emSiteGapRatio.doc = Worst gap ratio across media, used by the close-period gate
+
+# ── Domain 5 · Ledger ─────────────────────────────────────────────────
+emLedgerBuild.dis = Build Ledger
+emLedgerBuild.doc = Build ledger entries for a site over a period
+emLedgerEntries.dis = Ledger Entries
+emLedgerEntries.doc = Raw ledger entries, reversal pairs excluded by default
+emLedgerAggregate.dis = Aggregate Ledger
+emLedgerCrosstab.dis = Ledger Crosstab
+emLedgerCrosstab.doc = Period-by-subitem data for stacked charts; column dimension must be subItem or medium
+emLedgerAggregate.doc = Aggregate ledger by subItem / medium / space / tenant / org / meter / period
+emLedgerTotal.dis = Ledger Total
+emLedgerTotal.doc = Total consumption over a period
+emLedgerSourceMix.dis = Data Source Mix
+emLedgerSourceMix.doc = Distribution of consumption by data source grade
+emClosePeriod.dis = Close Period
+emClosePeriod.doc = Atomic close transaction with the gap-ratio gate
+emClosePeriods.dis = Close Batches
+emClosePeriods.doc = Close batch records for a site
+emReverseLedgerEntry.dis = Reverse Ledger Entry
+emReverseLedgerEntry.doc = The only permitted way to modify a closed entry
+emCorrectLedgerEntry.dis = Correct Ledger Entry
+emCorrectLedgerEntry.doc = Reverse plus re-enter, returns the full correction chain
+emLedgerChain.dis = Correction Chain
+emLedgerChain.doc = Original / reversal / re-entry chain for one entry
+
+# ── Domain 6-11 ───────────────────────────────────────────────────────
+emAllocRules.dis = Allocation Rules
+emAllocRules.doc = Rules effective at a given instant, ordered by priority
+emAllocValidate.dis = Validate Allocation Rule
+emAllocRun.dis = Run Allocation
+emTariffResolve.dis = Resolve Tariff
+emTariffResolve.doc = Tariff version effective at a given instant
+emBillBuild.dis = Build Bill
+emKpiDefs.dis = KPI Definitions
+emAddKpi.dis = Add KPI Definition
+emAddKpi.doc = Code must be stable across projects; formula binds emSelf and emSpan
+emKpiCompute.dis = Compute KPI
+emKpiComputeAll.dis = Compute KPI For Many
+emKpiComputeAll.doc = One KPI over many subjects; a failing subject does not fail the rest
+emAddQuota.dis = Add Quota
+emAddQuota.doc = emLimitSource is required — a limit with no provenance has no force
+emQuotas.dis = Quota List
+emQuotaProgressAll.dis = All Quota Progress
+emQuotaProgressAll.doc = Progress for every quota of a subject in one call
+emQuotaProgress.dis = Quota Progress
+emQuotaProgress.doc = Quota consumption progress with warn / over levels
+emBaselineValidate.dis = Validate Baseline
+emBaselineValidate.doc = ASHRAE Guideline 14 statistical acceptance
+emAddSavingsProject.dis = Add Savings Project
+emAddSavingsProject.doc = Always created with emVerifyStatus = planned
+emSavingsProjects.dis = Savings Projects
+emBaselines.dis = Baselines
+emBaselines.doc = Includes R2 / CV(RMSE) / NMBE acceptance fields
+emSavingsCompute.dis = Compute Savings
+emFactorResolve.dis = Resolve Emission Factor
+emFactors.dis = Emission Factors
+emFactors.doc = Factor versions; those missing emSourceDoc are rejected
+emTariffs.dis = Tariffs
+emCarbonAccount.dis = Build Carbon Account
+emCarbonAccount.doc = Per-medium rows; scope totals and factor snapshot in meta; pass lock only at close
+emCarbonNet.dis = Net Emissions
+emCarbonNet.doc = Total minus offsets
+emCoalEquivalent.dis = Coal Equivalent
+emCoalEquivalent.doc = Total energy in tce; per-medium rows, totals in meta, emMissing lists media with no factor
+emCarbonTargets.dis = Carbon Targets
+emCarbonTargetProgress.dis = Carbon Target Progress
+emCarbonTargetProgress.doc = Absolute compares net; intensity compares net per area — never mixed
+emGreenCerts.dis = Green Certificates
+emGreenCerts.doc = Only emRetired certificates count toward offsets
+emDiagRules.dis = Diagnostic Rules
+emAddDiagRule.dis = Add Diagnostic Rule
+emAddDiagRule.doc = Threshold meaning depends on category: quality floor or gap ceiling
+emDiagValidate.dis = Validate Diagnostic Rule
+emDiagRun.dis = Run Diagnostics
+emDiagRun.doc = Idempotent per rule + subject + period; skipped rules listed in meta.emSkipped
+emAnomalies.dis = Anomalies
+emAnomalyStats.dis = Anomaly Statistics
+emAnomalyAck.dis = Acknowledge Anomaly
+emAnomalyFalseAlarm.dis = Mark False Alarm
+emAnomalyFalseAlarm.doc = Tracked separately from resolved — false alarms mean the rule needs retuning
+emDispatchWorkOrder.dis = Dispatch Work Order
+emDispatchWorkOrder.doc = Several anomalies may form one order
+emWorkOrders.dis = Work Orders
+emWorkOrderUpdate.dis = Advance Work Order
+emWorkOrderUpdate.doc = Forward only: new to assigned to inProgress to done to closed
+
+# ── Jobs ──────────────────────────────────────────────────────────────
+emNightlyPipeline.dis = Nightly Ledger Pipeline
+emNightlyPipeline.doc = Ledger build, allocation and gap check, run serially in one job
+
+# ── Model builder ─────────────────────────────────────────────────────
+emModelTree.dis = Asset Tree
+emModelTree.doc = Space, metering, equipment and organisation merged into one browsable tree
+emDataAudit.dis = Site Data Audit
+emDataAudit.doc = Read-only checks for native navigation, metering, history, units and synthetic provenance
+emEntityDetail.dis = Entity Detail
+emEntityDetail.doc = Record, template id and the blast radius before deleting
+emEntityPoints.dis = Entity Points
+emEntityPoints.doc = Child points with their L1/L2 layer and binding status
+emEntityValidate.dis = Validate Entity
+emEntityValidate.doc = Per-entity iron-rule checks
+emEntityUpdate.dis = Update Entity
+emEntityUpdate.doc = Rejects modelId changes, invalid enums and medium changes on ledgered meters
+emEntityDelete.dis = Delete Entity
+emEntityDelete.doc = Deletes child points too; meters referenced by closed entries can never be deleted
+emSpecSource.dis = Xeto Spec Source
+emSpecSource.doc = Reads res/spec/em/<name>.xeto from the pod
+emSpecFiles.dis = Xeto Spec Files
+
+# ── Meters & gateways ─────────────────────────────────────────────────
+emAddLoadGroup.dis = Add Load Group
+emAddLoadGroup.doc = Batch objects without individual metering (lighting circuits, socket areas)
+emMeterInventory.dis = Meter Inventory
+emMeterInventory.doc = Medium, role, gateway, comm status and data quality per meter
+emMeterStats.dis = Meter Statistics
+emMeterStats.doc = Installed, online, needs-attention, gateway count and average data quality
+emConnectors.dis = Gateways
+emConnectors.doc = Gateways carrying this site's meters, with meter and point counts
+
+# ── Demo data ─────────────────────────────────────────────────────────
+emDemoBuild.dis = Build Demo Data
+emDemoBuild.doc = Five-storey retail complex with traceable synthetic data, current hourly history, and optional ledger/diagnostic finalization
+emDemoClear.dis = Clear Demo Data
+emDemoClear.doc = Deletes every energyMatrix record. Destructive — demo environments only
+emDemoHis.dis = Write Demo History
+emDemoHis.doc = Write prior days and today's completed hourly readings for one meter
+emDemoHisPartial.dis = Write Completed Hours Today
+emDemoHisPartial.doc = Generate cumulative readings for completed hours today
+emDemoProfile.dis = Daily Load Profile

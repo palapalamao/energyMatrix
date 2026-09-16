@@ -1,0 +1,107 @@
+//
+// EmGasMeter.trio —— 燃气表（说明书 §3.3 表 3-2）
+//
+// 组合继承的子模板，叠加在 EmMeterBase.trio 之上。规则见 EmElecMeter.trio 头部。
+// 燃气是 Scope 1 直接排放源（燃烧发生在本建筑内），碳账口径与外购电力不同。
+//
+
+---
+// 燃气表本体
+emGasMeterModelId:"_equip:emGasMeter"
+emMeterModelId:"_equip:emMeter"
+id:@_equip:emGasMeter
+energyMatrix
+equip
+meter
+naturalGas
+emMedium:"gas"
+
+---
+// L1 累积体积（工况）
+emGasMeterModelId:"_equip:emGasMeter_point:l1Total"
+emMeterModelId:"_equip:emMeter_point:l1Total"
+id:@_equip:emGasMeter_point:l1Total
+energyMatrix
+point
+sensor
+total
+emL1Point
+naturalGas
+volume
+equipRef:@_equip:emGasMeter
+emMeterRef:@_equip:emGasMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"累积体积"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"m³"
+his
+hisCollectInterval:15min
+hisInterpolate:"linear"
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// L2 区间体积增量
+emGasMeterModelId:"_equip:emGasMeter_point:l2Delta"
+emMeterModelId:"_equip:emMeter_point:l2Delta"
+id:@_equip:emGasMeter_point:l2Delta
+energyMatrix
+point
+sensor
+emDelta
+naturalGas
+volume
+equipRef:@_equip:emGasMeter
+emMeterRef:@_equip:emGasMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"区间体积"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"m³"
+his
+hisInterpolate:"linear"
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// 标况折算量 —— 碳核算与折标煤必须用标况量，不能用工况量
+emGasMeterModelId:"_equip:emGasMeter_point:volumeStd"
+id:@_equip:emGasMeter_point:volumeStd
+energyMatrix
+point
+sensor
+total
+naturalGas
+volume
+emStandardCond
+equipRef:@_equip:emGasMeter
+emMeterRef:@_equip:emGasMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"标况折算量"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"m³"
+his
+tz:Arg("tz:Asia/Shanghai")
+
+---
+// 瞬时流量
+emGasMeterModelId:"_equip:emGasMeter_point:flow"
+id:@_equip:emGasMeter_point:flow
+energyMatrix
+point
+sensor
+naturalGas
+flow
+equipRef:@_equip:emGasMeter
+emMeterRef:@_equip:emGasMeter
+siteRef:Walk("equipRef>siteRef")
+floorRef:Arg("floorRef:N")
+navName:"瞬时流量"
+disMacro:"$equipRef $navName"
+kind:"Number"
+unit:"m³/h"
+his
+tz:Arg("tz:Asia/Shanghai")

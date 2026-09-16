@@ -1,0 +1,137 @@
+// energyMatrix hospital rich demo data
+// generation: hospital-rich-demo-20260913
+// batch: 02_business_params
+// Default is preview-only. Change preview to false only after FIN Expert stages the unchanged request and the user confirms it.
+do
+  preview: true
+  generation: "hospital-rich-demo-20260913"
+  demoTags: {emSynthetic, emDataProvenance: generation}
+  if (preview) return {batch: "02_business_params", generation: generation, preview, summary: "KPIs, quotas, tariffs, emission factors, carbon targets and green certificates"}
+
+  site_hospital: read(energyMatrix and site and emDemoKey=="site-hospital-main", true)->id
+  site_east: read(energyMatrix and site and emDemoKey=="site-east", true)->id
+  site_west: read(energyMatrix and site and emDemoKey=="site-west", true)->id
+  site_south: read(energyMatrix and site and emDemoKey=="site-south", true)->id
+  qSpan: toSpan(2026-09-01..2026-09-13)
+
+  kpi_eui_totalOld: read(emKpi and emKpiCode=="EUI_TOTAL", false)
+  if (kpi_eui_totalOld == null) do
+    kpi_eui_total: emAddKpi("EUI_TOTAL", "综合能耗强度", "emLedgerTotal(emSelf->id, emSpan) / emSelf->area", {emSynthetic, emDataProvenance: generation, emDemoKey: "kpi-eui-total", dis: "综合能耗强度", emKpiCode: "EUI_TOTAL", emFormula: "emLedgerTotal(emSelf->id, emSpan) / emSelf->area", unit: "kWh/m²", emGranularity: "monthly", emHigherIsBetter: false})
+    commit(diff(readById(kpi_eui_total), {emSynthetic, emDataProvenance: generation, emDemoKey: "kpi-eui-total", dis: "综合能耗强度", emKpiCode: "EUI_TOTAL", emFormula: "emLedgerTotal(emSelf->id, emSpan) / emSelf->area", unit: "kWh/m²", emGranularity: "monthly", emHigherIsBetter: false}))
+  end else commit(diff(kpi_eui_totalOld, {emSynthetic, emDataProvenance: generation, emDemoKey: "kpi-eui-total", dis: "综合能耗强度", emKpiCode: "EUI_TOTAL", emFormula: "emLedgerTotal(emSelf->id, emSpan) / emSelf->area", unit: "kWh/m²", emGranularity: "monthly", emHigherIsBetter: false}))
+  kpi_eui_elecOld: read(emKpi and emKpiCode=="EUI_ELEC", false)
+  if (kpi_eui_elecOld == null) do
+    kpi_eui_elec: emAddKpi("EUI_ELEC", "单位面积电耗", "emLedgerTotal(emSelf->id, emSpan, \"elec\") / emSelf->area", {emSynthetic, emDataProvenance: generation, emDemoKey: "kpi-eui-elec", dis: "单位面积电耗", emKpiCode: "EUI_ELEC", emFormula: "emLedgerTotal(emSelf->id, emSpan, \"elec\") / emSelf->area", unit: "kWh/m²", emGranularity: "monthly", emHigherIsBetter: false})
+    commit(diff(readById(kpi_eui_elec), {emSynthetic, emDataProvenance: generation, emDemoKey: "kpi-eui-elec", dis: "单位面积电耗", emKpiCode: "EUI_ELEC", emFormula: "emLedgerTotal(emSelf->id, emSpan, \"elec\") / emSelf->area", unit: "kWh/m²", emGranularity: "monthly", emHigherIsBetter: false}))
+  end else commit(diff(kpi_eui_elecOld, {emSynthetic, emDataProvenance: generation, emDemoKey: "kpi-eui-elec", dis: "单位面积电耗", emKpiCode: "EUI_ELEC", emFormula: "emLedgerTotal(emSelf->id, emSpan, \"elec\") / emSelf->area", unit: "kWh/m²", emGranularity: "monthly", emHigherIsBetter: false}))
+  kpi_carbon_intensityOld: read(emKpi and emKpiCode=="CARBON_INTENSITY", false)
+  if (kpi_carbon_intensityOld == null) do
+    kpi_carbon_intensity: emAddKpi("CARBON_INTENSITY", "单位面积净碳排", "emCarbonNet(emSelf->id, emSpan) / emSelf->area", {emSynthetic, emDataProvenance: generation, emDemoKey: "kpi-carbon-intensity", dis: "单位面积净碳排", emKpiCode: "CARBON_INTENSITY", emFormula: "emCarbonNet(emSelf->id, emSpan) / emSelf->area", unit: "kgCO2e/m²", emGranularity: "monthly", emHigherIsBetter: false})
+    commit(diff(readById(kpi_carbon_intensity), {emSynthetic, emDataProvenance: generation, emDemoKey: "kpi-carbon-intensity", dis: "单位面积净碳排", emKpiCode: "CARBON_INTENSITY", emFormula: "emCarbonNet(emSelf->id, emSpan) / emSelf->area", unit: "kgCO2e/m²", emGranularity: "monthly", emHigherIsBetter: false}))
+  end else commit(diff(kpi_carbon_intensityOld, {emSynthetic, emDataProvenance: generation, emDemoKey: "kpi-carbon-intensity", dis: "单位面积净碳排", emKpiCode: "CARBON_INTENSITY", emFormula: "emCarbonNet(emSelf->id, emSpan) / emSelf->area", unit: "kgCO2e/m²", emGranularity: "monthly", emHigherIsBetter: false}))
+  kpi_water_per_bedOld: read(emKpi and emKpiCode=="WATER_PER_BED", false)
+  if (kpi_water_per_bedOld == null) do
+    kpi_water_per_bed: emAddKpi("WATER_PER_BED", "人均水耗", "emLedgerTotal(emSelf->id, emSpan, \"water\") / emSelf->emOccupancy", {emSynthetic, emDataProvenance: generation, emDemoKey: "kpi-water-per-bed", dis: "人均水耗", emKpiCode: "WATER_PER_BED", emFormula: "emLedgerTotal(emSelf->id, emSpan, \"water\") / emSelf->emOccupancy", unit: "m³/人", emGranularity: "monthly", emHigherIsBetter: false})
+    commit(diff(readById(kpi_water_per_bed), {emSynthetic, emDataProvenance: generation, emDemoKey: "kpi-water-per-bed", dis: "人均水耗", emKpiCode: "WATER_PER_BED", emFormula: "emLedgerTotal(emSelf->id, emSpan, \"water\") / emSelf->emOccupancy", unit: "m³/人", emGranularity: "monthly", emHigherIsBetter: false}))
+  end else commit(diff(kpi_water_per_bedOld, {emSynthetic, emDataProvenance: generation, emDemoKey: "kpi-water-per-bed", dis: "人均水耗", emKpiCode: "WATER_PER_BED", emFormula: "emLedgerTotal(emSelf->id, emSpan, \"water\") / emSelf->emOccupancy", unit: "m³/人", emGranularity: "monthly", emHigherIsBetter: false}))
+
+  if (read(emQuota and emDemoKey=="quota-hospital-quota-elec", false) == null) do
+    quota_hospital_quota_elec: emAddQuota(site_hospital, 1550000, "standard", qSpan, {dis: "某医院月度电耗上限", emMedium: "elec", emWarnRatio: 0.9, emOverAction: "notify"})
+    commit(diff(readById(quota_hospital_quota_elec), {emSynthetic, emDataProvenance: generation, emDemoKey: "quota-hospital-quota-elec"}))
+  end
+
+  if (read(emQuota and emDemoKey=="quota-hospital-quota-water", false) == null) do
+    quota_hospital_quota_water: emAddQuota(site_hospital, 23500, "historical", qSpan, {dis: "某医院月度水耗上限", emMedium: "water", emWarnRatio: 0.9, emOverAction: "notify"})
+    commit(diff(readById(quota_hospital_quota_water), {emSynthetic, emDataProvenance: generation, emDemoKey: "quota-hospital-quota-water"}))
+  end
+
+  if (read(emQuota and emDemoKey=="quota-hospital-quota-gas", false) == null) do
+    quota_hospital_quota_gas: emAddQuota(site_hospital, 28500, "contract", qSpan, {dis: "某医院月度天然气上限", emMedium: "gas", emWarnRatio: 0.9, emOverAction: "notify"})
+    commit(diff(readById(quota_hospital_quota_gas), {emSynthetic, emDataProvenance: generation, emDemoKey: "quota-hospital-quota-gas"}))
+  end
+
+  if (read(emQuota and emDemoKey=="quota-hospital-quota-steam", false) == null) do
+    quota_hospital_quota_steam: emAddQuota(site_hospital, 455000, "contract", qSpan, {dis: "某医院月度蒸汽上限", emMedium: "steam", emWarnRatio: 0.9, emOverAction: "notify"})
+    commit(diff(readById(quota_hospital_quota_steam), {emSynthetic, emDataProvenance: generation, emDemoKey: "quota-hospital-quota-steam"}))
+  end
+
+  if (read(emQuota and emDemoKey=="quota-hospital-quota-cool", false) == null) do
+    quota_hospital_quota_cool: emAddQuota(site_hospital, 520000, "benchmark", qSpan, {dis: "某医院月度供冷上限", emMedium: "cool", emWarnRatio: 0.9, emOverAction: "notify"})
+    commit(diff(readById(quota_hospital_quota_cool), {emSynthetic, emDataProvenance: generation, emDemoKey: "quota-hospital-quota-cool"}))
+  end
+
+  if (read(emQuota and emDemoKey=="quota-hospital-quota-heat", false) == null) do
+    quota_hospital_quota_heat: emAddQuota(site_hospital, 320000, "benchmark", qSpan, {dis: "某医院月度供热上限", emMedium: "heat", emWarnRatio: 0.9, emOverAction: "notify"})
+    commit(diff(readById(quota_hospital_quota_heat), {emSynthetic, emDataProvenance: generation, emDemoKey: "quota-hospital-quota-heat"}))
+  end
+
+  if (read(emTariff and emDemoKey=="tariff-elec-hospital", false) == null) commit(diff(null, {
+    energyMatrix, emTariff, emSynthetic, emDataProvenance: generation, emDemoKey: "tariff-elec-hospital",
+    siteRef: site_hospital, dis: "某医院大工业分时电价 2026", emMedium: "elec",
+    emPricingModel: "tou", emEffective: toSpan(2026-01-01..2026-12-31), emUnitPrice: 0.82, emPriceUnit: "CNY/kWh",
+    emSourceDoc: "hospital-rich-demo synthetic tariff, not for settlement"
+  }, {add}))
+
+  if (read(emTariff and emDemoKey=="tariff-water-hospital", false) == null) commit(diff(null, {
+    energyMatrix, emTariff, emSynthetic, emDataProvenance: generation, emDemoKey: "tariff-water-hospital",
+    siteRef: site_hospital, dis: "某医院自来水综合水价 2026", emMedium: "water",
+    emPricingModel: "flat", emEffective: toSpan(2026-01-01..2026-12-31), emUnitPrice: 4.65, emPriceUnit: "CNY/m³",
+    emSourceDoc: "hospital-rich-demo synthetic tariff, not for settlement"
+  }, {add}))
+
+  if (read(emTariff and emDemoKey=="tariff-gas-hospital", false) == null) commit(diff(null, {
+    energyMatrix, emTariff, emSynthetic, emDataProvenance: generation, emDemoKey: "tariff-gas-hospital",
+    siteRef: site_hospital, dis: "某医院天然气合同价 2026", emMedium: "gas",
+    emPricingModel: "flat", emEffective: toSpan(2026-01-01..2026-12-31), emUnitPrice: 3.42, emPriceUnit: "CNY/m³",
+    emSourceDoc: "hospital-rich-demo synthetic tariff, not for settlement"
+  }, {add}))
+
+  if (read(emDiagnostic and emDemoKey=="diag-hospital-dq", false) == null) do
+    rule_hospital_dq: emAddDiagRule(site_hospital, "DQ-01", "主院区数据完好率低于 90%", "dataQuality", "warn", 0.9)
+    commit(diff(readById(rule_hospital_dq), {emSynthetic, emDataProvenance: generation, emDemoKey: "diag-hospital-dq"}))
+  end
+
+  if (read(emDiagnostic and emDemoKey=="diag-hospital-balance", false) == null) do
+    rule_hospital_balance: emAddDiagRule(site_hospital, "BAL-01", "主院区缺口率超过 5%", "balance", "critical", 0.05)
+    commit(diff(readById(rule_hospital_balance), {emSynthetic, emDataProvenance: generation, emDemoKey: "diag-hospital-balance"}))
+  end
+
+  if (read(emDiagnostic and emDemoKey=="diag-hospital-hvac", false) == null) do
+    rule_hospital_hvac: emAddDiagRule(site_hospital, "HVAC-01", "冷站单位冷量电耗偏高", "efficiency", "warn", 0.72)
+    commit(diff(readById(rule_hospital_hvac), {emSynthetic, emDataProvenance: generation, emDemoKey: "diag-hospital-hvac"}))
+  end
+
+  if (read(emDiagnostic and emDemoKey=="diag-hospital-carbon", false) == null) do
+    rule_hospital_carbon: emAddDiagRule(site_hospital, "CARB-01", "碳强度偏离年度目标", "carbonRisk", "info", 0.08)
+    commit(diff(readById(rule_hospital_carbon), {emSynthetic, emDataProvenance: generation, emDemoKey: "diag-hospital-carbon"}))
+  end
+
+  factor_factor_elec_2026Old: read(emEmissionFactor and emDemoKey=="factor-elec-2026", false)
+  if (factor_factor_elec_2026Old == null) commit(diff(null, {energyMatrix, emEmissionFactor, emSynthetic, emDataProvenance: generation, emDemoKey: "factor-elec-2026", dis: "华东电网排放因子 2026", emMedium: "elec", emScope: "scope2", emRegion: "华东", emYear: 2026, emFactor: 0.5568, emFactorUnit: "kgCO2e/kWh", emCoalFactor: 0.1229, emSourceDoc: "hospital-rich-demo synthetic factor set, not for disclosure"}, {add})) else commit(diff(factor_factor_elec_2026Old, {energyMatrix, emEmissionFactor, emSynthetic, emDataProvenance: generation, emDemoKey: "factor-elec-2026", dis: "华东电网排放因子 2026", emMedium: "elec", emScope: "scope2", emRegion: "华东", emYear: 2026, emFactor: 0.5568, emFactorUnit: "kgCO2e/kWh", emCoalFactor: 0.1229, emSourceDoc: "hospital-rich-demo synthetic factor set, not for disclosure"}))
+
+  factor_factor_elec_2025Old: read(emEmissionFactor and emDemoKey=="factor-elec-2025", false)
+  if (factor_factor_elec_2025Old == null) commit(diff(null, {energyMatrix, emEmissionFactor, emSynthetic, emDataProvenance: generation, emDemoKey: "factor-elec-2025", dis: "华东电网排放因子 2025", emMedium: "elec", emScope: "scope2", emRegion: "华东", emYear: 2025, emFactor: 0.5703, emFactorUnit: "kgCO2e/kWh", emCoalFactor: 0.1229, emSourceDoc: "hospital-rich-demo synthetic factor set, not for disclosure"}, {add})) else commit(diff(factor_factor_elec_2025Old, {energyMatrix, emEmissionFactor, emSynthetic, emDataProvenance: generation, emDemoKey: "factor-elec-2025", dis: "华东电网排放因子 2025", emMedium: "elec", emScope: "scope2", emRegion: "华东", emYear: 2025, emFactor: 0.5703, emFactorUnit: "kgCO2e/kWh", emCoalFactor: 0.1229, emSourceDoc: "hospital-rich-demo synthetic factor set, not for disclosure"}))
+
+  factor_factor_gas_2026Old: read(emEmissionFactor and emDemoKey=="factor-gas-2026", false)
+  if (factor_factor_gas_2026Old == null) commit(diff(null, {energyMatrix, emEmissionFactor, emSynthetic, emDataProvenance: generation, emDemoKey: "factor-gas-2026", dis: "天然气排放因子 2026", emMedium: "gas", emScope: "scope1", emRegion: "华东", emYear: 2026, emFactor: 2.19, emFactorUnit: "kgCO2e/m³", emCoalFactor: 1.33, emSourceDoc: "hospital-rich-demo synthetic factor set, not for disclosure"}, {add})) else commit(diff(factor_factor_gas_2026Old, {energyMatrix, emEmissionFactor, emSynthetic, emDataProvenance: generation, emDemoKey: "factor-gas-2026", dis: "天然气排放因子 2026", emMedium: "gas", emScope: "scope1", emRegion: "华东", emYear: 2026, emFactor: 2.19, emFactorUnit: "kgCO2e/m³", emCoalFactor: 1.33, emSourceDoc: "hospital-rich-demo synthetic factor set, not for disclosure"}))
+
+  factor_factor_gas_2025Old: read(emEmissionFactor and emDemoKey=="factor-gas-2025", false)
+  if (factor_factor_gas_2025Old == null) commit(diff(null, {energyMatrix, emEmissionFactor, emSynthetic, emDataProvenance: generation, emDemoKey: "factor-gas-2025", dis: "天然气排放因子 2025", emMedium: "gas", emScope: "scope1", emRegion: "华东", emYear: 2025, emFactor: 2.16, emFactorUnit: "kgCO2e/m³", emCoalFactor: 1.33, emSourceDoc: "hospital-rich-demo synthetic factor set, not for disclosure"}, {add})) else commit(diff(factor_factor_gas_2025Old, {energyMatrix, emEmissionFactor, emSynthetic, emDataProvenance: generation, emDemoKey: "factor-gas-2025", dis: "天然气排放因子 2025", emMedium: "gas", emScope: "scope1", emRegion: "华东", emYear: 2025, emFactor: 2.16, emFactorUnit: "kgCO2e/m³", emCoalFactor: 1.33, emSourceDoc: "hospital-rich-demo synthetic factor set, not for disclosure"}))
+
+  factor_factor_steam_2026Old: read(emEmissionFactor and emDemoKey=="factor-steam-2026", false)
+  if (factor_factor_steam_2026Old == null) commit(diff(null, {energyMatrix, emEmissionFactor, emSynthetic, emDataProvenance: generation, emDemoKey: "factor-steam-2026", dis: "外购蒸汽排放因子 2026", emMedium: "steam", emScope: "scope2", emRegion: "华东", emYear: 2026, emFactor: 0.11, emFactorUnit: "kgCO2e/kg", emCoalFactor: 0.1286, emSourceDoc: "hospital-rich-demo synthetic factor set, not for disclosure"}, {add})) else commit(diff(factor_factor_steam_2026Old, {energyMatrix, emEmissionFactor, emSynthetic, emDataProvenance: generation, emDemoKey: "factor-steam-2026", dis: "外购蒸汽排放因子 2026", emMedium: "steam", emScope: "scope2", emRegion: "华东", emYear: 2026, emFactor: 0.11, emFactorUnit: "kgCO2e/kg", emCoalFactor: 0.1286, emSourceDoc: "hospital-rich-demo synthetic factor set, not for disclosure"}))
+
+  factor_factor_water_2026Old: read(emEmissionFactor and emDemoKey=="factor-water-2026", false)
+  if (factor_factor_water_2026Old == null) commit(diff(null, {energyMatrix, emEmissionFactor, emSynthetic, emDataProvenance: generation, emDemoKey: "factor-water-2026", dis: "自来水供应排放因子 2026", emMedium: "water", emScope: "scope3", emRegion: "华东", emYear: 2026, emFactor: 0.168, emFactorUnit: "kgCO2e/m³", emCoalFactor: null, emSourceDoc: "hospital-rich-demo synthetic factor set, not for disclosure"}, {add})) else commit(diff(factor_factor_water_2026Old, {energyMatrix, emEmissionFactor, emSynthetic, emDataProvenance: generation, emDemoKey: "factor-water-2026", dis: "自来水供应排放因子 2026", emMedium: "water", emScope: "scope3", emRegion: "华东", emYear: 2026, emFactor: 0.168, emFactorUnit: "kgCO2e/m³", emCoalFactor: null, emSourceDoc: "hospital-rich-demo synthetic factor set, not for disclosure"}))
+
+  if (read(emCarbonTarget and emDemoKey=="carbon-target-hospital-2030", false) == null) commit(diff(null, {energyMatrix, emCarbonTarget, emSynthetic, emDataProvenance: generation, emDemoKey: "carbon-target-hospital-2030", siteRef: site_hospital, emSubjectRef: site_hospital, dis: "某医院 2030 单位面积碳排下降目标", emTargetType: "intensity", emTargetYear: 2030, emBaseValue: 72.0, emTargetValue: 54.0, emSourceDoc: "hospital-rich-demo synthetic carbon target"}, {add}))
+
+  if (read(emCarbonTarget and emDemoKey=="carbon-target-hospital-2026", false) == null) commit(diff(null, {energyMatrix, emCarbonTarget, emSynthetic, emDataProvenance: generation, emDemoKey: "carbon-target-hospital-2026", siteRef: site_hospital, emSubjectRef: site_hospital, dis: "某医院 2026 年度净碳排控制目标", emTargetType: "absolute", emTargetYear: 2026, emBaseValue: 16800000.0, emTargetValue: 14200000.0, emSourceDoc: "hospital-rich-demo synthetic carbon target"}, {add}))
+
+  if (read(emGreenCert and emDemoKey=="green-cert-hospital-retired", false) == null) commit(diff(null, {energyMatrix, emGreenCert, emRetired, emSynthetic, emDataProvenance: generation, emDemoKey: "green-cert-hospital-retired", siteRef: site_hospital, emSubjectRef: site_hospital, dis: "某医院 2026 已注销绿证", emCertType: "gec", emCertNo: "GEC-2026-HOSP-1001", emVintage: 2026, val: 420000}, {add}))
+
+  if (read(emGreenCert and emDemoKey=="green-cert-hospital-second", false) == null) commit(diff(null, {energyMatrix, emGreenCert, emRetired, emSynthetic, emDataProvenance: generation, emDemoKey: "green-cert-hospital-second", siteRef: site_hospital, emSubjectRef: site_hospital, dis: "某医院 2026 第二批已注销绿证", emCertType: "greenPower", emCertNo: "GP-2026-HOSP-1002", emVintage: 2026, val: 260000}, {add}))
+
+  readAll(energyMatrix and emDataProvenance==generation).each(rec => commit(diff(rec, demoTags)))
+  {batch: "02_business_params", generation: generation, kpis: 4, quotas: 6, tariffs: 3, diagRules: 4, factors: 6, carbonTargets: 2, greenCerts: 2}
+end

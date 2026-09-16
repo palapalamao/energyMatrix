@@ -1,0 +1,20 @@
+//
+// ai4building energyMatrix (em)
+// 建筑能源管理系统 — Digital Twin 语义模型库
+// Layer 1: 对象与设备数据模型
+//
+
+pragma: Lib <
+  doc: "建筑能源管理数字孪生语义模型：空间/组织域、计量域、用能域、供能域、能流拓扑域"
+  version: "0.1.0"
+  depends: {
+    { lib: "sys" }
+    { lib: "ph" }
+    { lib: "ph.points" }
+    { lib: "ph.equips" }
+  }
+  org: {
+    dis: "ai4building"
+    uri: "<ORG_URI>"
+  }
+>

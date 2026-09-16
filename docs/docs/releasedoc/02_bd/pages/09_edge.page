@@ -1,0 +1,62 @@
+pageType: content
+background:
+  type: solid
+  color: "$paper"
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [64, 36, 500, 16]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: 03 · 产品方案介绍 —— 边缘引擎
+  - elementId: title
+    elementType: text
+    bounds: [64, 58, 832, 42]
+    content:
+      style: "$title"
+      wrap: false
+      text: 边缘引擎：F200 与 NEXIO
+  - elementId: headrule
+    elementType: shape
+    bounds: [64, 110, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: t1
+    elementType: table
+    bounds: [64, 132, 832, 268]
+    columnWidths: [0.2, 0.4, 0.4]
+    rowHeights: [0.14, 0.172, 0.172, 0.172, 0.172, 0.172]
+    style:
+      cellStyle: {fontSize: 11, color: "$steel", align: [left, middle], border: [null, null, {style: solid, width: 1, color: "#E3E9EE"}, null]}
+      firstRowStyle: {bold: true, color: "$ink", fontSize: 12}
+      firstColumnStyle: {bold: true, color: "$tealDark"}
+    rows:
+      - - text: 维度
+        - text: F200 边缘引擎（CFG3.F200）
+        - text: NEXIO 边缘控制器
+      - - text: 平台
+        - text: 内嵌 Desigo Optic / FIN Framework
+        - text: 内嵌 FIN Framework
+      - - text: 算力
+        - text: 2GB RAM · 8GB eMMC · 3×RJ45
+        - text: 四核 Cortex-A72 1.5GHz · 4GB RAM · 16GB eMMC · 2×RJ45 + 2×RS-485 + M-Bus
+      - - text: 点位规模
+        - text: 单台最大 3,000 点
+        - text: 单台最大 5,000 点
+      - - text: 协议
+        - text: BACnet IP · Modbus TCP/RTU · KNX IP · OPC UA · MQTT · Haystack RESTful
+        - text: Modbus · BACnet · M-Bus · MQTT（可经网关扩展 KNX / Zigbee 生态）
+      - - text: 典型定位
+        - text: 中小站点、改造项目，免服务器部署
+        - text: 中大型站点、多总线混合接入
+  - elementId: adv1
+    elementType: text
+    bounds: [64, 424, 400, 24]
+    content: {fontSize: 13, bold: true, color: "$ink", wrap: false, text: 为什么放在边缘}
+  - elementId: adv
+    elementType: text
+    bounds: [64, 450, 832, 56]
+    content:
+      style: "$body"
+      text: 中小型项目无需额外服务器，减少 IT 设施投资；Haystack 标签技术让数据集成简单，工程效率提升 33% 以上；浏览器即可完成组态画图、时间表、历史存储等全部调试工作；断网时站点自治，恢复后自动续传。

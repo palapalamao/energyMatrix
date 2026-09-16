@@ -1,0 +1,130 @@
+pageType: content
+background:
+  type: solid
+  color: "$paper"
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [64, 36, 500, 16]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: 核心能力 4 · 诊断闭环
+  - elementId: title
+    elementType: text
+    bounds: [64, 58, 832, 42]
+    content:
+      style: "$title"
+      wrap: false
+      text: 诊断 → 措施 → 核证：节能闭环的完整链路
+  - elementId: headrule
+    elementType: shape
+    bounds: [64, 110, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: s1
+    elementType: shape
+    bounds: [64, 136, 140, 48]
+    shapeName: homePlate
+    adjustments: [30000]
+    fill: {type: solid, color: "$ink"}
+  - elementId: s1t
+    elementType: text
+    bounds: [70, 136, 122, 48]
+    content: {fontSize: 12, bold: true, color: "#FFFFFF", align: [center, middle], wrap: false, text: 诊断规则}
+  - elementId: s2
+    elementType: shape
+    bounds: [216, 136, 140, 48]
+    shapeName: homePlate
+    adjustments: [30000]
+    fill: {type: solid, color: "$ink2"}
+  - elementId: s2t
+    elementType: text
+    bounds: [222, 136, 122, 48]
+    content: {fontSize: 12, bold: true, color: "#FFFFFF", align: [center, middle], wrap: false, text: 异常 EmAnomaly}
+  - elementId: s3
+    elementType: shape
+    bounds: [368, 136, 140, 48]
+    shapeName: homePlate
+    adjustments: [30000]
+    fill: {type: solid, color: "$tealDark"}
+  - elementId: s3t
+    elementType: text
+    bounds: [374, 136, 122, 48]
+    content: {fontSize: 12, bold: true, color: "#FFFFFF", align: [center, middle], wrap: false, text: 值班确认 / 派单}
+  - elementId: s4
+    elementType: shape
+    bounds: [520, 136, 140, 48]
+    shapeName: homePlate
+    adjustments: [30000]
+    fill: {type: solid, color: "$teal"}
+  - elementId: s4t
+    elementType: text
+    bounds: [526, 136, 122, 48]
+    content: {fontSize: 12, bold: true, color: "#FFFFFF", align: [center, middle], wrap: false, text: 工单状态机}
+  - elementId: s5
+    elementType: shape
+    bounds: [672, 136, 140, 48]
+    shapeName: homePlate
+    adjustments: [30000]
+    fill: {type: solid, color: "$amber"}
+  - elementId: s5t
+    elementType: text
+    bounds: [678, 136, 122, 48]
+    content: {fontSize: 12, bold: true, color: "#FFFFFF", align: [center, middle], wrap: false, text: 节能项目核证}
+  - elementId: c1t
+    elementType: text
+    bounds: [64, 216, 260, 22]
+    content: {fontSize: 14, bold: true, color: "$tealDark", wrap: false, text: 规则引擎}
+  - elementId: c1d
+    elementType: text
+    bounds: [64, 244, 260, 160]
+    content:
+      style: "$body"
+      lineHeight: 1.6
+      text: |
+        <p>· 数据质量、平衡校核判据已实现</p>
+        <p>· 同规则 + 同对象 + 同账期幂等，只产生一条异常</p>
+        <p>· 未实现判据明示跳过（meta.emSkipped），不谎报</p>
+        <p>· 诊断只产生异常，不直写控制点</p>
+  - elementId: c2t
+    elementType: text
+    bounds: [348, 216, 260, 22]
+    content: {fontSize: 14, bold: true, color: "$tealDark", wrap: false, text: 工单管理}
+  - elementId: c2d
+    elementType: text
+    bounds: [348, 244, 260, 160]
+    content:
+      style: "$body"
+      lineHeight: 1.6
+      text: |
+        <p>· 状态前向单向：new → assigned → inProgress → done → closed</p>
+        <p>· 一张工单可合并多条同源异常</p>
+        <p>· SLA 响应 / 完成时限与升级规则</p>
+        <p>· 每次状态流转留痕，闭环后写回异常</p>
+  - elementId: c3t
+    elementType: text
+    bounds: [632, 216, 264, 22]
+    content: {fontSize: 14, bold: true, color: "$tealDark", wrap: false, text: 基线核证}
+  - elementId: c3d
+    elementType: text
+    bounds: [632, 244, 264, 160]
+    content:
+      style: "$body"
+      lineHeight: 1.6
+      text: |
+        <p>· ASHRAE Guideline 14 月度判据统计验收</p>
+        <p>· IPMVP Option C 整体计量回归</p>
+        <p>· 未通过核证的节能量一律 planned</p>
+        <p>· 通过验收的项目才可转 verified 对外</p>
+  - elementId: midrule
+    elementType: shape
+    bounds: [64, 428, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: bottom
+    elementType: text
+    bounds: [64, 444, 832, 40]
+    content:
+      style: "$body"
+      text: 价值好处：异常有去向、工单有纪律、节能量有核证 —— 管理层拿到的每个数字都经得起审计；一次性修复直接闭环，长期措施挂节能项目持续跟踪。

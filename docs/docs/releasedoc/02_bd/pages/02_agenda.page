@@ -1,0 +1,104 @@
+pageType: table_of_contents
+background:
+  type: solid
+  color: "$paper"
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [64, 36, 400, 16]
+    content:
+      style: "$eyebrow"
+      wrap: false
+      text: AGENDA · 汇报内容
+  - elementId: title
+    elementType: text
+    bounds: [64, 58, 500, 42]
+    content:
+      style: "$title"
+      wrap: false
+      text: 今天讲清楚五件事
+  - elementId: headrule
+    elementType: shape
+    bounds: [64, 110, 832, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$line"}
+  - elementId: a1n
+    elementType: text
+    bounds: [64, 140, 60, 40]
+    content: {fontSize: 30, bold: true, color: "$teal", wrap: false, text: "1"}
+  - elementId: a1t
+    elementType: text
+    bounds: [130, 142, 620, 26]
+    content: {fontSize: 18, bold: true, color: "$ink", wrap: false, text: 方案价值主张}
+  - elementId: a1d
+    elementType: text
+    bounds: [130, 170, 620, 20]
+    content: {fontSize: 11.5, color: "$steel", wrap: false, text: 双碳目标下，能源管理为什么必须先解决“账”的问题}
+  - elementId: ar1
+    elementType: shape
+    bounds: [130, 198, 766, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$softline"}
+  - elementId: a2n
+    elementType: text
+    bounds: [64, 212, 60, 40]
+    content: {fontSize: 30, bold: true, color: "$teal", wrap: false, text: "2"}
+  - elementId: a2t
+    elementType: text
+    bounds: [130, 214, 620, 26]
+    content: {fontSize: 18, bold: true, color: "$ink", wrap: false, text: 业务场景分析}
+  - elementId: a2d
+    elementType: text
+    bounds: [130, 242, 620, 20]
+    content: {fontSize: 11.5, color: "$steel", wrap: false, text: 传统能源管理的三个断点：采不准、算不清、核不了}
+  - elementId: ar2
+    elementType: shape
+    bounds: [130, 270, 766, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$softline"}
+  - elementId: a3n
+    elementType: text
+    bounds: [64, 284, 60, 40]
+    content: {fontSize: 30, bold: true, color: "$teal", wrap: false, text: "3"}
+  - elementId: a3t
+    elementType: text
+    bounds: [130, 286, 620, 26]
+    content: {fontSize: 18, bold: true, color: "$ink", wrap: false, text: 产品方案介绍}
+  - elementId: a3d
+    elementType: text
+    bounds: [130, 314, 620, 20]
+    content: {fontSize: 11.5, color: "$steel", wrap: false, text: 语义模型、系统架构、边缘引擎、AI 赋能与四大核心能力}
+  - elementId: ar3
+    elementType: shape
+    bounds: [130, 342, 766, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$softline"}
+  - elementId: a4n
+    elementType: text
+    bounds: [64, 356, 60, 40]
+    content: {fontSize: 30, bold: true, color: "$teal", wrap: false, text: "4"}
+  - elementId: a4t
+    elementType: text
+    bounds: [130, 358, 620, 26]
+    content: {fontSize: 18, bold: true, color: "$ink", wrap: false, text: 工程项目组态}
+  - elementId: a4d
+    elementType: text
+    bounds: [130, 386, 620, 20]
+    content: {fontSize: 11.5, color: "$steel", wrap: false, text: 一条命令铺示范数据，建模器与点表交底的完整工作流}
+  - elementId: ar4
+    elementType: shape
+    bounds: [130, 414, 766, 1]
+    shapeName: rect
+    fill: {type: solid, color: "$softline"}
+  - elementId: a5n
+    elementType: text
+    bounds: [64, 428, 60, 40]
+    content: {fontSize: 30, bold: true, color: "$teal", wrap: false, text: "5"}
+  - elementId: a5t
+    elementType: text
+    bounds: [130, 430, 620, 26]
+    content: {fontSize: 18, bold: true, color: "$ink", wrap: false, text: Q&A}
+  - elementId: a5d
+    elementType: text
+    bounds: [130, 458, 620, 20]
+    content: {fontSize: 11.5, color: "$steel", wrap: false, text: 技术细节、交付周期、与既有系统的关系，现场逐一解答}
