@@ -70,8 +70,9 @@ export class FlowStore extends BaseStore {
         isGap: !!d.get("emGap"),
       }));
       const totals: FlowMeterTotal[] = totalRows.map((d: HDict) => ({
-        // 聚合结果按维度分组，dim 列在 dim="meter" 时就是表计 ref。
-        id: ref(d, "dim") ?? "",
+        // 后端 aggregate 的维度列按 dim 值命名（dim="meter" 时列名就是
+        // "meter"，与既有分析屏 str(d, dim) 的读法一致），不是固定的 "dim"。
+        id: ref(d, "meter") ?? "",
         val: num(d, "val"),
         unit: unitOf(d, "val"),
       }));

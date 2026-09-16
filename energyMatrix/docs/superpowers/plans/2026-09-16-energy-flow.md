@@ -38,3 +38,43 @@
 ## 验证基线
 - fant energyMatrix：9 tests / 111 methods / 472 verifies（当前全绿，阶段 3 不得回退）
 - pod 构建产物输出到仓库 output/（EM_OUT_POD_DIR），不入 git（.gitignore 已忽略 *.pod）
+
+## 运行期问题与修复记录（2026-09-17）
+
+### 问题：pod 部署后能流图无数据
+
+排查发现两个独立根因，均已修复并真机验证：
+
+1. **演示数据缺口（数据侧）**：种子脚本在 2026-09-02 重置了全部物理表的 L1
+   累积读数，差分器按 emMaxReading=9,999,999 溢出补偿，给 9/1 生成
+   ~970 万 kWh/表的伪增量（derived），缺口率 895%。
+   修复：用 phable 直连按「锚点=9/1 读数 + k×9月日增量」重写 9/2–9/14
+   历史（脚本留 WSL ~/emfix/），随后原样重放 emNightlyPipeline daily。
+   验证：某医院 9 月聚合全部 measured，总进线 670,800 kWh；三院区
+   gapRatio 2.2–2.7%。8 月关账数据未动。
+
+2. **前端读错列名（代码侧）**：后端 EmLedgerQuery.aggregate 的维度列按 dim
+   值命名（dim="meter" 时列名="meter"），FlowViewModel 原读 ref(d,"dim")
+   得全 null → 空图。改为 ref(d,"meter")，与既有分析屏读法一致。
+
+3. **recharts 2.15.4 <Sankey> 不读节点数据上的 fill、不画标签、链接固定灰
+   #333**（node_modules 源码实读为证）。本屏以 node/link 渲染器接管：
+   节点 Rectangle 用数据 fill（按介质配色）+ text 标签；链接 stroke 取
+   源节点介质色。FlowView.tsx 修改，npm test 26/26 + tsc 0 错。
+
+### 部署验证
+
+- pod 重建（em-app-B90YF6uq.js）→ 提权停服拷贝至 FIN lib\fan → 重启 FIN5。
+- 服务器确认提供新包；登录 mytest 后经 FIN 外壳 LoadApplication 打开 /flow。
+- 真机验证：全部介质 34 节点/33 流；「电」筛选 16 节点/15 流且全金色
+  （#F0B429）+ 不明用能灰色汇点；标签齐全（10kV 总进线 → 各分项）。
+- 截图取证：docs/evidence/flow-sankey-chart.png（注意：finMobile 外壳页
+  表面截图/打印为白，证据经抽取 SVG 独立渲染获得）。
+
+### 经验
+
+- **pod 内 SPA 缓存激进**：换 pod 后浏览器可能仍用旧 index.html（本次实测
+  iframe 自动重载后拉回旧包 B2J9BArZ）。排查前端问题时必须先确认
+  实际运行的 bundle 名，必要时清缓存硬刷。
+- 访问能流图必须走 FIN 外壳（/finMobile/mytest → LoadApplication），
+  直接开 pod URL 缺 Attest-Key，eval 会失败。
