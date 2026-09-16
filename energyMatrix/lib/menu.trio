@@ -59,6 +59,7 @@ src:
       entry("实时监测与告警", "/realtime",   -318, "icon-alert"),
       entry("工单管理",       "/workorder",  -317, "icon-toggles"),
       entry("分项计量树",     "/meter-tree", -316, "sm-meter"),
+      entry("能流图",         "/flow",       -315.5, "workflow"),
 
       // ── 分析优化 ────────────────────────────────────────────────
       entry("能耗分析",       "/analysis",   -315, "chart-no-axes-column"),
