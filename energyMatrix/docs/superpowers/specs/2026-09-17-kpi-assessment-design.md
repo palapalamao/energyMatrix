@@ -35,3 +35,11 @@
 - 阶段 2（确认后）：详细设计文档 + EmSite emBeds 模型 + demo 数据 +
   指标定义校正（WATER_PER_BED 编码名与中文名不符）+ 接口约定 + trio 菜单。
 - 阶段 3（确认后）：前端 Kpi/ 三件套 + 测试 + pod 构建 + 真机目检。
+## 补充（2026-09-17，用户确认环节追加）
+
+- **emBeds 数据必须补齐**，且**站点基础参数 UI 可配置**。
+- 调查结论：UI 可配置零后端变更 —— 数据模型配置屏 PropertyForm 已按
+  fieldSchema 渲染站点表单（area/emCoolArea/emOccupancy），保存走既有
+  emEntityUpdate（admin、保护标签、枚举校验、留审计）；emBeds 仅需
+  在 SITE fieldSchema 加一行字段定义。
+- KPI 考核屏不内嵌参数编辑：参数缺失显示「—」并引导去模型配置屏补录。
