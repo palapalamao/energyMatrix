@@ -12,19 +12,19 @@
 - [x] 模型 `res/spec/em/points.xeto`：新增 EmInsulationResistance(kΩ)/EmThdV(%)/EmThdI(%)/EmUnbalance(%)/EmResidualCurrent(mA) 五个点位规范 + emInsulation/emThd/emUnbalance/emResidualCurrent 四个 marker
 - [x] 模型 `res/spec/em/supply.xeto`：新增 EmItIsolationPanel（医用 IT 隔离电源柜，emSystemVolt + emIrAlarmThreshold 逐柜可配，阈值参照 IEC 60364-7-710 的 50 Ω/V）
 - [x] 菜单 `lib/menu.trio`：加 `entry("电气安全", "/safety", -317.5, "icon-flag")`（归「监测运行」组、位于「实时监测与告警」之后），屏数注释 15→16
-- [ ] 验证：`fan` 编译不回退（xeto/trio 随 pod 构建校验）；注：阶段 3 真机目检菜单图标 icon-flag，若缺字回退 icon-alert
-- [ ] 提交 develop 并推送，停下等确认
+- [x] 验证：`fan` 编译不回退（阶段 3 复核：Fantom 编译通过止于 WritePod 提权，TrioReader 解析 defs.trio 217 defs 含 emThdV/emThdI）（xeto/trio 随 pod 构建校验）；注：阶段 3 真机目检菜单图标 icon-flag，若缺字回退 icon-alert
+- [x] 提交 develop 并推送（7a1264a），已确认
 
 ## 阶段 3（确认后执行）
 
-- [ ] 前端三件套 `ts/src/pages/Safety/`：SafetyViewModel.ts（mobx，四子视图状态 + 2s 模拟/实时刷新）、SafetyView.tsx（四页签 + 卡片/表格/曲线）、safetyFormat.ts（纯函数：阈值分级色、单位、缺失「—」）
-- [ ] `ts/src/routes.tsx` 加 `/safety` 路由（与菜单深链接通）；`AppShell.tsx` 侧栏加「电气安全」入口
-- [ ] `ts/src/api/emApi.ts` 补 hisRead 批量封装（按点位 id 列表取 24h 序列）
-- [ ] `ts/src/i18n/zh.json` + `en.json` 补词条（UI 词条不在 zh.props/en.props——那是 lib 级词条；本需求无新增 Axon 函数，lib 词条零变更）
-- [ ] 测试 `ts/tests/safety-format.test.ts`（node:test：阈值分级、暂降事件重要度判定、缺失「—」）
-- [ ] 版本升级：`build.fan` `Version("0.1.3")`、`ts/package.json` + lock → 0.1.3
-- [ ] `npm test` + `tsc --noEmit` 全绿；`fant energyMatrix` 方法数不回退
-- [ ] 构建 pod（build.ps1 + EM_OUT_POD_DIR），`emInfo()` 返回 0.1.3
+- [x] 前端三件套 `ts/src/pages/Safety/`：SafetyViewModel.ts（mobx，四子视图状态 + 2s 模拟/实时刷新）、SafetyView.tsx（四页签 + 卡片/表格/曲线）、safetyFormat.ts（纯函数：阈值分级色、单位、缺失「—」）
+- [x] `ts/src/routes.tsx` 加 `/safety` 路由（与菜单深链接通）；`AppShell.tsx` 侧栏加「电气安全」入口
+- [x] `ts/src/api/emApi.ts` 补 hisRead 批量封装（按点位 id 列表取 24h 序列）
+- [x] `ts/src/i18n/zh.json` + `en.json` 补词条（UI 词条不在 zh.props/en.props——那是 lib 级词条；本需求无新增 Axon 函数，lib 词条零变更）
+- [x] 测试 `ts/tests/safety-format.test.ts`（node:test：阈值分级、暂降事件重要度判定、缺失「—」）
+- [x] 版本升级：`build.fan` `Version("0.1.3")`、`ts/package.json` + lock → 0.1.3
+- [x] `npm test` + `tsc --noEmit` 全绿；`fant energyMatrix` 方法数不回退
+- [x] 构建 pod（build.ps1 + EM_OUT_POD_DIR），`emInfo()` 返回 0.1.3
 - [ ] mytest 医院四院区按 7.3.1–7.3.4 补监测点位、IT 隔离电源柜与 his 模拟数据（建立到设备树，运行时数据操作，单独列示并经确认）
 - [ ] 真机目检：四子视图数值/越限高亮、菜单图标 icon-flag 渲染、版本徽标 0.1.3
 - [ ] 提交 develop，更新 PR

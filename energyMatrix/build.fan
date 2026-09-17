@@ -37,7 +37,7 @@ class Build : BuildFinPod
   {
     podName = "energyMatrix"
     summary = "energyMatrix — 建筑能源管理（计量 / 台账 / 分摊 / 计费 / 指标 / 核证 / 碳 / 诊断）"
-    version = Version("0.1.2")
+    version = Version("0.1.3")
     outDir := Env.cur.vars["EM_OUT_POD_DIR"]
     if (outDir != null && !outDir.trim.isEmpty) outPodDir = File.os(outDir).normalize.uri
 

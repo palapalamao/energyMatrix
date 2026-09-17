@@ -812,3 +812,105 @@ export async function emWorkOrderUpdate(
     `emWorkOrderUpdate(${HRef.make(woRef).toAxon()}, ${HStr.make(status).toAxon()}, ${r}, ${p})`
   );
 }
+
+// ──────────────────────────────────────────────────────────────────────────
+// 电气安全监测（需求 7.3，V0.1.3）
+//
+// 本组接口**没有后端 Axon 函数**：四个子视图全部只读 —— 回路/柜/馈线结构
+// 走 Folio readAll（与 EmMeterTree.readMeters 同一过滤口径），监测量经
+// 既有 hisRead 通道批量取今日序列（详细设计 4.4 / 5.4 数据契约：后端
+// 接口零新增）。动态参数 .toAxon() 的规矩不变；监测数据不产生 L2 台账
+// 口径，也不做任何写操作（只监测不控制）。
+// ──────────────────────────────────────────────────────────────────────────
+
+/**
+ * 站内电表全记录（电气安全屏的结构数据源）。
+ *
+ * 过滤口径与 `EmMeterTree.readMeters` 同源（energyMatrix and meter and
+ * siteRef==X），但这里要**全记录**而不是树的扁平行 —— 医疗场所筛选要靠
+ * 表上的 emSpaceRef，树行里没有这个标签。
+ */
+export async function emSafetyMeters(client: HClient, siteRef: string): Promise<HDict[]> {
+  return rows(
+    await client.ext.eval(
+      `readAll(meter and energyMatrix and siteRef==${HRef.make(siteRef).toAxon()} and emMedium=="elec")`
+    )
+  );
+}
+
+/** 站内计量分区/空间（医疗场所筛选 chips 的数据源）。 */
+export async function emSafetySpaces(client: HClient, siteRef: string): Promise<HDict[]> {
+  return rows(
+    await client.ext.eval(
+      `readAll(space and energyMatrix and siteRef==${HRef.make(siteRef).toAxon()})`
+    )
+  );
+}
+
+/**
+ * 电气安全相关点位：电压/电流/功率/温度四类复用点位 + 五个专项点位
+ * （emInsulation / emThdV / emThdI / emUnbalance / emResidualCurrent）。
+ * 用 marker 收敛而不是 navName 模糊匹配 —— 现场命名自由，marker 是契约。
+ */
+export async function emSafetyPoints(client: HClient, siteRef: string): Promise<HDict[]> {
+  return rows(
+    await client.ext.eval(
+      `readAll(point and energyMatrix and siteRef==${HRef.make(siteRef).toAxon()} and (volt or current or power or temp or emInsulation or emThdV or emThdI or emUnbalance or emResidualCurrent))`
+    )
+  );
+}
+
+/** 医用 IT 隔离电源柜（emItIsolation equip，逐柜可配 emIrAlarmThreshold）。 */
+export async function emSafetyItPanels(client: HClient, siteRef: string): Promise<HDict[]> {
+  return rows(
+    await client.ext.eval(
+      `readAll(equip and emItIsolation and siteRef==${HRef.make(siteRef).toAxon()})`
+    )
+  );
+}
+
+/** hisRead 样本（今日序列，ts 升序）。 */
+export interface EmHisSample {
+  ts: string;
+  val?: number;
+}
+
+/**
+ * 批量读多个点位的今日历史（hisRead 直读 L1，后端零新增）。
+ *
+ * 走标准 hisRead 的宽表返回（一行一个时间点，每点位一列），一次 eval
+ * 取全部曲线 —— 30 条曲线 30 次调用会变成 1 次。列名是点位 id 字符串
+ * （haystack 规范），兼容带不带 @ 前缀两种返回；取不到 val 的格（点位
+ * 缺样本）按 undefined 处理，不补 0。每个点位的最后一个样本即实时值。
+ */
+export async function emHisReadToday(
+  client: HClient,
+  refs: string[]
+): Promise<Record<string, EmHisSample[]>> {
+  const out: Record<string, EmHisSample[]> = {};
+  if (refs.length === 0) return out;
+  const reads = refs.map((r) => `read(${HRef.make(r).toAxon()})`).join(" or ");
+  const g = await client.ext.eval(`hisRead(${reads}, today())`);
+  const gridRows = g.getRows();
+  // 列名集合：宽表每行 dict 的键 = ts + 各点位列（haystack-core 无公开
+  // cols API，从行键取并集，稀疏空格的键可能被省略，所以不能只看了第一行）
+  const colNames = new Set<string>();
+  for (const r of gridRows) {
+    for (const k of r.keys) if (k !== "ts") colNames.add(k);
+  }
+  const wanted = new Map(refs.map((r) => [r.replace(/^@/, ""), r]));
+  for (const col of colNames) {
+    const key = wanted.get(col.replace(/^@/, ""));
+    if (!key) continue;
+    out[key] = gridRows
+      .map((r) => {
+        const v = r.get(col);
+        return {
+          ts: dt(r, "ts") ?? "",
+          val: v instanceof HNum ? v.value : undefined,
+        };
+      })
+      .filter((s) => s.ts !== "");
+  }
+  return out;
+}

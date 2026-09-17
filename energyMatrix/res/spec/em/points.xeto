@@ -59,9 +59,11 @@ emLoadRate:    Marker <doc:"负载率">
 EmInsulationResistance: NumberPoint { elec, sensor, emInsulation, unit:"kΩ", his }
 emInsulation:           Marker <doc:"IT 系统绝缘监测（IEC 60364-7-710）">
 
-EmThdV:     NumberPoint { elec, sensor, emThd, unit:"%", his }
-EmThdI:     NumberPoint { elec, sensor, emThd, unit:"%", his }
+EmThdV:     NumberPoint { elec, sensor, emThd, emThdV, unit:"%", his }
+EmThdI:     NumberPoint { elec, sensor, emThd, emThdI, unit:"%", his }
 emThd:      Marker <doc:"总谐波畸变率">
+emThdV:     Marker <doc:"电压总谐波畸变率（THDV）">
+emThdI:     Marker <doc:"电流总谐波畸变率（THDI）">
 
 EmUnbalance: NumberPoint { elec, sensor, emUnbalance, unit:"%", his }
 emUnbalance: Marker <doc:"三相电压不平衡度">
