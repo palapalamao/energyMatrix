@@ -35,6 +35,7 @@ export const NAV_GROUPS: NavGroup[] = [
     key: "group.analysis",
     items: [
       { to: "/analysis", key: "nav.analysis" },
+      { to: "/kpi", key: "nav.kpi" },
       { to: "/quota", key: "nav.quota" },
       { to: "/diagnosis", key: "nav.diagnosis" },
       { to: "/carbon", key: "nav.carbon" },

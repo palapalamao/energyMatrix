@@ -254,6 +254,13 @@ src:
       unit: "kgCO2e/m²", emGranularity: "yearly", emHigherIsBetter: false,
       emStandardRef: "GB/T 51366-2019 建筑碳排放计算标准",
       emDimension: ["site"]})
+    // 单位床位能耗 —— 绿色医院评审核心指标，分母是 EmSite.emBeds（V0.1.2 新增）。
+    // 非医院业态（如本零售示范）没有床位，该指标对这些站点显示「—」。
+    emAddKpi("EUI_BED", "单位床位能耗", "emLedgerTotal(emSelf->id, emSpan) / emSelf->emBeds", {
+      emSynthetic, emDataProvenance: "emDemoBuild",
+      unit: "kWh/床", emGranularity: "monthly", emHigherIsBetter: false,
+      emStandardRef: "绿色医院评审 单位床位能耗口径",
+      emDimension: ["site"]})
 
     // ── 定额 ────────────────────────────────────────────────────────
     // 三条不同来源的定额，报表里要分别标注，不能混着比

@@ -1,6 +1,6 @@
 {
   "name": "@ai4building/energy-matrix-ui",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "type": "module",
   "description": "energyMatrix HMI —— 建筑能源管理 SPA（13 屏）。React + MobX + haystack-nclient，MVVM 按 docs/fin/09-frontend-ts-vite.md，i18n (zh/en)。经 finStackMobileMenu iframe 加载，产物落 ../res/web/em/。",

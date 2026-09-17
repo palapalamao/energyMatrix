@@ -7,6 +7,7 @@ import { ReportsView } from "@/pages/Reports/ReportsView";
 import { ModelView } from "@/pages/Model/ModelView";
 import { DevicesView } from "@/pages/Devices/DevicesView";
 import { AnalysisView } from "@/pages/Analysis/AnalysisView";
+import { KpiView } from "@/pages/Kpi/KpiView";
 import { PortfolioView } from "@/pages/Portfolio/PortfolioView";
 import { QuotaView } from "@/pages/Quota/QuotaView";
 import { CarbonView } from "@/pages/Carbon/CarbonView";
@@ -22,7 +23,7 @@ import { MobileView } from "@/pages/Mobile/MobileView";
  * （`LoadApplication('…/index.html#/overview')`），history API 在那个上下文里
  * 会把地址改成 FIN 外壳的路径，刷新即 404。
  *
- * 13 条路由与 lib/menu.trio 的深链一一对应 —— 改了这里记得同步改那边，
+ * 15 条路由与 lib/menu.trio 的深链一一对应 —— 改了这里记得同步改那边，
  * 否则菜单点进来会落到空白页。
  */
 export const router = createHashRouter([
@@ -41,6 +42,7 @@ export const router = createHashRouter([
 
       // ── 分析优化 ──────────────────────────────────────────
       { path: "analysis", element: <AnalysisView /> },
+      { path: "kpi", element: <KpiView /> },
       { path: "quota", element: <QuotaView /> },
       { path: "diagnosis", element: <DiagnosisView /> },
       { path: "carbon", element: <CarbonView /> },
