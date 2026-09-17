@@ -202,9 +202,15 @@ class EmEntityCrud
   }
 
   private Dict withFloor(Ref siteRef, Dict args) {
-    return EmFloorResolver.resolve(siteRef, args, |Ref id->Dict?| {
+    resolved := EmFloorResolver.resolve(siteRef, args, |Ref id->Dict?| {
       cx.proj.readById(id, false)
     })
+    // 结构红线：表计/设备组必须归属楼层（点位经 equipRef>floorRef 自动继承）。
+    // 显式 floorRef 或 emSpaceRef 推导均可，两者都缺直接拒绝。
+    if (resolved["floorRef"] == null) {
+      throw ArgErr("floorRef 必填：显式指定，或让 emSpaceRef 指向的分区带 floorRef")
+    }
+    return resolved
   }
 
   private static Void log(Str kind, Ref id, Str dis) {

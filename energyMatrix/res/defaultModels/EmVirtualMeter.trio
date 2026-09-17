@@ -51,7 +51,7 @@ emVirtual
 equipRef:@_equip:emVirtualMeter
 emMeterRef:@_equip:emVirtualMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"区间计算量"
 disMacro:"$equipRef $navName"
 kind:"Number"

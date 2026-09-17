@@ -26,14 +26,17 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { to: "/overview", key: "nav.overview" },
       { to: "/realtime", key: "nav.realtime" },
+      { to: "/safety", key: "nav.safety" },
       { to: "/workorder", key: "nav.workorder" },
       { to: "/meter-tree", key: "nav.meterTree" },
+  { to: "/flow", key: "nav.flow" },
     ],
   },
   {
     key: "group.analysis",
     items: [
       { to: "/analysis", key: "nav.analysis" },
+      { to: "/kpi", key: "nav.kpi" },
       { to: "/quota", key: "nav.quota" },
       { to: "/diagnosis", key: "nav.diagnosis" },
       { to: "/carbon", key: "nav.carbon" },

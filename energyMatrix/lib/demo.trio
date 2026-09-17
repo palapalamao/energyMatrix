@@ -71,6 +71,7 @@ src:
     // 关口表就是 10kV 进线的产权分界表，也是与供电局结算的表
     gw: emAddMeter(site, "elec", "10kV 进线关口表", {
       emMeterRole: "gateway", emSettlement,
+      floorRef: fB1,
       emMeterFactor: 200, emCtRatio: 200, emPtRatio: 1,
       emMaxReading: 999999, emDataSource: "measured",
       emMeterScope: "全楼总进线，与供电局结算"
@@ -93,7 +94,7 @@ src:
     ]
     branches: branchDefs.map(d => emAddMeter(site, "elec", d->dis, {
       emMeterRole: "branch", submeterOf: gw, emSubItem: d->code,
-      floorRef: if (d->code == "d2") f3 else if (d->code == "d5") f4 else if (d->code == "d6") fB1 else null,
+      floorRef: if (d->code == "d2") f3 else if (d->code == "d5") f4 else if (d->code == "d6") fB1 else f1,
       emMaxReading: 99999, emMeterFactor: 1, emDataSource: "measured",
       emMeterScope: d->scope
     }))
@@ -116,6 +117,7 @@ src:
       emTenantRef: tUniq, emSpaceRef: z1, emMaxReading: 99999, emDataSource:"measured"})
     mStar: emAddMeter(site, "elec", "星巴克租户表", {
       emMeterRole:"sub", submeterOf: branches[9], emSubItem:"d2",
+      floorRef: f3,
       emTenantRef: tStar, emSpaceRef: zPub, emMaxReading: 99999, emDataSource:"measured"})
     mCine: emAddMeter(site, "elec", "金逸影城租户表", {
       emMeterRole:"sub", submeterOf: branches[10], emSubItem:"d5",
@@ -130,13 +132,14 @@ src:
     // ── 水 ──────────────────────────────────────────────────────────
     wGw: emAddMeter(site, "water", "市政进水关口表", {
       emMeterRole:"gateway", emSettlement, emMaxReading: 99999, emDataSource:"measured",
+      floorRef: fB1,
       emMeterScope:"全楼总进水，与自来水公司结算"})
     wDom: emAddMeter(site, "water", "生活给水表", {emMeterRole:"branch", submeterOf: wGw,
-      emWaterType:"domestic", emMaxReading: 99999, emDataSource:"measured"})
+      emWaterType:"domestic", emMaxReading: 99999, emDataSource:"measured", floorRef: fB1})
     wMak: emAddMeter(site, "water", "空调补水表", {emMeterRole:"branch", submeterOf: wGw,
-      emWaterType:"makeup", emMaxReading: 99999, emDataSource:"measured"})
+      emWaterType:"makeup", emMaxReading: 99999, emDataSource:"measured", floorRef: fB1})
     wIrr: emAddMeter(site, "water", "绿化灌溉表", {emMeterRole:"branch", submeterOf: wGw,
-      emWaterType:"irrigation", emMaxReading: 99999, emDataSource:"measured"})
+      emWaterType:"irrigation", emMaxReading: 99999, emDataSource:"measured", floorRef: f1})
 
     // ── 燃气 / 冷量 ─────────────────────────────────────────────────
     gGw: emAddMeter(site, "gas", "厨房燃气表", {
@@ -145,6 +148,7 @@ src:
       emMeterScope:"3F 餐饮商户燃气总表"})
     cGw: emAddMeter(site, "cool", "冷站供冷计量表", {
       emMeterRole:"main", emMaxReading: 999999, emDataSource:"measured",
+      floorRef: fB1,
       emMeterScope:"冷冻水供回水侧冷量"})
 
     // ── 缺口表：总表减各分表，差多少一目了然 ────────────────────────
@@ -154,7 +158,7 @@ src:
 
     // ── 用能设备组（没有独立计量的批量对象）─────────────────────────
     emAddLoadGroup(site, "B1 车库风机组", {emSubItem:"c3", emRatedPower: 96kW, emQty: 16, emSpaceRef: zB1})
-    emAddLoadGroup(site, "客梯扶梯组",   {emSubItem:"c1", emRatedPower: 132kW, emQty: 12})
+    emAddLoadGroup(site, "客梯扶梯组",   {emSubItem:"c1", emRatedPower: 132kW, emQty: 12, floorRef: f1})
     emAddLoadGroup(site, "1F 照明回路",  {emSubItem:"a1", emRatedPower: 48kW, emSpaceRef: z1})
     emAddLoadGroup(site, "3F 厨房设备组", {emSubItem:"d2", emRatedPower: 180kW, emSpaceRef: z3, emTenantRef: tStar})
 
@@ -253,6 +257,13 @@ src:
       emSynthetic, emDataProvenance: "emDemoBuild",
       unit: "kgCO2e/m²", emGranularity: "yearly", emHigherIsBetter: false,
       emStandardRef: "GB/T 51366-2019 建筑碳排放计算标准",
+      emDimension: ["site"]})
+    // 单位床位能耗 —— 绿色医院评审核心指标，分母是 EmSite.emBeds（V0.1.2 新增）。
+    // 非医院业态（如本零售示范）没有床位，该指标对这些站点显示「—」。
+    emAddKpi("EUI_BED", "单位床位能耗", "emLedgerTotal(emSelf->id, emSpan) / emSelf->emBeds", {
+      emSynthetic, emDataProvenance: "emDemoBuild",
+      unit: "kWh/床", emGranularity: "monthly", emHigherIsBetter: false,
+      emStandardRef: "绿色医院评审 单位床位能耗口径",
       emDimension: ["site"]})
 
     // ── 定额 ────────────────────────────────────────────────────────

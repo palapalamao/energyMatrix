@@ -34,7 +34,7 @@ energy
 equipRef:@_equip:emCoolMeter
 emMeterRef:@_equip:emCoolMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"累积冷量"
 disMacro:"$equipRef $navName"
 kind:"Number"
@@ -58,7 +58,7 @@ energy
 equipRef:@_equip:emCoolMeter
 emMeterRef:@_equip:emCoolMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"区间冷量"
 disMacro:"$equipRef $navName"
 kind:"Number"
@@ -79,7 +79,7 @@ power
 equipRef:@_equip:emCoolMeter
 emMeterRef:@_equip:emCoolMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"瞬时冷功率"
 disMacro:"$equipRef $navName"
 kind:"Number"
@@ -100,7 +100,7 @@ entering
 equipRef:@_equip:emCoolMeter
 emMeterRef:@_equip:emCoolMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"进水温度"
 disMacro:"$equipRef $navName"
 kind:"Number"
@@ -121,7 +121,7 @@ leaving
 equipRef:@_equip:emCoolMeter
 emMeterRef:@_equip:emCoolMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"出水温度"
 disMacro:"$equipRef $navName"
 kind:"Number"
@@ -141,7 +141,7 @@ flow
 equipRef:@_equip:emCoolMeter
 emMeterRef:@_equip:emCoolMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"瞬时流量"
 disMacro:"$equipRef $navName"
 kind:"Number"

@@ -48,7 +48,7 @@ emGap
 equipRef:@_equip:emGapMeter
 emMeterRef:@_equip:emGapMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"区间缺口量"
 disMacro:"$equipRef $navName"
 kind:"Number"

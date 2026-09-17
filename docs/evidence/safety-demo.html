@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>电气安全 · energyMatrix 静态演示</title>
+<style>
+:root{
+  --brand:#6EB435; --brand-soft:#EAF4E0; --info:#138BAA; --accent:#7B61C9;
+  --warn:#E89B1A; --danger:#D94343; --shell:#0F1820;
+  --bg:#F4F6F8; --card:#fff; --line:#E2E8F0; --txt:#1E293B; --sub:#64748B; --faint:#94A3B8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font-family:"Noto Sans SC","Microsoft YaHei",system-ui,sans-serif;font-size:14px}
+.mono{font-family:"JetBrains Mono",Consolas,monospace}
+.wrap{max-width:1440px;margin:0 auto;padding:20px 24px 48px}
+/* 页头 */
+.eyebrow{font-size:11px;letter-spacing:.14em;color:var(--info);font-weight:600;text-transform:uppercase}
+h1{font-size:24px;font-weight:700;margin:4px 0 6px}
+.desc{color:var(--sub);font-size:13px}
+.demo-note{margin-top:10px;display:inline-block;background:#FFF7E8;border:1px solid #F3D9A4;color:#8A5A00;
+  font-size:12px;padding:4px 10px;border-radius:6px}
+/* 工具行 */
+.toolbar{display:flex;gap:12px;align-items:center;margin:18px 0 14px;flex-wrap:wrap}
+.seg{display:inline-flex;background:#E8EDF2;border-radius:8px;padding:3px}
+.seg button{border:0;background:transparent;padding:6px 16px;border-radius:6px;font-size:13px;color:var(--sub);cursor:pointer}
+.seg button.on{background:#fff;color:var(--txt);font-weight:600;box-shadow:0 1px 3px rgba(15,24,32,.12)}
+select{border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:13px;background:#fff;color:var(--txt)}
+.live{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sub)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--brand);animation:pulse 1.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(110,180,53,.5)}70%{box-shadow:0 0 0 7px rgba(110,180,53,0)}100%{box-shadow:0 0 0 0 rgba(110,180,53,0)}}
+/* 卡片 */
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:16px}
+.card h3{font-size:15px;font-weight:600}
+.card .hint{font-size:12px;color:var(--faint);margin-top:2px;font-weight:400}
+.grid{display:grid;gap:14px}
+.g4{grid-template-columns:repeat(4,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g2{grid-template-columns:repeat(2,1fr)}
+@media(max-width:1100px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}}
+/* 徽标 */
+.badge{display:inline-flex;align-items:center;border-radius:5px;padding:2px 8px;font-size:11px;font-weight:600}
+.b-ok{background:var(--brand-soft);color:var(--brand)} .b-info{background:#E0F2F7;color:var(--info)}
+.b-warn{background:#FBF0DA;color:#A66A00} .b-danger{background:#FBE4E4;color:var(--danger)}
+.b-neutral{background:#F1F5F9;color:var(--sub)} .b-accent{background:#EEEAFA;color:var(--accent)}
+/* 回路卡 */
+.ckt{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#fff}
+.ckt.warn{border-color:#F3D9A4;background:#FFFCF5}
+.ckt.danger{border-color:#F0BFBF;background:#FFF8F8}
+.ckt .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.ckt .name{font-weight:600;font-size:13px}
+.ckt .loc{font-size:11px;color:var(--faint)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0}
+.stat .l{font-size:10px;color:var(--faint)} .stat .v{font-size:15px;font-weight:700}
+.v.warn{color:#A66A00}.v.danger{color:var(--danger)}
+svg.spark{width:100%;height:44px;display:block}
+svg.spark path{fill:none;stroke-width:1.6}
+svg.spark .axis{stroke:#EEF2F6;stroke-width:1}
+/* 统计带 */
+.statcard{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#fff}
+.statcard .l{font-size:12px;color:var(--sub)} .statcard .v{font-size:22px;font-weight:700;margin-top:2px}
+.statcard .h{font-size:11px;color:var(--faint);margin-top:2px}
+/* 表格 */
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-weight:500;color:var(--faint);font-size:12px;padding:8px 10px;border-bottom:1px solid var(--line);background:#FAFBFC}
+td{padding:9px 10px;border-bottom:1px solid #F1F5F9}
+tr:hover td{background:#FAFCFE}
+/* 进度条 */
+.pbar{position:relative;height:6px;border-radius:3px;background:#F1F5F9;min-width:80px}
+.pbar>i{position:absolute;left:0;top:0;bottom:0;border-radius:3px}
+.pbar>u{position:absolute;top:-2px;bottom:-2px;width:1px;background:#94A3B8}
+.pbar.ok>i{background:var(--brand)} .pbar.warn>i{background:var(--warn)} .pbar.danger>i{background:var(--danger)}
+.legend{display:flex;gap:16px;font-size:11px;color:var(--sub);margin-top:6px}
+.legend b{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+.tabpage{display:none} .tabpage.on{display:block}
+footer{margin-top:24px;color:var(--faint);font-size:11px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== 页头 ===== -->
+  <div class="eyebrow">监测运行 · MONITORING</div>
+  <h1>电气安全</h1>
+  <div class="desc">重点负荷实时监控 · 医用隔离电源（IT）绝缘监测 · 电能质量分析 · 电气火灾预警 —— 24 小时连续监测，只监测、不控制</div>
+  <span class="demo-note">静态演示 Demo · 所有数据为模拟数据 · 正式数据来自 FIN 点位（hisRead 通道）</span>
+
+  <!-- ===== 工具行 ===== -->
+  <div class="toolbar">
+    <div class="seg" id="tabs">
+      <button data-tab="load" class="on">重点负荷实时监控</button>
+      <button data-tab="it">IT 绝缘监测</button>
+      <button data-tab="pq">电能质量</button>
+      <button data-tab="fire">电气火灾预警</button>
+    </div>
+    <select id="siteSel">
+      <option>总院区</option><option>东院区</option><option>西院区</option><option>科研院区</option>
+    </select>
+    <span class="live"><span class="dot"></span>实时监测中 · 分钟级采样 · 更新于 <span class="mono" id="ts"></span></span>
+  </div>
+
+  <!-- ================= Tab1 重点负荷实时监控 ================= -->
+  <div class="tabpage on" id="pg-load">
+    <div class="toolbar" style="margin-top:0">
+      <div class="seg" id="loadFilter">
+        <button data-f="all" class="on">全部场所</button>
+        <button data-f="手术室">手术室</button>
+        <button data-f="ICU">ICU</button>
+        <button data-f="急诊">急诊</button>
+      </div>
+    </div>
+    <div class="grid g4" id="cktGrid"></div>
+    <div class="card">
+      <h3>越限说明</h3>
+      <div class="hint">电压 380V±7% · 电流 ≤ 断路器额定 80% · 线缆温度 ≤ 70°C（聚氯乙烯绝缘长期允许）· 阈值在诊断规则（EmDiagRuleEngine）中可配置，越限自动生成异常事件并派单</div>
+    </div>
+  </div>
+
+  <!-- ================= Tab2 IT 绝缘监测 ================= -->
+  <div class="tabpage" id="pg-it">
+    <div class="grid g4" style="margin-bottom:16px">
+      <div class="statcard"><div class="l">IT 系统数（二类场所）</div><div class="v mono">6</div><div class="h">手术室 3 · ICU 2 · 急诊 1</div></div>
+      <div class="statcard"><div class="l">绝缘正常</div><div class="v mono" style="color:var(--brand)">5</div><div class="h">&gt; 50 kΩ（50 Ω/V 惯例）</div></div>
+      <div class="statcard"><div class="l">绝缘下降预警</div><div class="v mono" style="color:#A66A00">1</div><div class="h">IT-3 · ICU-A 区，已生成异常事件</div></div>
+      <div class="statcard"><div class="l">今日绝缘告警工单</div><div class="v mono">1</div><div class="h">WO-260917-014（电工班处理中）</div></div>
+    </div>
+    <div class="card">
+      <h3>IT 隔离电源系统绝缘监测 <span class="hint">—— 绝缘电阻是 IT 系统安全的核心量，低于阈值即告警（IEC 60364-7-710）</span></h3>
+      <table id="itTable">
+        <thead><tr><th>IT 柜</th><th>服务场所</th><th>绝缘电阻</th><th style="width:180px">绝缘水平（预警线 50 kΩ）</th><th>负荷电流</th><th>变压器温度</th><th>状态</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="legend"><span><b style="background:var(--brand)"></b>&gt;100 kΩ 优良</span><span><b style="background:var(--warn)"></b>50–100 kΩ 关注</span><span><b style="background:var(--danger)"></b>&lt;50 kΩ 告警</span></div>
+    </div>
+  </div>
+
+  <!-- ================= Tab3 电能质量 ================= -->
+  <div class="tabpage" id="pg-pq">
+    <div class="grid g4" style="margin-bottom:16px">
+      <div class="statcard"><div class="l">监测馈线</div><div class="v mono">12</div><div class="h">主进线 2 · CT 3 · MRI 2 · 大型设备 5</div></div>
+      <div class="statcard"><div class="l">THD-V 合格率</div><div class="v mono" style="color:var(--brand)">91.7%</div><div class="h">限值 5%（GB/T 14549）</div></div>
+      <div class="statcard"><div class="l">三相不平衡合格率</div><div class="v mono" style="color:var(--brand)">100%</div><div class="h">限值 2%</div></div>
+      <div class="statcard"><div class="l">近 30 天电压暂降</div><div class="v mono" style="color:#A66A00">3</div><div class="h">2 次已闭环 · 1 次观察中</div></div>
+    </div>
+    <div class="card">
+      <h3>馈线电能质量一览 <span class="hint">—— 保障 CT / MRI 等精密医疗设备稳定运行</span></h3>
+      <table id="pqTable">
+        <thead><tr><th>馈线</th><th>电压 THD</th><th>电流 THD</th><th>三相不平衡度</th><th>评价</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h3>电压暂降事件 <span class="hint">—— his 曲线留痕 + 异常事件双轨记录，生成事件自动派单</span></h3>
+      <table>
+        <thead><tr><th>发生时间</th><th>馈线</th><th>剩余电压</th><th>持续时间</th><th>影响</th><th>处置</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">09-14 03:12:44</td><td>1# 主进线</td><td class="mono">78.5%</td><td class="mono">120 ms</td><td>UPS 转电池 · 无设备掉电</td><td><span class="badge b-ok">已闭环</span></td></tr>
+          <tr><td class="mono">09-16 11:38:02</td><td>CT-2 馈线</td><td class="mono">81.2%</td><td class="mono">86 ms</td><td>CT 扫描中断 1 次</td><td><span class="badge b-info">工单 WO-260916-031</span></td></tr>
+          <tr><td class="mono">09-17 06:55:19</td><td>2# 主进线</td><td class="mono">88.0%</td><td class="mono">64 ms</td><td>无影响</td><td><span class="badge b-neutral">观察中</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ================= Tab4 电气火灾预警 ================= -->
+  <div class="tabpage" id="pg-fire">
+    <div class="grid g4" style="margin-bottom:16px">
+      <div class="statcard"><div class="l">监测回路</div><div class="v mono">28</div><div class="h">重点覆盖一级负荷与大电流回路</div></div>
+      <div class="statcard"><div class="l">线缆温度正常</div><div class="v mono" style="color:var(--brand)">27</div><div class="h">≤ 70°C</div></div>
+      <div class="statcard"><div class="statcard" style="border:0;padding:0"><div class="l">漏电流正常</div><div class="v mono" style="color:var(--brand)">26</div><div class="h">≤ 300 mA 正常 · 300–500 预警 · &gt;500 危险</div></div></div>
+      <div class="statcard"><div class="l">火灾隐患预警</div><div class="v mono" style="color:#A66A00">2</div><div class="h">配电间 B1-3 · 急诊配电柜，已派单巡检</div></div>
+    </div>
+    <div class="card">
+      <h3>回路电气火灾监测 <span class="hint">—— 线缆温度 + 剩余电流双参数，提前识别隐患</span></h3>
+      <table id="fireTable">
+        <thead><tr><th>回路</th><th>所在配电间</th><th>线缆温度</th><th style="width:160px">温度水平（70°C 限值）</th><th>漏电流</th><th style="width:160px">漏电流水平（500 mA 限值）</th><th>状态</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h3>预警事件</h3>
+      <table>
+        <thead><tr><th>时间</th><th>回路</th><th>触发</th><th>级别</th><th>处置</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">09-17 09:42</td><td>配电间 B1-3 · 空调水泵回路</td><td>线缆温度 71.3°C 越限</td><td><span class="badge b-warn">预警</span></td><td><span class="badge b-info">工单 WO-260917-011 · 巡检中</span></td></tr>
+          <tr><td class="mono">09-17 07:15</td><td>急诊配电柜 · 急诊照明回路</td><td>漏电流 386 mA 超预警值</td><td><span class="badge b-warn">预警</span></td><td><span class="badge b-info">工单 WO-260917-006 · 已复检</span></td></tr>
+          <tr><td class="mono">09-15 14:20</td><td>手术部配电间 · OR-3 回路</td><td>端子温度 68.9°C 接近限值</td><td><span class="badge b-neutral">关注</span></td><td>纳入重点巡视</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>energyMatrix V0.1.3 · 电气安全屏（第 16 屏 /safety）静态演示 · 西门子中国 · ai4building</footer>
+</div>
+
+<script>
+/* ============ 模拟数据 ============ */
+// 重点负荷回路：电压V 电流A 功率kW 线缆温度°C + 24h 曲线种子
+const CKTS = [
+  {name:"OR-1 手术间回路", loc:"手术室 · 手术一部", v:380.2, a:41.5, kw:24.8, t:46, seed:11, st:"ok"},
+  {name:"OR-2 手术间回路", loc:"手术室 · 手术一部", v:379.6, a:38.2, kw:22.1, t:44, seed:23, st:"ok"},
+  {name:"OR-5 手术间回路", loc:"手术室 · 手术二部", v:381.0, a:52.6, kw:31.4, t:58, seed:37, st:"ok"},
+  {name:"ICU-A 病区回路",   loc:"ICU · A 区",        v:378.8, a:63.9, kw:38.2, t:52, seed:41, st:"ok"},
+  {name:"ICU-B 病区回路",   loc:"ICU · B 区",        v:380.5, a:59.1, kw:35.0, t:49, seed:53, st:"ok"},
+  {name:"急诊抢救室回路",   loc:"急诊 · 抢救区",     v:377.9, a:71.2, kw:42.6, t:67, seed:67, st:"warn"},  // 温度预警
+  {name:"EICU 回路",        loc:"急诊 · EICU",       v:380.8, a:33.4, kw:19.7, t:43, seed:71, st:"ok"},
+  {name:"急诊输液厅回路",   loc:"急诊 · 输液厅",     v:376.5, a:88.9, kw:53.1, t:51, seed:83, st:"danger"}, // 电流过载
+];
+// IT 隔离电源柜
+const ITS = [
+  {name:"IT-1", loc:"手术室 OR-1/OR-2",  ir:182, a:24.5, t:52, st:"ok"},
+  {name:"IT-2", loc:"手术室 OR-5/OR-6",  ir:165, a:28.1, t:55, st:"ok"},
+  {name:"IT-3", loc:"ICU-A 区",          ir:62,  a:31.7, t:58, st:"warn"},
+  {name:"IT-4", loc:"ICU-B 区",          ir:148, a:22.3, t:50, st:"ok"},
+  {name:"IT-5", loc:"急诊抢救室/EICU",   ir:171, a:26.9, t:54, st:"ok"},
+  {name:"IT-6", loc:"手术室 OR-7/OR-8",  ir:138, a:19.8, t:49, st:"ok"},
+];
+// 电能质量馈线
+const PQS = [
+  {name:"1# 主进线",   thdv:2.1, thdi:8.5,  unb:0.6},
+  {name:"2# 主进线",   thdv:2.4, thdi:9.8,  unb:0.8},
+  {name:"CT-1 馈线",   thdv:3.2, thdi:14.2, unb:1.1},
+  {name:"CT-2 馈线",   thdv:4.6, thdi:21.7, unb:1.6},
+  {name:"MRI-1 馈线",  thdv:3.8, thdi:17.9, unb:1.2},
+  {name:"MRI-2 馈线",  thdv:2.9, thdi:12.4, unb:0.9},
+  {name:"DSA 馈线",    thdv:3.5, thdi:15.8, unb:1.3},
+  {name:"直线加速器",  thdv:5.8, thdi:24.6, unb:2.1},  // THD 越限
+];
+// 电气火灾监测回路
+const FIRES = [
+  {name:"OR-1 手术间回路",   room:"手术部配电间",   t:46, ma:38},
+  {name:"ICU-A 病区回路",    room:"ICU 配电间",     t:52, ma:112},
+  {name:"急诊抢救室回路",    room:"急诊配电柜",     t:67, ma:386},  // 漏电流预警
+  {name:"空调水泵回路",      room:"配电间 B1-3",    t:71, ma:205},  // 温度越限
+  {name:"1# 主进线",         room:"总配电站",       t:48, ma:96},
+  {name:"CT-1 馈线",         room:"医技配电间 2F",  t:55, ma:142},
+  {name:"MRI-1 馈线",        room:"医技配电间 2F",  t:53, ma:128},
+  {name:"照明总回路",        room:"配电间 B1-1",    t:41, ma:64},
+];
+
+/* ============ 工具 ============ */
+function series(seed, n, base, amp){
+  const out=[]; let x=seed;
+  for(let i=0;i<n;i++){ x=(x*9301+49297)%233280; const r=x/233280;
+    out.push(base + amp*Math.sin(i/3.2+seed) + amp*0.6*(r-0.5)); }
+  return out;
+}
+function sparkSVG(data, color, w, h, min, max){
+  w=w||300; h=h||44;
+  const lo=min!==undefined?min:Math.min.apply(null,data);
+  const hi=max!==undefined?max:Math.max.apply(null,data);
+  const span=(hi-lo)||1;
+  const pts=data.map((v,i)=>((i/(data.length-1))*w).toFixed(1)+","+((h-3)-((v-lo)/span)*(h-6)).toFixed(1));
+  let g='<line class="axis" x1="0" y1="'+(h-3)+'" x2="'+w+'" y2="'+(h-3)+'"/>';
+  return '<svg class="spark" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none">'+g+
+    '<polyline fill="none" points="'+pts.join(" ")+'" stroke="'+color+'"/></svg>';
+}
+function pbar(v, limit, invert){
+  const ratio=Math.min(1, v/limit);
+  const cls= invert ? (ratio>=1?"danger":ratio>=0.85?"warn":"ok")
+                    : (ratio>=1?"danger":ratio>=0.8?"warn":"ok");
+  return '<div class="pbar '+cls+'"><i style="width:'+(ratio*100).toFixed(1)+'%"></i><u style="left:100%" title="限值 '+limit+'"></u></div>';
+}
+function stBadge(st, okTxt, warnTxt){
+  if(st==="ok") return '<span class="badge b-ok">'+(okTxt||"正常")+'</span>';
+  if(st==="warn") return '<span class="badge b-warn">'+(warnTxt||"预警")+'</span>';
+  return '<span class="badge b-danger">越限</span>';
+}
+
+/* ============ 渲染 ============ */
+// Tab1 回路卡
+function renderCkts(f){
+  const g=document.getElementById("cktGrid"); g.innerHTML="";
+  CKTS.filter(c=>f==="all"||c.loc.startsWith(f)).forEach(c=>{
+    const cur = c.st==="danger";
+    const kw = series(c.seed,48, c.kw, c.kw*0.35);
+    const tp = series(c.seed+7,48, c.t, 4).map((v,i)=>Math.max(v, c.t-3));
+    const div=document.createElement("div");
+    div.className="ckt "+(c.st==="ok"?"":c.st);
+    div.innerHTML=
+      '<div class="head"><div><div class="name">'+c.name+'</div><div class="loc">'+c.loc+'</div></div>'+stBadge(c.st)+'</div>'+
+      '<div class="stats">'+
+      '<div class="stat"><div class="l">电压 V</div><div class="v mono">'+c.v.toFixed(1)+'</div></div>'+
+      '<div class="stat"><div class="l">电流 A</div><div class="v mono '+(cur?"danger":"")+'">'+c.a.toFixed(1)+'</div></div>'+
+      '<div class="stat"><div class="l">功率 kW</div><div class="v mono">'+c.kw.toFixed(1)+'</div></div>'+
+      '<div class="stat"><div class="l">线缆温度 °C</div><div class="v mono '+(c.st!=="ok"?"warn":"")+'">'+c.t.toFixed(1)+'</div></div>'+
+      '</div>'+
+      '<div class="l" style="font-size:10px;color:var(--faint)">24h 负荷曲线 (kW)</div>'+sparkSVG(kw,"#138BAA")+
+      '<div class="l" style="font-size:10px;color:var(--faint);margin-top:4px">24h 温度曲线 (°C)</div>'+sparkSVG(tp, c.st==="ok"?"#6EB435":"#E89B1A",300,44,20,80);
+    g.appendChild(div);
+  });
+}
+// Tab2 IT
+(function(){
+  const tb=document.querySelector("#itTable tbody");
+  ITS.forEach(it=>{
+    const tr=document.createElement("tr");
+    const st = it.ir>=100?["ok","优良"]:it.ir>=50?["warn","关注"]:["danger","告警"];
+    tr.innerHTML='<td class="mono" style="font-weight:600">'+it.name+'</td><td>'+it.loc+'</td>'+
+      '<td class="mono" style="font-weight:700;color:'+(st[0]==="ok"?"var(--brand)":st[0]==="warn"?"#A66A00":"var(--danger)")+'">'+it.ir+' kΩ</td>'+
+      '<td>'+pbar(it.ir,200)+'</td>'+
+      '<td class="mono">'+it.a.toFixed(1)+' A</td><td class="mono">'+it.t+' °C</td>'+
+      '<td>'+stBadge(st[0],"正常",st[1])+(it.st==="warn"?' <span class="badge b-info">WO-260917-014</span>':"")+'</td>';
+    tb.appendChild(tr);
+  });
+})();
+// Tab3 PQ
+(function(){
+  const tb=document.querySelector("#pqTable tbody");
+  PQS.forEach(p=>{
+    const bad = p.thdv>5;
+    const tr=document.createElement("tr");
+    tr.innerHTML='<td style="font-weight:600">'+p.name+'</td>'+
+      '<td class="mono" style="color:'+(bad?"var(--danger)":"inherit")+'">'+p.thdv.toFixed(1)+' %</td>'+
+      '<td class="mono">'+p.thdi.toFixed(1)+' %</td>'+
+      '<td class="mono">'+p.unb.toFixed(1)+' %</td>'+
+      '<td>'+(bad?'<span class="badge b-danger">THD 越限</span>':p.thdv>4?'<span class="badge b-warn">接近限值</span>':'<span class="badge b-ok">合格</span>')+'</td>';
+    tb.appendChild(tr);
+  });
+})();
+// Tab4 火灾
+(function(){
+  const tb=document.querySelector("#fireTable tbody");
+  FIRES.forEach(f=>{
+    const tSt = f.t>70?"danger":f.t>=65?"warn":"ok";
+    const mSt = f.ma>500?"danger":f.ma>300?"warn":"ok";
+    const tr=document.createElement("tr");
+    tr.innerHTML='<td style="font-weight:600">'+f.name+'</td><td>'+f.room+'</td>'+
+      '<td class="mono" style="color:'+(tSt==="ok"?"inherit":tSt==="warn"?"#A66A00":"var(--danger)")+'">'+f.t.toFixed(1)+' °C</td>'+
+      '<td>'+pbar(f.t,70)+'</td>'+
+      '<td class="mono" style="color:'+(mSt==="ok"?"inherit":mSt==="warn"?"#A66A00":"var(--danger)")+'">'+f.ma+' mA</td>'+
+      '<td>'+pbar(f.ma,500)+'</td>'+
+      '<td>'+(tSt==="danger"||mSt==="danger"?'<span class="badge b-danger">危险</span>':tSt==="warn"||mSt==="warn"?'<span class="badge b-warn">预警</span>':'<span class="badge b-ok">正常</span>')+'</td>';
+    tb.appendChild(tr);
+  });
+})();
+
+/* ============ 交互 ============ */
+document.getElementById("tabs").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("on",x===b));
+  document.querySelectorAll(".tabpage").forEach(p=>p.classList.remove("on"));
+  document.getElementById("pg-"+b.dataset.tab).classList.add("on");
+});
+document.getElementById("loadFilter").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  document.querySelectorAll("#loadFilter button").forEach(x=>x.classList.toggle("on",x===b));
+  renderCkts(b.dataset.f);
+});
+document.getElementById("ts").textContent=new Date().toLocaleTimeString("zh-CN",{hour12:false});
+renderCkts("all");
+</script>
+</body>
+</html>
+
+

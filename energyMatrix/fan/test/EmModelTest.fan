@@ -1,3 +1,4 @@
+using finEntityModelToolsExt
 using haystack
 
 **
@@ -627,24 +628,23 @@ class EmModelTest : HaystackTest
     }
   }
 
-  ** 站级表计可以没有楼层；point 必须通过同一个可空参数继承 floorRef。
-  Void test_siteLevelMeterTemplateAllowsMissingFloorRef() {
-    model := ModelEntityEmElecMeter.makeFromTrio(
-      Ref("s-1"), "Gateway", Etc.makeDict1("emMeterRole", "gateway"))
-    points := model.modelAsDicts.findAll |Dict rec->Bool| { rec.has("point") }
-    verify(!points.isEmpty)
-    points.each |Dict point| { verifyNull(point["floorRef"]) }
-
-    floorRef := Ref("f-1")
-    floorModel := ModelEntityEmElecMeter.makeFromTrio(
+  ** 模板层：Walk 在 makeFromTrio 构造时就硬解析 —— equip 没有楼层直接抛 Err。
+  ** 所以"无楼层建表"在创建层就被 withFloor 拒掉（ArgErr），根本到不了模板层。
+  ** 已实测（2026-09-18 冒烟）：带楼层建表后点位自动带 equip 的楼层。
+  Void test_pointFloorRefIsWalkToEquipFloor() {
+    withFloor := ModelEntityEmElecMeter.makeFromTrio(
       Ref("s-1"), "Submeter", Etc.makeDict([
-        "emMeterRole": "sub", "floorRef": floorRef]))
-    floorPoints := floorModel.modelAsDicts.findAll |Dict rec->Bool| { rec.has("point") }
-    verify(!floorPoints.isEmpty)
-    floorPoints.each |Dict point| { verifyEq(point["floorRef"], floorRef) }
+        "emMeterRole": "sub", "floorRef": Ref("f-1")]))
+    floorEquip := withFloor.modelAsDicts.find |Dict rec->Bool| { rec.has("equip") }
+    verifyEq(floorEquip["floorRef"], Ref("f-1"))
+    points := withFloor.modelAsDicts.findAll |Dict rec->Bool| { rec.has("point") }
+    verify(!points.isEmpty)
+    points.each |Dict point| { verifyEq(point["floorRef"], Ref("f-1")) }
+    verifyErr(Err#) {
+      m := ModelEntityEmElecMeter.makeFromTrio(
+        Ref("s-1"), "Gateway", Etc.makeDict1("emMeterRole", "gateway")) }
   }
-
-  ** point 必须携带与 equip 一致的全部 NavPath 祖先引用。
+  ** point 必须通过 Walk 继承 equip 的楼层（结构红线：点位必备 floorRef）。
   Void test_pointTemplatesInheritOptionalFloorRef() {
     missing := Str[,]
     EmModelBuilder.templateFiles.each |Str name| {
@@ -653,14 +653,14 @@ class EmModelTest : HaystackTest
         line.trim == "siteRef:Walk(\"equipRef>siteRef\")"
       }.size
       if (siteWalks == 0) return
-      floorArgs := lines.findAll |Str line -> Bool| {
-        line.trim == "floorRef:Arg(\"floorRef:N\")"
+      floorWalks := lines.findAll |Str line -> Bool| {
+        line.trim == "floorRef:Walk(\"equipRef>floorRef\")"
       }.size
-      // 子模板只重述 point；基模板还会多出 equip 自己的 floorRef 参数。
-      if (floorArgs < siteWalks) missing.add("$name ($floorArgs/$siteWalks)")
+      // 每个声明了 siteRef Walk 的 point 都必须有对应的 floorRef Walk。
+      if (floorWalks < siteWalks) missing.add("$name ($floorWalks/$siteWalks)")
     }
     verify(missing.isEmpty,
-      "以下 point 没有通过可空 floorRef 参数继承楼层：" + missing.join(", "))
+      "以下 point 没有通过 Walk 继承楼层：" + missing.join(", "))
   }
 
   Void test_specSource_readsPodFile() {

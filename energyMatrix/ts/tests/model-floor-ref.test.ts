@@ -30,7 +30,7 @@ test("meter, virtual meter and load group include selected floorRef", () => {
   }
 });
 
-test("blank floorRef keeps equipment site-level", () => {
+test("blank floorRef is dropped at form layer (backend rejects create without floor)", () => {
   const spec = buildCreateSpec({ ...common, what: "meter", floorRef: "" });
   assert.ok(spec && "args" in spec);
   assert.equal(Object.hasOwn(spec.args, "floorRef"), false);
@@ -50,12 +50,12 @@ test("gap meter does not accept an independent floor selection", () => {
   });
 });
 
-test("meter and load edit schemas expose optional floorRef", () => {
+test("meter and load edit schemas mark floorRef required", () => {
   for (const kind of ["meter", "load"] as const) {
     const field = fieldsFor(kind).find((candidate) => candidate.tag === "floorRef");
     assert.equal(field?.type, "ref", kind);
     assert.equal(field?.refKind, "floor", kind);
-    assert.match(field?.hint ?? "", /站级|跨楼层/);
+    assert.equal(field?.required, true, kind);
   }
 });
 
