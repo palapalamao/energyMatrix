@@ -195,7 +195,7 @@ export const SafetyView = observer(function SafetyView() {
     <>
       <PageHeader
         eyebrow={t("safety.eyebrow")}
-        title={t("nav.safety")}
+        title={tabs.find((tb) => tb.key === tabKey)?.label ?? t("nav.safety")}
         desc={t("safety.desc")}
         actions={<Badge tone="warn">{t("safety.readonly")}</Badge>}
       />

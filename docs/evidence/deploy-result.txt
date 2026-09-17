@@ -1,8 +1,8 @@
-﻿2026-09-17T21:44:48.2363950+08:00 deploy start
+﻿2026-09-17T21:51:13.6027956+08:00 deploy start
 build exit: 0
 compile [energyMatrix]
   Compile [energyMatrix]
     FindSourceFiles [58 files]
     WritePod [file:/C:/Program Files (x86)/FIN/FIN 5.3.0.2761/lib/fan/energyMatrix.pod]
-BUILD SUCCESS [16550ms]!
+BUILD SUCCESS [16930ms]!
 service=Running port8080=False
