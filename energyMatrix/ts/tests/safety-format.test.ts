@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { HDict, HMarker, HRef, HStr } from "haystack-core";
 import {
+  tagNames,
   KIND_UNIT,
   SAFETY_TH,
   classifyPoint,
@@ -97,4 +99,8 @@ test("SAFETY_TH / KIND_UNIT: 阈值与 Demo 一致，单位表齐全", () => {
   assert.equal(KIND_UNIT.insulation, "kΩ");
   assert.equal(KIND_UNIT.leak, "mA");
   assert.equal(KIND_UNIT.power, "kW");
+});
+test("tagNames: instanceof HMarker 判定（haystack-core 3.0.13 toJSON 非 null 回归）", () => {
+  const d = HDict.make({ id: HRef.make("p:demo:r:1"), volt: HMarker.make(), kind: HStr.make("Number") });
+  assert.deepEqual(tagNames(d), ["volt"]);
 });

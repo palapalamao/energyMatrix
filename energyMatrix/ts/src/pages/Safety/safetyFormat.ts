@@ -1,3 +1,6 @@
+import { HMarker } from "haystack-core";
+import type { HDict } from "haystack-core";
+
 /**
  * 电气安全监测屏（/safety，需求 7.3，V0.1.3）的纯函数 —— 运行时零依赖
  * （node:test 直接单测，同 kpiFormat 约定），不碰 client、不碰 mobx。
@@ -9,7 +12,18 @@
  * 本屏只监测不控制：所有函数只做「数值 → 分级」的判定，无任何写操作。
  */
 
+/**
+ * 点位的 marker 名列表（classifyPoint 的输入）。
+ * `instanceof HMarker` 判定 —— haystack-core 3.0.13 起 `HMarker.toJSON()`
+ * 返回对象（{_kind:"marker"}），旧写法 `toJSON() === null` 恒不成立，
+ * 会把全部点位归为 other、整屏空数据（2026-09-17 运行时验收实测）。
+ */
+export function tagNames(p: HDict): string[] {
+  return p.keys.filter((k) => p.get(k) instanceof HMarker);
+}
+
 /** 越限三级：与 Demo 徽标（正常 / 越限预警 / 越限告警）同口径。 */
+
 export type SafetyLevel = "ok" | "warn" | "alarm";
 
 /** 与 Bits.Tone 兼容的语义色子集（不 import Bits，保持零运行时依赖）。 */

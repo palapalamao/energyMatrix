@@ -17,6 +17,7 @@ import {
   type EmHisSample,
 } from "@/api/emApi";
 import {
+  tagNames,
   SAFETY_TH,
   classifyPoint,
   overLevel,
@@ -207,13 +208,6 @@ export class SafetyStore extends BaseStore {
   }
 }
 
-/** 点位的 marker 名列表（classifyPoint 的输入）。 */
-function tagNames(p: HDict): string[] {
-  return p.keys.filter((k) => {
-    const v = p.get(k);
-    return v !== null && v !== undefined && typeof v.toJSON === "function" && v.toJSON() === null;
-  });
-}
 
 // ──────────────────────────────────────────────────────────────────────────
 // 展示行（ViewModel 派生，全部只读）
