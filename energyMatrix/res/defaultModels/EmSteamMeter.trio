@@ -30,7 +30,7 @@ steam
 equipRef:@_equip:emSteamMeter
 emMeterRef:@_equip:emSteamMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"累积质量"
 disMacro:"$equipRef $navName"
 kind:"Number"
@@ -53,7 +53,7 @@ steam
 equipRef:@_equip:emSteamMeter
 emMeterRef:@_equip:emSteamMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"区间质量"
 disMacro:"$equipRef $navName"
 kind:"Number"
@@ -75,7 +75,7 @@ energy
 equipRef:@_equip:emSteamMeter
 emMeterRef:@_equip:emSteamMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"累积热量"
 disMacro:"$equipRef $navName"
 kind:"Number"
@@ -95,7 +95,7 @@ temp
 equipRef:@_equip:emSteamMeter
 emMeterRef:@_equip:emSteamMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"蒸汽温度"
 disMacro:"$equipRef $navName"
 kind:"Number"
@@ -115,7 +115,7 @@ pressure
 equipRef:@_equip:emSteamMeter
 emMeterRef:@_equip:emSteamMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"蒸汽压力"
 disMacro:"$equipRef $navName"
 kind:"Number"

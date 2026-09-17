@@ -44,7 +44,7 @@ energy
 equipRef:@_equip:emElecMeter
 emMeterRef:@_equip:emElecMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"累积电量"
 disMacro:"$equipRef $navName"
 kind:"Number"
@@ -68,7 +68,7 @@ energy
 equipRef:@_equip:emElecMeter
 emMeterRef:@_equip:emElecMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"区间电量"
 disMacro:"$equipRef $navName"
 kind:"Number"
@@ -89,7 +89,7 @@ power
 equipRef:@_equip:emElecMeter
 emMeterRef:@_equip:emElecMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"有功功率"
 disMacro:"$equipRef $navName"
 kind:"Number"
@@ -110,7 +110,7 @@ pf
 equipRef:@_equip:emElecMeter
 emMeterRef:@_equip:emElecMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"功率因数"
 disMacro:"$equipRef $navName"
 kind:"Number"
@@ -131,7 +131,7 @@ emDemand
 equipRef:@_equip:emElecMeter
 emMeterRef:@_equip:emElecMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"最大需量"
 disMacro:"$equipRef $navName"
 kind:"Number"
@@ -153,7 +153,7 @@ emTouPeriod:"sharp"
 equipRef:@_equip:emElecMeter
 emMeterRef:@_equip:emElecMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"分时电量-尖"
 disMacro:"$equipRef $navName"
 kind:"Number"
@@ -175,7 +175,7 @@ emTouPeriod:"peak"
 equipRef:@_equip:emElecMeter
 emMeterRef:@_equip:emElecMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"分时电量-峰"
 disMacro:"$equipRef $navName"
 kind:"Number"
@@ -197,7 +197,7 @@ emTouPeriod:"flat"
 equipRef:@_equip:emElecMeter
 emMeterRef:@_equip:emElecMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"分时电量-平"
 disMacro:"$equipRef $navName"
 kind:"Number"
@@ -219,7 +219,7 @@ emTouPeriod:"valley"
 equipRef:@_equip:emElecMeter
 emMeterRef:@_equip:emElecMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"分时电量-谷"
 disMacro:"$equipRef $navName"
 kind:"Number"

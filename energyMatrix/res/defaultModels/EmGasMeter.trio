@@ -31,7 +31,7 @@ volume
 equipRef:@_equip:emGasMeter
 emMeterRef:@_equip:emGasMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"累积体积"
 disMacro:"$equipRef $navName"
 kind:"Number"
@@ -55,7 +55,7 @@ volume
 equipRef:@_equip:emGasMeter
 emMeterRef:@_equip:emGasMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"区间体积"
 disMacro:"$equipRef $navName"
 kind:"Number"
@@ -78,7 +78,7 @@ emStandardCond
 equipRef:@_equip:emGasMeter
 emMeterRef:@_equip:emGasMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"标况折算量"
 disMacro:"$equipRef $navName"
 kind:"Number"
@@ -98,7 +98,7 @@ flow
 equipRef:@_equip:emGasMeter
 emMeterRef:@_equip:emGasMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"瞬时流量"
 disMacro:"$equipRef $navName"
 kind:"Number"

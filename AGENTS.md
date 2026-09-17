@@ -22,9 +22,28 @@ Axon 脚本、建数/演示脚本、测试数据），都必须满足：
 注意：原说明书 OI-04 允许"跨楼层分区"（分区本身不强制挂楼层），但**分区之下
 的设备/点位仍必须挂到单一楼层**（挂主楼层）。
 
-## 已知存量缺口（规则生效前遗留，回填前不算违规）
+## 存量缺口：已清零（2026-09-18 回填完成）
 
-2026-09-18 全量体检（FIN mytest）：点位 1469 条中 1047 条缺 `floorRef`，
-设备 167 条中 100 条缺 `floorRef`；`siteRef` / `equipRef` 全量齐。
-回填方案：设备按空间就近挂楼层（手术室→手术 ICU 9F、急诊→门急诊医技 1F 等），
-点位从设备 Walk 继承。回填完成后此缺口应清零。
+2026-09-18 基线：点位 1469 条中 1047 条缺 `floorRef`，设备 167 条中 100 条缺
+`floorRef`。当日已按方案 A 全量回填并终审 **ALL PASS**（1199 点位 / 全部设备 /
+全部楼层满足红线；脚本与证据在 `docs/evidence/floorref_*.py`）：
+
+- TRIO 点位级 `floorRef` 由 `Arg("floorRef:N")` 改为
+  `Walk("equipRef>floorRef")`（9 个计量模板共 36 处；equip 级 Arg 保留）；
+- 创建层 `EmEntityCrud.withFloor` 强制：无 `floorRef` 且无法从 `emSpaceRef`
+  推导时直接 `ArgErr`；demo.trio 建数脚本已同步补楼层；
+- 东/南/西院区与旧隔离医院原本**没有楼层记录**，已按本部院区楼层结构补建
+  （各 6 层：地下能源中心 B1 / 门急诊医技 1F·2F / 住院护理 6F / 手术 ICU 9F /
+  屋面能源设施），设备再按空间就近回填；
+- 清理了 270 条 equipRef 悬空的孤儿点位（历史删除设备未级联的遗留）。
+
+## 关键机制（实测结论，修改建模链路前必读）
+
+1. **`Walk` 是构造期硬解析**：`ModelEntity.makeFromTrio` 时若 equip 没有
+   `floorRef` 直接抛 `sys::Err: Missing currentStep:'floorRef'`（不是软失败）。
+   因此存量设备未回填前，对老表执行任何会触发模型展开的操作（编辑页加载等）
+   都会报错 —— 回填必须先于模板切换完成（本次已按此顺序执行）。
+2. **Axon 里记录删除用 `wrappedDiffRemove(@ref)`**（finTools，内部自提交）。
+   `diff(rec, {id:...})` 会被 folio 拒绝（Cannot set tag "id"）；
+   `{remove}` 字典字面量只会加一个名叫 remove 的 marker 标签，不是删除。
+3. 前端建模页 `floorRef` 已标记 `required: true`（真正强制在后端 withFloor）。

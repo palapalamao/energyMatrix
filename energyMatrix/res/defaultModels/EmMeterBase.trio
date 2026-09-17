@@ -69,7 +69,7 @@ emL1Point
 equipRef:@_equip:emMeter
 emMeterRef:@_equip:emMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"L1 累积读数"
 disMacro:"$equipRef $navName"
 kind:"Number"
@@ -89,7 +89,7 @@ emDelta
 equipRef:@_equip:emMeter
 emMeterRef:@_equip:emMeter
 siteRef:Walk("equipRef>siteRef")
-floorRef:Arg("floorRef:N")
+  floorRef:Walk("equipRef>floorRef")
 navName:"L2 区间增量"
 disMacro:"$equipRef $navName"
 kind:"Number"
