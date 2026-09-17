@@ -1,0 +1,12 @@
+== 本部院区 ==
+== 南院区 ==
+== 西院区 ==
+== 东院区 ==
+== diag 本部院区: emAnomaly×0
+   ver:"3.0" siteRef:@p:mytest:r:3232ede5-bd4bda85 emRuleCount:13 span:Span("2026-09-01,2026-09-18") emSkipped:"SAFE-PQ-THDV, SAFE-FIRE-LEAK, SAFE-IT-IR, SAFE-FIRE-TEMP, QR-01, OC-01, HVAC-01, CARB-01, S
+== diag 南院区: emAnomaly×0
+   ver:"3.0" siteRef:@p:mytest:r:323941c3-8698da6e emRuleCount:4 span:Span("2026-09-01,2026-09-18") emSkipped:"SAFE-PQ-THDV, SAFE-FIRE-TEMP, SAFE-FIRE-LEAK, SAFE-IT-IR"
+== diag 西院区: emAnomaly×0
+   ver:"3.0" siteRef:@p:mytest:r:323941c3-1a9a3819 emRuleCount:4 span:Span("2026-09-01,2026-09-18") emSkipped:"SAFE-FIRE-LEAK, SAFE-PQ-THDV, SAFE-FIRE-TEMP, SAFE-IT-IR"
+== diag 东院区: emAnomaly×0
+   ver:"3.0" siteRef:@p:mytest:r:323941c3-0060fb1b emRuleCount:6 span:Span("2026-09-01,2026-09-18") emSkipped:"SAFE-IT-IR, SAFE-FIRE-TEMP, SAFE-FIRE-LEAK, SAFE-PQ-THDV"

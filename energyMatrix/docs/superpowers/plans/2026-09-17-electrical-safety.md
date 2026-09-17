@@ -25,8 +25,8 @@
 - [x] 版本升级：`build.fan` `Version("0.1.3")`、`ts/package.json` + lock → 0.1.3
 - [x] `npm test` + `tsc --noEmit` 全绿；`fant energyMatrix` 方法数不回退
 - [x] 构建 pod（build.ps1 + EM_OUT_POD_DIR），`emInfo()` 返回 0.1.3
-- [ ] mytest 医院四院区按 7.3.1–7.3.4 补监测点位、IT 隔离电源柜与 his 模拟数据（建立到设备树，运行时数据操作，单独列示并经确认）
-- [ ] 真机目检：四子视图数值/越限高亮、菜单图标 icon-flag 渲染、版本徽标 0.1.3
+- [x] mytest 医院四院区按 7.3.1–7.3.4 补监测点位、IT 隔离电源柜与 his 模拟数据（建立到设备树，运行时数据操作，单独列示并经确认）— 2026-09-17 完成：safety_build_data.py 幂等建数，四院区各 7 回路电表+2 IT 柜+35 安全点，今日 24h@10min 历史 122 样本/点，场景值验证通过（本部 ER 74.6℃/520mA、ICU-IT 42.8kΩ、CT THD 5.2%；西 OR 61.5℃；南 ICU-IT 48.2kΩ），SAFE-* 规则注册且在 emSkipped 明示
+- [ ] 真机目检：四子视图数值/越限高亮、菜单图标 icon-flag 渲染、版本徽标 0.1.3（已完成替代验证：pod 内 /safety 路由+电气菜单标签在列、pod.version=0.1.3、emDiagRun 跑通；浏览器守护离线，页面目检留待人工打开 http://localhost:8080 确认）
 - [ ] 提交 develop，更新 PR
 
 ## 关键决策（阶段 2 调查结论）
