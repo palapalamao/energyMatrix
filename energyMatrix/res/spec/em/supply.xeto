@@ -32,6 +32,22 @@ EmTransformer: EmSupplyEquip {
   }
 }
 
+// 医用 IT 隔离电源柜（V0.1.3 新增，见需求文档 7.3.2）
+// 二类医疗场所（手术室、ICU 等）的 IT 系统，绝缘监测为核心量；
+// 告警阈值参照 IEC 60364-7-710 的 50 Ω/V 惯例（220 V 系统约 50 kΩ，可逐柜配置）。
+EmItIsolationPanel: EmSupplyEquip {
+  elec
+  emItIsolation
+  emSystemVolt: Number <quantity:"volt", unit:"V">                        <doc:"IT 系统标称电压，如 220">
+  emIrAlarmThreshold: Number <quantity:"insulationResistance", unit:"kΩ"> <doc:"绝缘电阻告警阈值，默认 50 Ω/V x 系统电压">
+  points: {
+    insulationResistance: EmInsulationResistance
+    loadCurrent:          EmCurrent?
+    tempWinding:          EmTemp?
+  }
+}
+emItIsolation: Marker <doc:"医用 IT 隔离电源系统（二类医疗场所）">
+
 // 光伏
 EmPvSystem: EmSupplyEquip {
   elec

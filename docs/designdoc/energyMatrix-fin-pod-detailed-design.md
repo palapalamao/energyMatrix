@@ -6,7 +6,7 @@ ai4building  ·  Digital Twin System
 
 数据接口 · Fantom 类设计 · 前端骨架 · 部署与时序
 
-版本 V0.1.2
+版本 V0.1.3
 
 西门子中国
 
@@ -17,9 +17,9 @@ ai4building  ·  Digital Twin System
 | --- | --- |
 | 文档名称 | energyMatrix FIN Pod 详细设计说明书 |
 | 文档编号 | AI4B-EM-DD-2026-001 |
-| 版本 | V0.1.2 |
+| 版本 | V0.1.3 |
 | 密级 | 公司内部 |
-| 上游文档 | AI4B-EM-DS-2026-001《energyMatrix 语义模型设计说明书》V0.1.2 |
+| 上游文档 | AI4B-EM-DS-2026-001《energyMatrix 语义模型设计说明书》V0.1.3 |
 | 覆盖范围 | 数据接口设计、Fantom 后台类设计、前端路由与功能设计、部署与关键流程时序 |
 | 不覆盖范围 | 语义模型定义（见上游文档）、控制逻辑与寻优算法（见 CoolMatrix / heatMatrix 设计说明）、UI 视觉规范（见界面设计说明） |
 | 技术栈 | Fantom / FIN Framework 5.x / Haxall · Xeto 5.0 · React 18 + TypeScript · Folio |
@@ -32,6 +32,7 @@ ai4building  ·  Digital Twin System
 | V1.0 | 2026-09 | 补充 UML 类图、时序图、部署图与非功能设计 | 架构组 |
 | V0.1.1 | 2026-09 | 新增能流图（Sankey）屏设计；版本统一为 0.1.1；公司主体变更为西门子中国 | 架构组 |
 | V0.1.2 | 2026-09 | 新增核心 KPI 考核屏（/kpi）设计：复用 emKpiDefs/emKpiComputeAll/emQuotaProgressAll，站点模型新增 emBeds（核定床位数）且参数 UI 可配置；版本统一为 0.1.2 | 架构组 |
+| V0.1.3 | 2026-09 | 新增电气安全监测屏（/safety，第 16 屏）设计：重点负荷实时监控/IT 绝缘监测/电能质量分析/电气火灾预警四子视图；点位规范新增 EmInsulationResistance/EmThdV/EmThdI/EmUnbalance/EmResidualCurrent，供能域新增 EmItIsolationPanel（IT 隔离电源柜）；只监测不控制、后端接口与 Axon 函数零新增、告警复用域 11 | 架构组 |
 
 # 目录
 
@@ -336,6 +337,8 @@ EmRestMod 是 WebMod 子类，负责路由、鉴权与序列化；每个业务�
 
 KPI 考核（V0.1.2 新增，见 5.3）数据契约：指标定义取自 emKpiDefs()（emKpiCode、dis、emFormula、unit、emGranularity、emDimension、emHigherIsBetter、emStandardRef），数值批量取自 emKpiComputeAll(kpiCode, [subjectRef...], span)（emFormula 走 Axon 求值，分母缺失返回 null 不当 0），定额进度取自 emQuotas(subjectRef) 与 emQuotaProgressAll(subjectRef, span)。站点考核参数（area、emCoolArea、emOccupancy、emBeds）由模型配置屏经通用写接口 emEntityUpdate(entityId, changes) 维护（admin、枚举校验、留审计）。KPI 屏只读，不新增 Axon 函数、不新增后端接口。
 
+电气安全监测（V0.1.3 新增，见 5.3，需求文档 7.3）数据契约：本域属 Layer 1 实时监测场景，回路/IT 柜/馈线的电压、电流、功率、温度、绝缘电阻、THD、不平衡度、剩余电流等全部经既有 hisRead 通道按点位直读（按表计/设备树组织，空间标签挂医疗场所），前端不新增后端接口、后端不新增计算域；电压暂降以「his 点留痕 + 域 11 异常事件」双轨记录；阈值越限的告警闭环统一复用域 11（EmDiagRuleEngine 阈值规则 → EmAnomaly 异常事件 → EmWorkOrder 工单），不新建告警体系。监测数据不产生 L2 台账口径，与铁律 6 不冲突。安全红线：全部子视图只监测、不控制，无任何写控制点操作。
+
 ## 4.5  Haystack Ops 约定
 读取类需求一律复用 Haystack 标准 Ops，不另建接口。本 Pod 只新增两个自定义 Op，用于前端一次性获取结构化结果。
 
@@ -377,7 +380,8 @@ KPI 考核（V0.1.2 新增，见 5.3）数据契约：指标定义取自 emKpiDe
 路由以 /em 为前缀，十个一级模块，二级路由承载详情与子视图。全量清单见附录 B。
 
 | /em /overview                        能源总览（默认路由） /topology                        计量拓扑 /:meterId                      表计详情 /ledger /entries                       台账流水 /close                         关账闸门 /gap                           缺口分析 /billing /tariffs        /tariffs/:id   费率方案 /alloc-rules    /alloc-rules/:id 分摊规则 /bills          /bills/:id     账单 /kpi /indicators     /quotas        指标与定额 /mv /baselines/:id  /projects/:id  基线与节能措施 /carbon /accounts  /factors  /certs    碳账、因子、绿证 /diagnostics /anomalies  /workorders        事件与工单 /settings /meters-import  /permissions  /schedules /flow                        能流图（Sankey）
-/kpi                         KPI 考核（核心指标 + 定额进度） |
+/kpi                         KPI 考核（核心指标 + 定额进度）
+/safety                      电气安全（重点负荷实时监控 / IT 绝缘监测 / 电能质量分析 / 电气火灾预警，四子视图） |
 | --- |
 
 ## 5.3  模块功能说明
@@ -385,6 +389,7 @@ KPI 考核（V0.1.2 新增，见 5.3）数据契约：指标定义取自 emKpiDe
 | --- | --- | --- | --- |
 | 能源总览 | 能流桑基、分项下钻、多介质用量、缺口告警 | 无 | 缺口以独立断流呈现，不并入任一分项 |
 | 能流图 | 能源流向 Sankey、按介质分色、缺口断流汇入不明用能、tooltip 表计名与能耗 | 无 | 流向宽度取 L2 台账合计；考核表不参与汇总；空台账给引导不白屏 |
+| 电气安全 | 重点负荷实时监控（按医疗场所筛选，V/A/kW/°C + 24h 曲线）、IT 绝缘监测（绝缘电阻对 50 kΩ 阈值）、电能质量（THD/不平衡度/暂降事件）、电气火灾预警（线缆温度/剩余电流） | 无 | 只监测不控制；缺口/越限以独立断流与分级高亮呈现；告警复用域 11 异常事件与工单闭环；分母或点位缺失显示「—」并引导至模型配置屏 |
 | KPI 考核 | 核心指标卡（单位面积能耗/电耗、人均能耗/水耗、单位床位能耗、碳强度）、定额进度对标、绿色医院评审数据支撑 | 无 | 分母缺失显示「—」并引导至模型配置屏；参数可配置（emBeds 等站点属性） |
 | 计量拓扑 | submeterOf 树、表计详情、数据完好率、虚表公式 | 无 | 虚表与物理表视觉可区分 |
 | 台账与关账 | 流水查询、关账闸门、红冲、缺口分析 | 关账、红冲 | 缺口率未达标时关账按钮禁用 |
@@ -413,10 +418,13 @@ KPI 考核（V0.1.2 新增，见 5.3）数据契约：指标定义取自 emKpiDe
 
 KPI 考核前端取数契约（emApi 薄封装，V0.1.2）：emKpiDefs() 取指标定义、emKpiComputeAll(code, [site], span) 批量取值、emQuotaProgressAll(site, span) 取定额进度；分母缺失的指标显示「—」不当 0。
 
+电气安全前端取数契约（emApi 薄封装，V0.1.3）：回路/IT 柜/馈线结构取自既有设备树读取（emMeterTree 同源），监测量经 hisRead 按点位批量取 24h 序列（分钟级采样、10 分钟聚合展示）；暂降事件与工单状态取自域 11 既有异常/工单查询；全部只读。30 秒轮询仅限告警相关视图，曲线类数据按「站点 + 对象 + 日」缓存 5 分钟。
+
 ## 5.5  角色与权限矩阵
 | **模块** | **查看者** | **运维** | **计费专员** | **能源经理** | **管理员** |
 | --- | --- | --- | --- | --- | --- |
 | 能源总览 | 读 | 读 | 读 | 读 | 读 |
+| 电气安全 | 读 | 读 | 读 | 读 | 读 |
 | 计量拓扑 | 读 | 读 | 读 | 读 | 读写 |
 | 台账流水 | 读 | 读 | 读 | 读 | 读 |
 | 关账与红冲 | — | — | — | 执行 | 执行 |
@@ -612,3 +620,4 @@ KPI 考核前端取数契约（emApi 薄封装，V0.1.2）：emKpiDefs() 取指�
 | /em/settings/schedules | SchedulePage | em:admin | 调度计划 |
 | /em/flow | FlowPage | em:read | 能流图（Sankey），流向带宽∝台账能耗 |
 | /em/kpi | KpiPage | em:read | KPI 考核：核心指标卡与定额进度，分母缺失显示「—」 |
+| /em/safety | SafetyPage | em:read | 电气安全：四子视图只读监测，告警复用域 11 闭环 |

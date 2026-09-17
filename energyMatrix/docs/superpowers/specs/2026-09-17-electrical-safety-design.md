@@ -52,3 +52,31 @@
 1. **阶段 1（本阶段）**：只更新需求文档（spec md+docx）+ 本文档 → 提交 develop → **停下等确认**。
 2. 阶段 2（确认后）：详细设计文档（路由骨架 /safety、模块条目、接口契约）、points.xeto 等模型补齐、menu.trio 菜单项、locale 词条、`plans/` 任务清单。
 3. 阶段 3（再确认后）：Safety 四 Tab 开发、routes 接通、版本号升级 0.1.3、测试 + tsc + `fant energyMatrix`、build.ps1 出 pod、部署 FIN 重启、四院区设备树数据补齐、真机目检、PR。
+
+---
+
+## 阶段 2 记录（2026-09-17，详细设计 + 模型 + trio，commit 59a5c83）
+
+阶段 1 确认后执行，未动任何前端页面代码。
+
+- 详细设计文档（md + docx，AI4B-EM-DD-2026-001）：V0.1.2 → V0.1.3；上游引用同步 V0.1.3；
+  4.4 新增电气安全数据契约段（hisRead 直读 L1、暂降双轨、告警复用域 11、无新增后端接口）；
+  5.2 路由骨架加 /safety；5.3 加「电气安全」模块行；5.4 加前端取数契约；
+  5.5 权限矩阵加行（全角色只读）；附录 B 加 /em/safety。
+  docx 抽文本验证：V0.1.3×6、电气安全×7、和碳 0 残留；md 同口径一致。
+- 模型：points.xeto 新增 EmInsulationResistance(kΩ)/EmThdV(%)/EmThdI(%)/EmUnbalance(%)/
+  EmResidualCurrent(mA) 五点位规范 + emInsulation/emThd/emUnbalance/emResidualCurrent 四 marker；
+  supply.xeto 新增 EmItIsolationPanel（医用 IT 隔离电源柜）。
+- **落点定夺**：IT 柜 equip 按变配电归类进 supply.xeto（与 EmTransformer 同组、继承
+  EmSupplyEquip），未新建模型文件、未放 loads.xeto（用能设备域）——它是供电侧设备。
+  阈值做成 emIrAlarmThreshold 逐柜可配（默认 50 Ω/V × 系统电压）。
+- defs.trio（FIN 5.3 真正生效的 def 库）：补 emInsulation/emThd/emUnbalance/emResidualCurrent/
+  emItIsolation 五个 marker def（xeto 在 FIN 5.3 无法编译，仅作规格源真相，见 build.fan 注）。
+- trio：menu.trio 加 entry("电气安全", "/safety", -317.5, "icon-flag")（监测运行组、
+  实时监测与告警之后）；屏数注释 15→16。TrioReader 实测解析通过（menu 1 def / defs 215 defs）。
+- 静态 demo（docs/demo/2026-09-17-em-safety-screen/em-safety-demo.html）已随本阶段入库，
+  是评审确认的交互原型，阶段 3 前端实现的参照。
+- 更正：「locale 词条」按 KPI 阶段先例拆清——lib 级 zh.props/en.props 因无新增 Axon 函数
+  零变更；UI 屏内词条在 ts/src/i18n/*.json，随阶段 3 前端代码补。
+- 阶段 3 验证项：真机目检菜单图标 icon-flag 渲染（icon 字体为二进制无法离线核验，
+  若缺字回退 icon-alert）。

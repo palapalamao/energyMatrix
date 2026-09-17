@@ -52,6 +52,23 @@ EmFreq:        NumberPoint { elec, freq, sensor, unit:"Hz", his }
 EmLoadRate:    NumberPoint { elec, sensor, emLoadRate, unit:"%", his }
 emLoadRate:    Marker <doc:"负载率">
 
+// --- 重点负荷与电气安全监测（V0.1.3 新增，见需求文档 7.3） -----------------
+// 只监测不控制：本组点位全部 his 留痕，经既有 hisRead 通道读取，
+// 不产生 L2 台账口径（emDelta/emNormalized 不适用）。
+
+EmInsulationResistance: NumberPoint { elec, sensor, emInsulation, unit:"kΩ", his }
+emInsulation:           Marker <doc:"IT 系统绝缘监测（IEC 60364-7-710）">
+
+EmThdV:     NumberPoint { elec, sensor, emThd, unit:"%", his }
+EmThdI:     NumberPoint { elec, sensor, emThd, unit:"%", his }
+emThd:      Marker <doc:"总谐波畸变率">
+
+EmUnbalance: NumberPoint { elec, sensor, emUnbalance, unit:"%", his }
+emUnbalance: Marker <doc:"三相电压不平衡度">
+
+EmResidualCurrent: NumberPoint { elec, sensor, emResidualCurrent, unit:"mA", his }
+emResidualCurrent: Marker <doc:"剩余/漏电流（电气火灾预警）">
+
 // --- 水 / 气 / 汽 ---------------------------------------------------------
 
 EmWaterVolumeTotal: NumberPoint { water, volume, sensor, total, unit:"m³", his }

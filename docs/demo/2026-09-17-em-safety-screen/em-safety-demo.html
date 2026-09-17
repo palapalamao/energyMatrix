@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>energyMatrix · 电气安全监测（/em/safety 静态 Demo）</title>
+<style>
+  :root{
+    --bg:#f1f5f9; --card:#ffffff; --border:#e2e8f0; --text:#1e293b; --muted:#64748b;
+    --teal:#0d9488; --teal-dk:#0f766e; --head:#0f172a;
+    --ok:#10b981; --warn:#f59e0b; --alarm:#ef4444; --info:#2563eb;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:"Microsoft YaHei","PingFang SC","Segoe UI",sans-serif; background:var(--bg); color:var(--text); font-size:14px; height:100vh; overflow:hidden; display:flex; flex-direction:column;}
+  /* ---- 顶栏 ---- */
+  header{background:var(--head); color:#e2e8f0; display:flex; align-items:center; gap:18px; padding:0 20px; height:52px; flex:none;}
+  .logo{display:flex; align-items:baseline; gap:8px; border-right:1px solid #334155; padding-right:16px;}
+  .logo b{color:#fff; font-size:16px; letter-spacing:.5px;}
+  .logo span{color:#5eead4; font-size:12px;}
+  .scr-title{color:#fff; font-size:15px; font-weight:600;}
+  .scr-route{font-family:Consolas,monospace; font-size:11px; color:#94a3b8; background:#1e293b; padding:2px 8px; border-radius:4px;}
+  .head-right{margin-left:auto; display:flex; align-items:center; gap:10px; font-size:12px;}
+  .pill{padding:3px 10px; border-radius:999px; font-size:12px; font-weight:600;}
+  .pill-readonly{background:#7c2d12; color:#fdba74; border:1px solid #9a3412;}
+  .pill-demo{background:#1e3a8a; color:#93c5fd; border:1px solid #1d4ed8;}
+  #clock{font-family:Consolas,monospace; color:#cbd5e1;}
+  /* ---- 子视图页签 ---- */
+  nav{background:#fff; border-bottom:1px solid var(--border); display:flex; gap:6px; padding:8px 20px 0; flex:none;}
+  .tab{padding:8px 16px; border:1px solid var(--border); border-bottom:none; border-radius:8px 8px 0 0; background:#f8fafc; color:var(--muted); cursor:pointer; font-size:13px; display:flex; align-items:center; gap:6px;}
+  .tab.active{background:var(--bg); color:var(--teal-dk); font-weight:700; border-color:var(--border); position:relative;}
+  .tab .cnt{background:var(--border); color:#475569; border-radius:999px; padding:0 6px; font-size:11px;}
+  .tab.active .cnt{background:var(--teal); color:#fff;}
+  /* ---- 主区 ---- */
+  main{flex:1; overflow-y:auto; padding:16px 20px 28px;}
+  .view{display:none;}
+  .view.active{display:block;}
+  .toolbar{display:flex; align-items:center; gap:8px; margin-bottom:14px; flex-wrap:wrap;}
+  .toolbar .lbl{color:var(--muted); font-size:13px;}
+  .chip{padding:4px 14px; border-radius:999px; border:1px solid var(--border); background:#fff; color:#475569; cursor:pointer; font-size:13px;}
+  .chip.active{background:var(--teal); border-color:var(--teal); color:#fff; font-weight:600;}
+  .summary{display:flex; gap:12px; margin-bottom:14px; flex-wrap:wrap;}
+  .sum-card{background:var(--card); border:1px solid var(--border); border-radius:10px; padding:10px 18px; min-width:150px; box-shadow:0 1px 2px rgba(15,23,42,.04);}
+  .sum-card .v{font-size:22px; font-weight:700;}
+  .sum-card .t{color:var(--muted); font-size:12px; margin-top:2px;}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(330px,1fr)); gap:14px;}
+  .card{background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 16px; box-shadow:0 1px 2px rgba(15,23,42,.04);}
+  .card.alarm{border-color:#fecaca; background:#fffafa;}
+  .card.warn{border-color:#fde68a; background:#fffdf5;}
+  .card-head{display:flex; align-items:center; gap:8px; margin-bottom:10px;}
+  .card-head .name{font-weight:700; font-size:14px;}
+  .tag{font-size:11px; color:var(--muted); border:1px solid var(--border); border-radius:4px; padding:1px 6px; background:#f8fafc;}
+  .badge{margin-left:auto; font-size:12px; font-weight:700; padding:2px 10px; border-radius:999px; display:flex; align-items:center; gap:5px;}
+  .badge .dot{width:8px; height:8px; border-radius:50%;}
+  .b-ok{color:#047857; background:#d1fae5;} .b-ok .dot{background:var(--ok);}
+  .b-warn{color:#b45309; background:#fef3c7;} .b-warn .dot{background:var(--warn);}
+  .b-alarm{color:#b91c1c; background:#fee2e2;} .b-alarm .dot{background:var(--alarm);}
+  .metrics{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:10px;}
+  .metric{background:#f8fafc; border:1px solid var(--border); border-radius:8px; padding:6px 8px;}
+  .metric .mv{font-size:16px; font-weight:700; font-family:Consolas,monospace;}
+  .metric .mu{font-size:11px; color:var(--muted);}
+  .metric .mt{font-size:11px; color:var(--muted);}
+  .metric.over .mv{color:var(--alarm);}
+  .chart-title{font-size:11px; color:var(--muted); margin-bottom:2px; display:flex; justify-content:space-between;}
+  .chart-title .lim{color:var(--alarm);}
+  svg.spark{width:100%; height:64px; display:block;}
+  .foot-note{color:var(--muted); font-size:11px; margin-top:8px; line-height:1.5;}
+  /* ---- 表格 ---- */
+  table{width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--border); border-radius:10px; overflow:hidden; font-size:13px;}
+  th{background:#f8fafc; color:#475569; font-weight:600; text-align:left; padding:9px 12px; border-bottom:1px solid var(--border); white-space:nowrap;}
+  td{padding:9px 12px; border-bottom:1px solid #f1f5f9; white-space:nowrap;}
+  tr:last-child td{border-bottom:none;}
+  tr.row-warn{background:#fffbeb;} tr.row-alarm{background:#fef2f2;}
+  td:last-child .badge{white-space:nowrap;}
+  .num{font-family:Consolas,monospace; font-weight:600;}
+  .bar-wrap{background:#f1f5f9; border-radius:4px; height:8px; width:120px; display:inline-block; vertical-align:middle; margin-right:8px; overflow:hidden;}
+  .bar{height:100%; border-radius:4px;}
+  .panel{background:#fff; border:1px solid var(--border); border-radius:10px; padding:14px 16px; margin-bottom:14px; box-shadow:0 1px 2px rgba(15,23,42,.04);}
+  .panel h3{font-size:14px; margin-bottom:10px; color:#0f172a; display:flex; align-items:center; gap:8px;}
+  .panel h3 .sub{font-size:11px; color:var(--muted); font-weight:400;}
+  .loop{display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:13px; margin-top:6px;}
+  .loop .node{background:#f0fdfa; border:1px solid #99f6e4; color:#0f766e; border-radius:8px; padding:6px 12px; font-weight:600;}
+  .loop .node.wo{background:#eff6ff; border-color:#bfdbfe; color:#1d4ed8;}
+  .loop .arr{color:#94a3b8;}
+  .muted{color:var(--muted);}
+  .footnote{margin-top:18px; color:#94a3b8; font-size:12px; line-height:1.7; border-top:1px dashed var(--border); padding-top:10px;}
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media (max-width:1100px){ .two-col{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><b>energyMatrix</b><span>医院能源管理</span></div>
+  <div class="scr-title">电气安全监测</div>
+  <div class="scr-route">/em/safety</div>
+  <div class="head-right">
+    <span class="pill pill-demo">演示数据</span>
+    <span class="pill pill-readonly">只监测 · 不控制</span>
+    <span id="clock">--:--:--</span>
+  </div>
+</header>
+<nav id="tabs">
+  <div class="tab active" data-view="v1">重点负荷实时监控</div>
+  <div class="tab" data-view="v2">IT 绝缘监测</div>
+  <div class="tab" data-view="v3">电能质量分析</div>
+  <div class="tab" data-view="v4">电气火灾预警</div>
+</nav>
+<main>
+  <!-- ============ 视图 1：重点负荷实时监控（7.3.1） ============ -->
+  <section class="view active" id="v1">
+    <div class="toolbar">
+      <span class="lbl">医疗场所：</span>
+      <button class="chip active" data-place="all">全部</button>
+      <button class="chip" data-place="手术室">手术室</button>
+      <button class="chip" data-place="ICU">ICU</button>
+      <button class="chip" data-place="急诊">急诊</button>
+      <span class="lbl" style="margin-left:auto">回路以计量树电表承载，经空间标签挂到医疗场所；分钟级采样，2s 前端模拟刷新</span>
+    </div>
+    <div class="summary" id="v1-summary"></div>
+    <div class="grid" id="v1-grid"></div>
+  </section>
+  <!-- ============ 视图 2：IT 绝缘监测（7.3.2） ============ -->
+  <section class="view" id="v2">
+    <div class="toolbar">
+      <span class="lbl">对象：二类医疗场所（手术室、ICU）IT 隔离电源系统</span>
+      <span class="lbl" style="margin-left:auto">绝缘告警阈值参照 IEC 60364-7-710 的 50 Ω/V 惯例（220 V IT 系统约 <b>50 kΩ</b>，最终值评审定夺）</span>
+    </div>
+    <div class="summary" id="v2-summary"></div>
+    <div class="grid" id="v2-grid"></div>
+  </section>
+  <!-- ============ 视图 3：电能质量分析（7.3.3） ============ -->
+  <section class="view" id="v3">
+    <div class="toolbar">
+      <span class="lbl">馈线：</span>
+      <button class="chip active" data-feeder="all">全部</button>
+      <button class="chip" data-feeder="影像设备">CT / MRI 馈线</button>
+      <button class="chip" data-feeder="主进线">院区主进线</button>
+      <span class="lbl" style="margin-left:auto">电压暂降走「his 点 + 异常事件」双轨：曲线留痕 + 事件闭环</span>
+    </div>
+    <div class="summary" id="v3-summary"></div>
+    <div class="grid" id="v3-grid" style="margin-bottom:14px"></div>
+    <div class="panel">
+      <h3>电压暂降事件 <span class="sub">事件型数据：剩余电压 % + 持续时间</span></h3>
+      <div class="em-scroll-x"><table id="v3-events"></table></div>
+    </div>
+  </section>
+  <!-- ============ 视图 4：电气火灾预警（7.3.4） ============ -->
+  <section class="view" id="v4">
+    <div class="toolbar">
+      <span class="lbl">对象：各院区配电回路（重点覆盖一级负荷与大电流回路）</span>
+      <span class="lbl" style="margin-left:auto">阈值越限 → 异常事件 → 派发工单（复用域 11 诊断闭环，不新建体系）</span>
+    </div>
+    <div class="summary" id="v4-summary"></div>
+    <div class="panel">
+      <h3>回路监测明细 <span class="sub">线缆温度（复用 EmTemp）· 剩余/漏电流（EmResidualCurrent，mA）</span></h3>
+      <div class="em-scroll-x"><table id="v4-table"></table></div>
+    </div>
+    <div class="panel">
+      <h3>告警闭环示例 <span class="sub">统一复用域 11：EmDiagRuleEngine 阈值规则 → EmAnomaly 异常事件 → EmWorkOrder 工单</span></h3>
+      <div class="loop" id="v4-loop"></div>
+    </div>
+  </section>
+  <div class="footnote">
+    本 Demo 依据《语义模型设计说明书》AI4B-EM-DS-2026-001 V0.1.3 §7.3「重点负荷与电气安全监测（医院专项）」制作 · 规划路由 /em/safety（第 16 屏「电气安全」）·
+    点位：EmVolt / EmCurrent / EmElecPowerActive / EmTemp / EmInsulationResistance / EmThdV / EmThdI / EmUnbalance / EmResidualCurrent ·
+    监测数据属 Layer 1 实时场景，不产生 L2 台账口径；全部页面无写控制点操作。
+  </div>
+</main>
+<script>
+/* ---------- 工具：确定性伪随机 + 24h 曲线生成 ---------- */
+function mulberry32(seed){ return function(){ seed|=0; seed=seed+0x6D2B79F5|0; let t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+const N=144; // 24h @10min
+function dailySeries(seed, base, amp, peakHr, noise, drift){
+  const rnd=mulberry32(seed); const a=[];
+  for(let i=0;i<N;i++){
+    const hr=i/6; // 0..24
+    let d=hr-peakHr; if(d>12)d-=24; if(d<-12)d+=24;
+    const v=base + amp*Math.exp(-(d*d)/18) + (rnd()-0.5)*2*noise + (drift||0)*(i/N);
+    a.push(Math.max(0, +v.toFixed(2)));
+  }
+  return a;
+}
+function spark(values, opt){
+  opt=opt||{};
+  const w=300,h=64,pad=4;
+  let min=opt.min!=null?opt.min:Math.min.apply(null,values);
+  let max=opt.max!=null?opt.max:Math.max.apply(null,values);
+  if(max-min<1e-6){max=min+1;}
+  const pts=values.map((v,i)=>{ const x=pad+(i/(values.length-1))*(w-2*pad); const y=h-pad-((v-min)/(max-min))*(h-2*pad); return x.toFixed(1)+','+y.toFixed(1); }).join(' ');
+  let inner='';
+  if(opt.thresh!=null){
+    const y=h-pad-((opt.thresh-min)/(max-min))*(h-2*pad);
+    if(y>0&&y<h) inner+='<line x1="'+pad+'" y1="'+y.toFixed(1)+'" x2="'+(w-pad)+'" y2="'+y.toFixed(1)+'" stroke="#ef4444" stroke-width="1" stroke-dasharray="4 3" opacity="0.8"/>';
+  }
+  const area=opt.fill? '<polygon points="'+pad+','+(h-pad)+' '+pts+' '+(w-pad)+','+(h-pad)+'" fill="'+opt.color+'" opacity="0.10"/>':'';
+  inner+=area+'<polyline points="'+pts+'" fill="none" stroke="'+opt.color+'" stroke-width="1.8" stroke-linejoin="round"/>';
+  const lbl=['00:00','06:00','12:00','18:00','24:00'];
+  inner+=lbl.map((t,i)=>{ const x=pad+(i/4)*(w-2*pad); return '<text x="'+x+'" y="'+(h-1)+'" font-size="8" fill="#94a3b8" text-anchor="'+(i===0?'start':(i===4?'end':'middle'))+'">'+t+'</text>'; }).join('');
+  return '<svg class="spark" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none">'+inner+'</svg>';
+}
+function walk(v, step, lo, hi){ let n=v+(Math.random()-0.5)*2*step; if(n<lo)n=lo; if(n>hi)n=hi; return +n.toFixed(1); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+const TH={ voltLo:198, voltHi:242, tempWarn:60, tempAlarm:70, irWarn:50, irAlarm:30, transTemp:80, thdV:5, thdI:20, unb:2, leakWarn:300, leakAlarm:500, fireTempWarn:60, fireTempAlarm:70 };
+const fmtTime=()=>{ const d=new Date(); return d.toTimeString().slice(0,8); };
+
+/* ---------- 模拟数据：重点负荷回路（7.3.1） ---------- */
+const circuits=[
+  {id:'OR-1',  name:'手术室 1# 配电回路', place:'手术室', v:221.3, i:38.2, kw:8.42,  temp:46.5, kwS:dailySeries(11, 6.5, 4.5, 10, 0.4)},
+  {id:'OR-2',  name:'手术室 2# 配电回路', place:'手术室', v:219.6, i:52.7, kw:11.61, temp:63.2, kwS:dailySeries(12, 8.0, 5.0, 14, 0.5)},
+  {id:'OR-3',  name:'手术室 3# 配电回路', place:'手术室', v:222.8, i:29.4, kw:6.49,  temp:44.1, kwS:dailySeries(13, 5.0, 3.5, 11, 0.3)},
+  {id:'ICU-1', name:'ICU 配电回路 A',     place:'ICU',    v:220.9, i:61.8, kw:13.62, temp:51.3, kwS:dailySeries(14, 10.0, 5.5, 12, 0.5)},
+  {id:'ICU-2', name:'ICU 配电回路 B',     place:'ICU',    v:218.4, i:44.6, kw:9.83,  temp:49.7, kwS:dailySeries(15, 7.5, 4.0, 12, 0.4)},
+  {id:'ER-1',  name:'急诊抢救室回路',     place:'急诊',   v:217.2, i:73.5, kw:16.13, temp:74.6, kwS:dailySeries(16, 12.0, 6.0, 9, 0.6)},
+  {id:'ER-2',  name:'急诊留观回路',       place:'急诊',   v:220.1, i:33.9, kw:7.47,  temp:47.9, kwS:dailySeries(17, 6.0, 3.8, 15, 0.4)},
+];
+function cStatus(c){
+  if(c.temp>=TH.tempAlarm||c.v<TH.voltLo||c.v>TH.voltHi) return 'alarm';
+  if(c.temp>=TH.tempWarn) return 'warn';
+  return 'ok';
+}
+/* ---------- 模拟数据：IT 隔离电源柜（7.3.2） ---------- */
+const itCabs=[
+  {id:'IT-OR1', name:'手术室 IT 隔离电源柜 1#', loc:'手术室区', ir:128.5, irS:dailySeries(21, 150, 25, 6, 12, -35), load:41.2, tT:52.6},
+  {id:'IT-OR2', name:'手术室 IT 隔离电源柜 2#', loc:'手术室区', ir:96.3,  irS:dailySeries(22, 120, 20, 7, 10, -25),    load:36.8, tT:50.2},
+  {id:'IT-ICU1',name:'ICU IT 隔离电源柜',       loc:'ICU 病区', ir:42.8,  irS:dailySeries(23, 110, 30, 8, 14, -70),    load:55.4, tT:61.7},
+];
+function irStatus(c){ if(c.ir<=TH.irAlarm) return 'alarm'; if(c.ir<=TH.irWarn) return 'warn'; return 'ok'; }
+/* ---------- 模拟数据：电能质量（7.3.3） ---------- */
+const feeders=[
+  {id:'CT-1',  name:'CT 机馈线',     grp:'影像设备', thdV:3.8,  thdV_S:dailySeries(31, 3.2, 1.4, 10, 0.3), thdI:14.2, thdI_S:dailySeries(32, 13, 5, 10, 0.8), unb:1.2,  unb_S:dailySeries(33, 1.0, 0.7, 9, 0.15)},
+  {id:'MRI-1', name:'MRI 馈线 1#',   grp:'影像设备', thdV:4.6,  thdV_S:dailySeries(34, 4.0, 1.2, 11, 0.3), thdI:19.8, thdI_S:dailySeries(35, 18, 6, 11, 0.9), unb:1.8,  unb_S:dailySeries(36, 1.5, 0.9, 10, 0.15)},
+  {id:'MRI-2', name:'MRI 馈线 2#',   grp:'影像设备', thdV:3.1,  thdV_S:dailySeries(37, 2.8, 1.0, 14, 0.25),thdI:11.6, thdI_S:dailySeries(38, 11, 4, 14, 0.7), unb:0.9,  unb_S:dailySeries(39, 0.8, 0.5, 14, 0.1)},
+  {id:'MAIN-1',name:'院区 1# 主进线', grp:'主进线',  thdV:2.4,  thdV_S:dailySeries(40, 2.2, 0.8, 12, 0.2), thdI:8.3,  thdI_S:dailySeries(41, 8, 3, 12, 0.5), unb:0.7,  unb_S:dailySeries(42, 0.6, 0.4, 12, 0.08)},
+  {id:'MAIN-2',name:'院区 2# 主进线', grp:'主进线',  thdV:2.1,  thdV_S:dailySeries(43, 2.0, 0.7, 13, 0.2), thdI:7.6,  thdI_S:dailySeries(44, 7, 3, 13, 0.5), unb:0.6,  unb_S:dailySeries(45, 0.5, 0.35, 13, 0.08)},
+];
+function pqStatus(f){ if(f.thdV>TH.thdV||f.unb>TH.unb||f.thdI>TH.thdI) return 'warn'; return 'ok'; }
+const sagEvents=[
+  {t:'2026-09-17 03:12', obj:'CT-1 CT机馈线',   rem:78, dur:'120 ms', level:'一般', status:'已闭环', cls:'b-ok'},
+  {t:'2026-09-17 14:40', obj:'MRI-1 MRI馈线',   rem:62, dur:'240 ms', level:'重要', status:'处理中', cls:'b-warn'},
+  {t:'2026-09-16 22:05', obj:'MAIN-1 院区主进线', rem:85, dur:'80 ms',  level:'一般', status:'已闭环', cls:'b-ok'},
+];
+/* ---------- 模拟数据：电气火灾预警（7.3.4） ---------- */
+const fireRows=[
+  {id:'ER-1',  name:'急诊抢救室回路',     temp:74.6, leak:520, rule:'R-FIRE-02'},
+  {id:'OR-2',  name:'手术室 2# 配电回路', temp:63.2, leak:185, rule:'R-FIRE-02'},
+  {id:'ICU-1', name:'ICU 配电回路 A',     temp:51.3, leak:96,  rule:'R-FIRE-02'},
+  {id:'OR-1',  name:'手术室 1# 配电回路', temp:46.5, leak:74,  rule:'R-FIRE-02'},
+  {id:'MAIN-1',name:'院区 1# 主进线',     temp:41.8, leak:132, rule:'R-FIRE-01'},
+  {id:'MAIN-2',name:'院区 2# 主进线',     temp:40.2, leak:118, rule:'R-FIRE-01'},
+];
+function fireStatus(r){ if(r.temp>=TH.fireTempAlarm||r.leak>=TH.leakAlarm) return 'alarm'; if(r.temp>=TH.fireTempWarn||r.leak>=TH.leakWarn) return 'warn'; return 'ok'; }
+const loop=[
+  {txt:'EmDiagRuleEngine 阈值规则 '+ 'R-FIRE-02（温度≥70℃ 或 漏电流≥500mA）', cls:'node'},
+  {txt:'→', cls:'arr'},
+  {txt:'EmAnomaly EM-AN-20260917-008（急诊抢救室回路 · 预警）', cls:'node'},
+  {txt:'→', cls:'arr'},
+  {txt:'EmWorkOrder WO-20260917-013 · 已派单 · 处理中', cls:'node wo'},
+];
+
+/* ---------- 渲染 ---------- */
+const BADGE={ok:['b-ok','正常'],warn:['b-warn','越限预警'],alarm:['b-alarm','越限告警']};
+let placeFilter='all';
+function renderV1(){
+  const list=circuits.filter(c=>placeFilter==='all'||c.place===placeFilter);
+  const nAlarm=circuits.filter(c=>cStatus(c)==='alarm').length;
+  const nWarn=circuits.filter(c=>cStatus(c)==='warn').length;
+  document.getElementById('v1-summary').innerHTML=
+    sum('监测回路', circuits.length, '个')+sum('越限告警', nAlarm, '个', nAlarm?'#dc2626':'')+sum('越限预警', nWarn, '个', nWarn?'#d97706':'')+sum('采样周期', 1, '分钟');
+  document.getElementById('v1-grid').innerHTML=list.map(c=>{
+    const st=cStatus(c), b=BADGE[st];
+    const overT=c.temp>=TH.tempWarn, overV=c.v<TH.voltLo||c.v>TH.voltHi;
+    return '<div class="card '+st+'">'+
+      '<div class="card-head"><span class="name">'+esc(c.name)+'</span><span class="tag">'+c.id+'</span><span class="tag">'+c.place+'</span><span class="badge '+b[0]+'"><span class="dot"></span>'+b[1]+'</span></div>'+
+      '<div class="metrics">'+
+        mtr('电压', c.v, 'V', overV)+mtr('电流', c.i, 'A', false)+mtr('有功功率', c.kw, 'kW', false)+mtr('线缆温度', c.temp, '°C', overT)+
+      '</div>'+
+      '<div class="chart-title"><span>有功功率 24h 曲线</span><span class="lim">温度限值 '+TH.tempWarn+'/'+TH.tempAlarm+'°C · 电压 '+TH.voltLo+'–'+TH.voltHi+'V</span></div>'+
+      spark(c.kwS,{color:'#0d9488',fill:true})+
+      '<div class="foot-note">更新于 '+fmtTime()+' · 点位 EmVolt / EmCurrent / EmElecPowerActive / EmTemp</div>'+
+    '</div>';
+  }).join('');
+}
+function mtr(t,v,u,over){ return '<div class="metric'+(over?' over':'')+'"><div class="mv">'+v+'<span class="mu"> '+u+'</span></div><div class="mt">'+t+'</div></div>'; }
+function sum(t,v,u,color){ return '<div class="sum-card"><div class="v" style="'+(color?'color:'+color:'')+'">'+v+'<span style="font-size:13px;color:#94a3b8"> '+u+'</span></div><div class="t">'+t+'</div></div>'; }
+
+function renderV2(){
+  const nA=itCabs.filter(c=>irStatus(c)==='alarm').length, nW=itCabs.filter(c=>irStatus(c)==='warn').length;
+  document.getElementById('v2-summary').innerHTML=
+    sum('IT 隔离电源柜', itCabs.length, '台')+sum('绝缘越限告警', nA, '台', nA?'#dc2626':'')+sum('绝缘越限预警', nW, '台', nW?'#d97706':'')+sum('告警阈值', TH.irWarn, 'kΩ');
+  document.getElementById('v2-grid').innerHTML=itCabs.map(c=>{
+    const st=irStatus(c), b=BADGE[st];
+    const pct=Math.min(100, c.ir/200*100);
+    return '<div class="card '+st+'">'+
+      '<div class="card-head"><span class="name">'+esc(c.name)+'</span><span class="tag">'+c.id+'</span><span class="tag">'+c.loc+'</span><span class="badge '+b[0]+'"><span class="dot"></span>'+b[1]+'</span></div>'+
+      '<div style="margin-bottom:8px"><div class="chart-title"><span>系统绝缘电阻（kΩ）· 当前 <b class="num" style="color:'+(st==='ok'?'#047857':'#b91c1c')+'">'+c.ir+'</b></span><span class="lim">阈值 '+TH.irWarn+' kΩ</span></div>'+
+      '<div style="display:flex;align-items:center;gap:8px"><div class="bar-wrap" style="width:100%;height:10px"><div class="bar" style="width:'+pct+'%;background:'+(st==='ok'?'#10b981':(st==='warn'?'#f59e0b':'#ef4444'))+'"></div></div></div>'+
+      spark(c.irS,{color: st==='ok'?'#0d9488':'#dc2626', thresh:TH.irWarn, min:0})+
+      '</div>'+
+      '<div class="metrics" style="grid-template-columns:repeat(2,1fr)">'+
+        mtr('负荷电流', c.load, 'A', false)+mtr('变压器温度', c.tT, '°C', c.tT>=TH.transTemp)+
+      '</div>'+
+      '<div class="foot-note">更新于 '+fmtTime()+' · 点位 EmInsulationResistance / EmCurrent / EmTemp</div>'+
+    '</div>';
+  }).join('');
+}
+
+let feederFilter='all';
+function renderV3(){
+  const list=feeders.filter(f=>feederFilter==='all'||f.grp===feederFilter);
+  const nW=list.filter(f=>pqStatus(f)!=='ok').length;
+  document.getElementById('v3-summary').innerHTML=
+    sum('监测馈线', feeders.length, '条')+sum('越限馈线', nW, '条', nW?'#d97706':'')+sum('电压 THD 限值', TH.thdV, '%')+sum('今日暂降事件', sagEvents.length, '起');
+  document.getElementById('v3-grid').innerHTML=list.map(f=>{
+    const st=pqStatus(f), b=BADGE[st];
+    return '<div class="card '+st+'">'+
+      '<div class="card-head"><span class="name">'+esc(f.name)+'</span><span class="tag">'+f.id+'</span><span class="tag">'+f.grp+'</span><span class="badge '+b[0]+'"><span class="dot"></span>'+b[1]+'</span></div>'+
+      '<div class="metrics">'+
+        mtr('电压 THD', f.thdV, '%', f.thdV>TH.thdV)+mtr('电流 THD', f.thdI, '%', f.thdI>TH.thdI)+mtr('三相不平衡', f.unb, '%', f.unb>TH.unb)+
+      '</div>'+
+      '<div class="chart-title"><span>电压 THD 24h 趋势（限值 '+TH.thdV+'%）</span></div>'+
+      spark(f.thdV_S,{color:'#2563eb', thresh:TH.thdV, fill:true})+
+      '<div class="foot-note">更新于 '+fmtTime()+' · 点位 EmThdV / EmThdI / EmUnbalance</div>'+
+    '</div>';
+  }).join('');
+  document.getElementById('v3-events').innerHTML=
+    '<tr><th>发生时间</th><th>对象</th><th>剩余电压</th><th>持续时间</th><th>重要度</th><th>闭环状态</th></tr>'+
+    sagEvents.map(e=>'<tr><td class="num">'+e.t+'</td><td>'+esc(e.obj)+'</td><td class="num">'+e.rem+'%</td><td class="num">'+e.dur+'</td><td>'+e.level+'</td><td><span class="badge '+e.cls+'">'+e.status+'</span></td></tr>').join('');
+}
+
+function renderV4(){
+  const nA=fireRows.filter(r=>fireStatus(r)==='alarm').length, nW=fireRows.filter(r=>fireStatus(r)==='warn').length;
+  document.getElementById('v4-summary').innerHTML=
+    sum('监测回路', fireRows.length, '个')+sum('火灾隐患告警', nA, '个', nA?'#dc2626':'')+sum('隐患预警', nW, '个', nW?'#d97706':'')+sum('漏电流限值', TH.leakAlarm, 'mA');
+  document.getElementById('v4-table').innerHTML=
+    '<tr><th>回路</th><th>线缆温度（限值 '+TH.fireTempWarn+'/'+TH.fireTempAlarm+'°C）</th><th>剩余电流（限值 '+TH.leakWarn+'/'+TH.leakAlarm+'mA）</th><th>判定</th></tr>'+
+    fireRows.map(r=>{
+      const st=fireStatus(r), b=BADGE[st];
+      const tPct=Math.min(100,r.temp/100*100), lPct=Math.min(100,r.leak/600*100);
+      return '<tr class="row-'+st+'"><td><b>'+esc(r.name)+'</b> <span class="tag">'+r.id+'</span></td>'+
+      '<td><span class="bar-wrap"><span class="bar" style="display:block;width:'+tPct+'%;background:'+(r.temp>=TH.fireTempAlarm?'#ef4444':(r.temp>=TH.fireTempWarn?'#f59e0b':'#10b981'))+'"></span></span><span class="num">'+r.temp+' °C</span></td>'+
+      '<td><span class="bar-wrap"><span class="bar" style="display:block;width:'+lPct+'%;background:'+(r.leak>=TH.leakAlarm?'#ef4444':(r.leak>=TH.leakWarn?'#f59e0b':'#10b981'))+'"></span></span><span class="num">'+r.leak+' mA</span></td>'+
+      '<td><span class="badge '+b[0]+'"><span class="dot"></span>'+b[1]+'</span></td></tr>';
+    }).join('');
+  document.getElementById('v4-loop').innerHTML=loop.map(n=>'<span class="'+n.cls+'">'+esc(n.txt)+'</span>').join('');
+}
+
+/* ---------- 交互 ---------- */
+const RENDER={v1:renderV1,v2:renderV2,v3:renderV3,v4:renderV4};
+document.getElementById('tabs').addEventListener('click',e=>{
+  const t=e.target.closest('.tab'); if(!t)return;
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===t));
+  document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===t.dataset.view));
+  RENDER[t.dataset.view]();
+});
+document.getElementById('v1').addEventListener('click',e=>{
+  const c=e.target.closest('.chip'); if(!c)return;
+  placeFilter=c.dataset.place;
+  document.querySelectorAll('#v1 .chip').forEach(x=>x.classList.toggle('active',x===c));
+  renderV1();
+});
+document.getElementById('v3').addEventListener('click',e=>{
+  const c=e.target.closest('.chip'); if(!c)return;
+  feederFilter=c.dataset.feeder;
+  document.querySelectorAll('#v3 .chip').forEach(x=>x.classList.toggle('active',x===c));
+  renderV3();
+});
+/* ---------- 实时模拟：2s 随机游走 ---------- */
+function tick(){
+  circuits.forEach(c=>{ c.v=walk(c.v,0.8,214,228); c.i=walk(c.i,1.6,Math.max(5,c.i-15),c.i+15); c.kw=+((c.v*c.i*0.92)/1000).toFixed(2); c.temp=walk(c.temp,0.5,Math.max(30,c.temp-6),Math.min(82,c.temp+4)); });
+  itCabs.forEach(c=>{ c.ir=walk(c.ir, c.ir<60?2.5:1.5, 20, 220); c.load=walk(c.load,1.2,15,80); c.tT=walk(c.tT,0.4,38,78); });
+  feeders.forEach(f=>{ f.thdV=walk(f.thdV,0.15,1,7); f.thdI=walk(f.thdI,0.6,5,28); f.unb=walk(f.unb,0.08,0.2,3); });
+  fireRows.forEach(r=>{ r.temp=walk(r.temp,0.5,32,80); r.leak=walk(r.leak, r.leak>400?25:10, 40, 620); });
+  const active=document.querySelector('.view.active').id;
+  RENDER[active]();
+}
+setInterval(tick, 2000);
+setInterval(()=>{ document.getElementById('clock').textContent=fmtTime(); }, 1000);
+document.getElementById('clock').textContent=fmtTime();
+renderV1(); renderV2(); renderV3(); renderV4();
+</script>
+</body>
+</html>
