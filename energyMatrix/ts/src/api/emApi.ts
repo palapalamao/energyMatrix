@@ -881,7 +881,7 @@ export interface EmHisSample {
  * 走标准 hisRead 的宽表返回（一行一个时间点，每点位一列），一次 eval
  * 取全部曲线 —— 30 条曲线 30 次调用会变成 1 次。列名是点位 id 字符串
  * （haystack 规范），兼容带不带 @ 前缀两种返回；取不到 val 的格（点位
- * 缺样本）按 undefined 处理，不补 0。每个点位的最后一个样本即实时值。
+ * 缺样本）按 undefined 处理，不补 0；尾部无值样本截掉，末样本即实时值。
  */
 export async function emHisReadToday(
   client: HClient,
@@ -889,28 +889,32 @@ export async function emHisReadToday(
 ): Promise<Record<string, EmHisSample[]>> {
   const out: Record<string, EmHisSample[]> = {};
   if (refs.length === 0) return out;
-  const reads = refs.map((r) => `read(${HRef.make(r).toAxon()})`).join(" or ");
-  const g = await client.ext.eval(`hisRead(${reads}, today())`);
-  const gridRows = g.getRows();
-  // 列名集合：宽表每行 dict 的键 = ts + 各点位列（haystack-core 无公开
-  // cols API，从行键取并集，稀疏空格的键可能被省略，所以不能只看了第一行）
-  const colNames = new Set<string>();
-  for (const r of gridRows) {
-    for (const k of r.keys) if (k !== "ts") colNames.add(k);
-  }
+  // FIN hisRead 收表达式：readById 取记录（read(@ref) 不是合法 filter，运行时
+  // 实测 errType「Not a tag path」）；列表传入 → chart 视图宽网格，列名 v0..vn，
+  // 点位 id 在**列 meta** 里（行键只有 ts+vX，无点位 id）。
+  const ids = refs.map((r) => `readById(${HRef.make(r).toAxon()})`).join(", ");
+  const g = await client.ext.eval(`hisRead([${ids}], today())`);
   const wanted = new Map(refs.map((r) => [r.replace(/^@/, ""), r]));
-  for (const col of colNames) {
-    const key = wanted.get(col.replace(/^@/, ""));
+  const gridRows = g.getRows();
+  for (const col of g.getColumns()) {
+    const idVal = col.meta.get("id");
+    const pid = idVal instanceof HRef ? idVal.value : undefined;
+    if (typeof pid !== "string") continue;
+    const key = wanted.get(pid.replace(/^@/, ""));
     if (!key) continue;
     out[key] = gridRows
       .map((r) => {
-        const v = r.get(col);
+        const v = r.get(col.name);
         return {
           ts: dt(r, "ts") ?? "",
           val: v instanceof HNum ? v.value : undefined,
         };
       })
       .filter((s) => s.ts !== "");
+    // 行键是各点时间戳并集：FIN 自动采集行（tz Rel）可能只有部分点位有值，
+    // 尾部无值样本截掉，保证「末样本 = 实时值」成立（2026-09-17 宽表实测）。
+    const samples = out[key];
+    while (samples.length > 0 && samples[samples.length - 1].val === undefined) samples.pop();
   }
   return out;
 }

@@ -39,6 +39,8 @@ test("classifyPoint: marker 优先级与 reactive 排除", () => {
   // 有功功率：有 power 无 reactive；无功必须被排除
   assert.equal(classifyPoint(["elec", "power", "sensor"]), "power");
   assert.equal(classifyPoint(["elec", "power", "reactive", "sensor"]), "other");
+  // 最大需量（emDemand/max 也带 power）：统计量不是实时功率，必须排除（2026-09-17 实测无 his 被选中致卡片「—」）
+  assert.equal(classifyPoint(["elec", "power", "emDemand", "max", "sensor"]), "other");
   assert.equal(classifyPoint(["elec", "sensor"]), "other");
 });
 

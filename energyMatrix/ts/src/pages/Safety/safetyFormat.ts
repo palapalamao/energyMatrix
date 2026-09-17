@@ -80,7 +80,9 @@ export function classifyPoint(tags: readonly string[]): SafetyPointKind {
   if (has("volt")) return "volt";
   if (has("current")) return "current";
   if (has("temp")) return "temp";
-  if (has("power") && !has("reactive")) return "power";
+  // emDemand/max（最大需量）也带 power marker，但它是统计量不是实时功率，
+  // 归入 other —— 否则同类取第一个时可能拿到无 his 的需量点（2026-09-17 实测）。
+  if (has("power") && !has("reactive") && !has("emDemand") && !has("max")) return "power";
   return "other";
 }
 

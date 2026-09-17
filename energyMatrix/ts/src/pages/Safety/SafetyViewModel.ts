@@ -151,24 +151,31 @@ export class SafetyStore extends BaseStore {
     }
   }
 
-  /** 需要曲线的点位：重点负荷的功率点 + 绝缘点 + THDV 点。 */
+  /** 需要今日 his 的点位：屏上展示的表计/IT 柜下的全部归类点位（曲线 + 实时值回退共用）。 */
   private curveRefs(): string[] {
+    // 实时值回退（liveVal）走 curves 末样本，FIN read 不透 curVal，所以屏上展示的
+    // 每一类点位（含电压/电流/温度/剩余电流）都要有今日序列 —— 不限于画曲线的点。
+    // 范围与四个子视图的行筛选一致（有 volt/thdV/temp/leak 之一的表计 + IT 柜），
+    // demo 杂项点位不拉取；无 his 的点位只会返回空列，不影响整次 hisRead。
     const byEquip = this.groupByEquip();
-    const refs: string[] = [];
-    for (const meter of this.meters) {
-      const mid = recId(meter);
-      if (!mid) continue;
-      const byKind = byEquip.get(mid);
-      if (!byKind) continue;
-      // 重点负荷卡片：有电压监测的回路才画功率曲线
-      if (byKind.has("volt")) {
-        const p = byKind.get("power");
-        if (p) refs.push(recId(p) ?? "");
-      }
+    const meterIds = new Set<string>();
+    for (const m of this.meters) {
+      const id = recId(m);
+      if (id) meterIds.add(id);
     }
-    for (const p of this.points) {
-      const kind = classifyPoint(tagNames(p));
-      if (kind === "insulation" || kind === "thdV") refs.push(recId(p) ?? "");
+    const shown = new Set<string>();
+    for (const [equipId, kinds] of byEquip) {
+      if (!meterIds.has(equipId)) continue;
+      if (kinds.has("volt") || kinds.has("thdV") || kinds.has("temp") || kinds.has("leak")) shown.add(equipId);
+    }
+    for (const panel of this.panels) {
+      const id = recId(panel);
+      if (id) shown.add(id);
+    }
+    const refs: string[] = [];
+    for (const [equipId, kinds] of byEquip) {
+      if (!shown.has(equipId)) continue;
+      for (const p of kinds.values()) refs.push(recId(p) ?? "");
     }
     return refs.filter((r) => r !== "");
   }
