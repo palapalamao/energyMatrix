@@ -43,6 +43,8 @@ const SITE: FieldDef[] = [
   { tag: "emCoolArea", label: "空调面积", type: "num", unit: "m²" },
   { tag: "emOccupancy", label: "在册人数", type: "num",
     hint: "人均能耗指标与「按人数分摊」要用" },
+  { tag: "emBeds", label: "核定床位数", type: "num",
+    hint: "单位床位能耗（CBEI）的分母，医院类站点考核必填" },
   { tag: "emUsageType", label: "业态", type: "enum", enumOf: "EmUsageType" },
   { tag: "emClimateZone", label: "气候区", type: "str",
     hint: "严寒 / 寒冷 / 夏热冬冷 / 夏热冬暖 / 温和" },

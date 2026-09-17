@@ -43,3 +43,23 @@
   emEntityUpdate（admin、保护标签、枚举校验、留审计）；emBeds 仅需
   在 SITE fieldSchema 加一行字段定义。
 - KPI 考核屏不内嵌参数编辑：参数缺失显示「—」并引导去模型配置屏补录。
+
+---
+
+## 阶段 2 记录（2026-09-17，详细设计 + 模型 + 接口约定 + trio）
+
+阶段 1 确认后执行，未动任何前端页面代码。
+
+- 详细设计文档（md + docx，AI4B-EM-DD-2026-001）：V0.1.1 → V0.1.2；上游引用同步 V0.1.2；
+  4.4 新增 KPI 数据契约段（emKpiDefs / emKpiComputeAll / emQuotas / emQuotaProgressAll /
+  emEntityUpdate，只读无新增后端函数）；5.2 路由骨架加 /kpi；5.3 加「KPI 考核」模块行；
+  5.4 加前端取数契约；附录 B 加 /em/kpi 行。docx 抽文本验证：V0.1.2×6、emBeds×3、和碳 0。
+- 模型：spaces.xeto 的 EmSite 加 `emBeds: Number?`（核定床位数，CBEI 分母）；
+  res/defaultModels/EmSite.trio 加 `emBeds:Arg("emBeds:N")`。
+- UI 可配置：fieldSchema.ts 的 SITE 字段表加「核定床位数」，模型配置屏即改即用。
+- trio：menu.trio 加 `entry("KPI 考核", "/kpi", -314.5, "icon-gauge")`；屏数注释 13→15。
+- 更正：阶段 1 计划假设「demo.trio 5 站点补床位」不成立——demo.trio 只有 1 个商业综合体
+  站点且床位不适用；mytest 的 5 站点是运行时数据，emBeds 补齐列为阶段 3 数据操作（需用户知情）。
+- 更正：UI 词条不在 zh.props/en.props（那是 lib 级词条），屏内文案在 ts/src/i18n/*.json，
+  阶段 3 随前端代码补。
+- 已知问题：mytest 指标 WATER_PER_BED 中文名「人均水耗」与编码不符，阶段 3 改为「单位床位水耗」。

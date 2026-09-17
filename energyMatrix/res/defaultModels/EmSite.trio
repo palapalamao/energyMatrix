@@ -23,6 +23,8 @@ area:Arg("area:10000m²")
 emCoolArea:Arg("emCoolArea:N")
 // 设计在册人数 —— 人均指标分母
 emOccupancy:Arg("emOccupancy:N")
+// 核定床位数 —— 单位床位能耗（CBEI）分母，医院类站点考核必填
+emBeds:Arg("emBeds:N")
 // 业态：office|retail|hotel|hospital|datacenter|industrial|residence|common|parking
 emUsageType:Arg("emUsageType:office")
 // 建筑热工分区：severeCold|cold|hotSummerColdWinter|hotSummerWarmWinter|mild

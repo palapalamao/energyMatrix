@@ -10,6 +10,7 @@ EmSite: Site {
   area:        Number <quantity:"area", unit:"m²">
   emCoolArea:  Number? <quantity:"area", unit:"m²", doc:"空调面积">
   emOccupancy: Number? <doc:"设计在册人数，人均指标分母">
+  emBeds:     Number? <doc:"核定床位数，单位床位能耗（CBEI）分母；医院类站点考核必填">
   emClimateZone: Str? <doc:"建筑热工分区：severeCold/cold/hotSummerColdWinter/hotSummerWarmWinter/mild">
   emBaseYear:  Number? <doc:"能耗基准年">
   // 增补：关账缺口率闸门允许按站点覆盖（不同项目的计量完备程度差别很大）

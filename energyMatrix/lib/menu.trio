@@ -4,7 +4,7 @@
 // `finStackMobileMenu` 标记让 FIN 外壳在构建 app launcher 时调用本函数，
 // 函数返回一个菜单条目 Grid，外壳把它合并进顶栏。
 //
-// 前端是单个 SPA（res/web/em/），13 个屏各占一个 hash 路由（见 ts/src/routes.tsx），
+// 前端是单个 SPA（res/web/em/），15 个屏各占一个 hash 路由（见 ts/src/routes.tsx），
 // 所以每个菜单项都是一条深链，点进去直接落到对应屏。
 //
 // Axon 函数由 EnergyMatrixLib 经 skyarc.lib 自动注册（见 build.fan），
@@ -18,7 +18,7 @@ name: emApp
 finStackMobileMenu
 func
 overridable
-doc: "在 FIN 顶栏注册 energyMatrix 应用及其 13 个屏的深链。"
+doc: "在 FIN 顶栏注册 energyMatrix 应用及其 15 个屏的深链。"
 src:
   () => do
     root: "/pod/energyMatrix/res/web/em/index.html"
@@ -63,6 +63,7 @@ src:
 
       // ── 分析优化 ────────────────────────────────────────────────
       entry("能耗分析",       "/analysis",   -315, "chart-no-axes-column"),
+      entry("KPI 考核",       "/kpi",        -314.5, "icon-gauge"),
       entry("定额与对标",     "/quota",      -314, "icon-list"),
       entry("节能诊断与核证", "/diagnosis",  -313, "icon-check"),
       entry("碳排与双碳目标", "/carbon",     -312, "icon-globe"),
